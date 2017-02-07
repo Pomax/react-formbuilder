@@ -58,7 +58,7 @@ Validator objects look like this:
 {
   error: String data to show when field does not validate,
   validate: function(value) {
-    return true if 'value' passes validation, else false
+    return nothing if 'value' passes validation, else return whatever makes the most sense to your codebase, like a string or a new Error("...") or something else that acts as "an error occurred" indicator.
   } (optional)
 }
 ```
