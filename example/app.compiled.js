@@ -22949,11 +22949,12 @@ var App = function (_React$Component) {
 
       this.refs.form.validates(function (valid) {
         if (!valid) {
-          return console.error("boo");
+          return console.error("boo, form does not pass validation!");
         }
-        // we're good to go.
-        var values = _this3.state.values;
-        // ... now do things with that data, like posting to some remote end point
+        // we're good to go, so do things with the form data, we've been
+        // collecting through onUpdate. We can post it to a REST endpoint,
+        // show it to the user, whatever we like.
+        console.log("yay, we're good to go!", _this3.state.values);
       });
     }
   }]);
