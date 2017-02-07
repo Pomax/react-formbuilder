@@ -1,78 +1,12 @@
 var React = require('react');
 var ReactDOM = require('react-dom');
 
-/**
-
-  A moderately complex form builer for React.
-
-  This Form component converts JSON to HTML forms, using a JSON definition
-  pass in via this.props.fields. This JSON has the following form:
-
-   {
-     fieldname1 : field definition object,
-     fieldname2 : field definition object,
-     ... : ...,
-     ...
-   }
-
-  field definition objects:
-
-   {
-     type: ["text"|"textarea"|"choiceGroup"|"checkbox"|"checkboxGroup"|ReactComponent],
-     label: string data,
-     placeholder: string data (optional)
-     validator: [instance or array of validator objects],
-     metered: boolean (optional),
-     optional: boolean (optional),
-     controller: controller object (optional),
-     colCount: number of columns to span, if ...Group type (optional).
-   }
-
-  Each field is built off of the supplied information, with additional
-  functionality based on supplying optional definition properties.
-
-  Note that the "type" property can take a React component as value,
-  in which case an instance of that component will be created. In
-  this case, it is assumed the component has an "onChange" property,
-  in line with React's way of handling change events for HTML form
-  elements.
-
-  validator objects:
-
-    {
-      error: string data to show when field does not validate,
-      validate: function(value) yielding true/false (optional)
-    }
-
-  If a validator object has no custom validate(value) function, a default
-  validator is used that tests whether (value) contains data or not, passing
-  validation if it represents some kind of defined content.
-
-  To chain validators, simply use an array of validator objects and the field
-  will not be considered valid unless each validator (including the implied
-  default if only an error is supplied) passes.
-
-  controller objects:
-
-    {
-      name: string matching the fieldname of the controlling field,
-      value: value that the field with controller.name needs to match to reveal this field
-    }
-
-  controllers are used for things like showing an input textfield when
-  someone selects an "Other" value in a dropdown list, radio group, or
-  checkbox group.
-
-**/
-
 var validatorPropType = React.PropTypes.shape({
   error: React.PropTypes.string,
   validate: React.PropTypes.func
 });
 
 var Form = React.createClass({
-  // See the above documentation on what this fairly
-  // complex description concretely maps to.
   propTypes: {
     fields: React.PropTypes.objectOf(
       React.PropTypes.shape({
@@ -104,7 +38,6 @@ var Form = React.createClass({
         colCount: React.PropTypes.number
       })
     ).isRequired,
-    onSubmit: React.PropTypes.func.isRequired,
     onProgress: React.PropTypes.func,
     onUpdate: React.PropTypes.func
   },
@@ -218,13 +151,15 @@ var Form = React.createClass({
       }
     }
 
+    if (shouldHide) return null;
+
     if (shouldFocus) {
       common.ref = 'autofocus';
       inputClass += " controlled";
     }
 
     if (label) {
-      label = <label key={name + 'label'} hidden={shouldHide}>{label}</label>;
+      label = <label key={name + 'label'}>{label}</label>;
       // mark optional fields that have a label as being optional:
       if (field.optional) {
         label = [label, <span key={name + 'label-optional'} > (optional)</span>];
@@ -237,14 +172,14 @@ var Form = React.createClass({
     inputClass = inputClass.trim();
 
     if (ftype === "undefined" || Type === "text") {
-      formfield = <input className={inputClass} type={Type? Type : "text"} {...common} hidden={shouldHide}/>;
+      formfield = <input className={inputClass} type={Type? Type : "text"} {...common}/>;
     } else if (Type === "textarea") {
-      formfield = <textarea className={inputClass} {...common} hidden={shouldHide}/>;
+      formfield = <textarea className={inputClass} {...common}/>;
     } else if (Type === "checkbox") {
       // FIXME: while clickable, this does not seem to tick the checkbox...
       formfield = <div>
         <label>
-          <input className={inputClass} {...common} type="checkbox" hidden={shouldHide}/>
+          <input className={inputClass} {...common} type="checkbox"/>
           { label }
         </label>
       </div>;
@@ -364,9 +299,9 @@ var Form = React.createClass({
    * @returns {boolean} true if no errors occurred, otherwise false.
    */
   checkValidation: function() {
-    return this.validates(() => {
+    return this.validates(valid => {
       if (this.props.validates) {
-        this.props.validates(this.state.valid);
+        this.props.validates(valid);
       }
     });
   },
@@ -394,7 +329,7 @@ var Form = React.createClass({
       errors: errors,
       errorElements: errorElements
     }, () => {
-      postValidate();
+      postValidate(this.state.valid);
     });
 
     return !errors.length;

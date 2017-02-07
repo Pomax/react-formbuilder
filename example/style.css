@@ -1,0 +1,14 @@
+fieldset {
+	border: none;
+	background: lightgrey;
+	margin-bottom: 4px;
+}
+
+fieldset label {
+	margin-right: 1em;
+}
+
+fieldset textarea, fieldset input[type='text'] {
+	display: block;
+	width: 20em;
+}

@@ -11,14 +11,27 @@ module.exports = [{
   },
   externals: [
     {
-      react: `react`
+      react: {
+        root: 'React',
+        commonjs2: 'react',
+        commonjs: 'react',
+        amd: 'react',
+        umd: 'react',
+      },
+      'react-dom': {
+        root: 'ReactDOM',
+        commonjs2: 'react-dom',
+        commonjs: 'react-dom',
+        amd: 'react-dom',
+        umd: 'react-dom',
+      },
     }
   ],
   module: {
     loaders: [
       {
         test: /\.js(x?)$/,
-        exclude: /node_modules/,
+        include: /src/,
         loader: `babel-loader`,
         query: {
           presets: [`es2015`, `react`]
