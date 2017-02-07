@@ -2,11 +2,16 @@
   "name": "react-formbuilder",
   "version": "0.0.1",
   "description": "A relatively easy to use form builder (single or multipage), with error reporting and lots of room for customization ",
-  "main": "index.js",
+  "main": "dist/react-formbuilder.js",
   "directories": {
     "test": "test"
   },
   "scripts": {
+    "start": "npm run build && run-p watch:**",
+    "bootstrap": "shx rm -rf dist && shx mkdir dist",
+    "build": "run-s bootstrap build:**",
+    "build:js": "webpack --config webpack.config.js --optimize-minimize --display-error-details",
+    "watch:js": "chokidar 'src/**/*.jsx' 'webpack.config.js' -c 'npm run build:js'",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -18,5 +23,22 @@
   "bugs": {
     "url": "https://github.com/Pomax/react-formbuilder/issues"
   },
-  "homepage": "https://github.com/Pomax/react-formbuilder#readme"
+  "homepage": "https://github.com/Pomax/react-formbuilder#readme",
+  "devDependencies": {
+    "babel-core": "^6.22.1",
+    "babel-loader": "^6.2.10",
+    "babel-preset-es2015": "^6.22.0",
+    "babel-preset-react": "^6.22.0",
+    "chokidar": "^1.6.1",
+    "chokidar-cli": "^1.2.0",
+    "npm-run-all": "^4.0.1",
+    "react": "^15.4.2",
+    "react-dom": "^15.4.2",
+    "shx": "^0.2.2",
+    "webpack": "^2.2.1"
+  },
+  "engines": {
+    "node": "^6.9.1",
+    "npm": "^3.10.10"
+  }
 }
