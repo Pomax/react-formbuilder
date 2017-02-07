@@ -22818,147 +22818,147 @@ var ReactFormBuilder = __webpack_require__(81);
 var Form = ReactFormBuilder.Form;
 
 var App = function (_React$Component) {
-	_inherits(App, _React$Component);
+  _inherits(App, _React$Component);
 
-	/**
-  * Set up an initial state and then try to fetch this file as text
-  * so we can show the source code alongside the form and form definition.
-  */
-	function App(props) {
-		_classCallCheck(this, App);
+  /**
+   * Set up an initial state and then try to fetch this file as text
+   * so we can show the source code alongside the form and form definition.
+   */
+  function App(props) {
+    _classCallCheck(this, App);
 
-		var _this = _possibleConstructorReturn(this, (App.__proto__ || Object.getPrototypeOf(App)).call(this, props));
+    var _this = _possibleConstructorReturn(this, (App.__proto__ || Object.getPrototypeOf(App)).call(this, props));
 
-		_this.state = {
-			fields: __webpack_require__(82),
-			values: {},
-			submitting: false,
-			ratio: 0
-		};
+    _this.state = {
+      fields: __webpack_require__(82),
+      values: {},
+      submitting: false,
+      ratio: 0
+    };
 
-		fetch('./app.js').then(function (response) {
-			response.text().then(function (sourceCode) {
-				_this.setState({ sourceCode: sourceCode });
-			});
-		});
-		return _this;
-	}
+    fetch('./app.js').then(function (response) {
+      response.text().then(function (sourceCode) {
+        _this.setState({ sourceCode: sourceCode });
+      });
+    });
+    return _this;
+  }
 
-	/**
-  * Render a form, with its associated form definition data and the app's source code.
-  */
-
-
-	_createClass(App, [{
-		key: 'render',
-		value: function render() {
-			var _this2 = this;
-
-			// Composing the properties first makes code far easier to read.
-			var formProps = {
-				fields: this.state.fields,
-				submitting: this.state.submitting,
-				onUpdate: function onUpdate(e, f, v) {
-					return _this2.onUpdate(e, f, v);
-				},
-				onProgress: function onProgress(r) {
-					return _this2.onProgress(r);
-				}
-			};
-
-			return React.createElement(
-				'div',
-				null,
-				React.createElement(
-					'h2',
-					null,
-					'An example form:'
-				),
-				React.createElement(Form, _extends({ ref: 'form' }, formProps)),
-				React.createElement(
-					'button',
-					{ onClick: function onClick(e) {
-							return _this2.submitForm(e);
-						} },
-					'Submit'
-				),
-				' (',
-				React.createElement(
-					'span',
-					null,
-					this.state.ratio * 100,
-					'%'
-				),
-				' complete)',
-				React.createElement('hr', null),
-				React.createElement(
-					'h2',
-					null,
-					'Form built off of the following definition:'
-				),
-				React.createElement(
-					'pre',
-					null,
-					JSON.stringify(this.state.fields, false, 2)
-				),
-				React.createElement('hr', null),
-				React.createElement(
-					'h2',
-					null,
-					'App code used: '
-				),
-				React.createElement(
-					'pre',
-					null,
-					this.state.sourceCode
-				)
-			);
-		}
-
-		/**
-   * Handle function for form data, triggered whenever the user modifies form values.
+  /**
+   * Render a form, with its associated form definition data and the app's source code.
    */
 
-	}, {
-		key: 'onUpdate',
-		value: function onUpdate(evt, field, value) {
-			var values = this.state.values;
-			values[field.name] = value;
-			this.setState({ values: values });
-		}
 
-		/**
-   * Handle function for form progress, updated whenever the user modifies form values.
-   */
+  _createClass(App, [{
+    key: 'render',
+    value: function render() {
+      var _this2 = this;
 
-	}, {
-		key: 'onProgress',
-		value: function onProgress(ratio) {
-			this.setState({ ratio: ratio });
-		}
+      // Composing the properties first makes code far easier to read.
+      var formProps = {
+        fields: this.state.fields,
+        submitting: this.state.submitting,
+        onUpdate: function onUpdate(e, f, v) {
+          return _this2.onUpdate(e, f, v);
+        },
+        onProgress: function onProgress(r) {
+          return _this2.onProgress(r);
+        }
+      };
 
-		/**
-   * "submit" function that checks whether the form passes validation, and if so,
-   * does "something" with the data. We'll leave the "something" implied.
-   */
+      return React.createElement(
+        'div',
+        null,
+        React.createElement(
+          'h2',
+          null,
+          'An example form:'
+        ),
+        React.createElement(Form, _extends({ ref: 'form' }, formProps)),
+        React.createElement(
+          'button',
+          { onClick: function onClick(e) {
+              return _this2.submitForm(e);
+            } },
+          'Submit'
+        ),
+        ' (',
+        React.createElement(
+          'span',
+          null,
+          this.state.ratio * 100,
+          '%'
+        ),
+        ' complete)',
+        React.createElement('hr', null),
+        React.createElement(
+          'h2',
+          null,
+          'Form built off of the following definition:'
+        ),
+        React.createElement(
+          'pre',
+          null,
+          JSON.stringify(this.state.fields, false, 2)
+        ),
+        React.createElement('hr', null),
+        React.createElement(
+          'h2',
+          null,
+          'App code used: '
+        ),
+        React.createElement(
+          'pre',
+          null,
+          this.state.sourceCode
+        )
+      );
+    }
 
-	}, {
-		key: 'submitForm',
-		value: function submitForm() {
-			var _this3 = this;
+    /**
+     * Handle function for form data, triggered whenever the user modifies form values.
+     */
 
-			this.refs.form.validates(function (valid) {
-				if (!valid) {
-					return console.error("boo");
-				}
-				// we're good to go.
-				var values = _this3.state.values;
-				// ... now do things with that data, like posting to some remote end point
-			});
-		}
-	}]);
+  }, {
+    key: 'onUpdate',
+    value: function onUpdate(evt, field, value) {
+      var values = this.state.values;
+      values[field.name] = value;
+      this.setState({ values: values });
+    }
 
-	return App;
+    /**
+     * Handle function for form progress, updated whenever the user modifies form values.
+     */
+
+  }, {
+    key: 'onProgress',
+    value: function onProgress(ratio) {
+      this.setState({ ratio: ratio });
+    }
+
+    /**
+     * "submit" function that checks whether the form passes validation, and if so,
+     * does "something" with the data. We'll leave the "something" implied.
+     */
+
+  }, {
+    key: 'submitForm',
+    value: function submitForm() {
+      var _this3 = this;
+
+      this.refs.form.validates(function (valid) {
+        if (!valid) {
+          return console.error("boo");
+        }
+        // we're good to go.
+        var values = _this3.state.values;
+        // ... now do things with that data, like posting to some remote end point
+      });
+    }
+  }]);
+
+  return App;
 }(React.Component);
 
 ;
