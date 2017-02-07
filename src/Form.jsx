@@ -1,5 +1,6 @@
 var React = require('react');
 var ReactDOM = require('react-dom');
+
 var validatorPropType = React.PropTypes.shape({
   error: React.PropTypes.string,
   validate: React.PropTypes.func
@@ -124,7 +125,7 @@ var Form = React.createClass({
         formfield = null,
         hasError = this.state.errorElements.indexOf(name) !== -1,
         labelClass = field.labelClassname ? field.labelClassname : '',
-        inputClass = hasError ? `error ${field.fieldClassname}` : `${field.fieldClassname}`;
+        inputClass = `${hasError ? 'error' : ''} ${field.fieldClassname}`;
 
     var common = {
       key: name + 'field',
