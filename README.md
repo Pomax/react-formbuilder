@@ -16,6 +16,10 @@ or if you like short codes:
 $ npm i -S react-formbuilder
 ```
 
+## Online example
+
+An online example/demo can be found on [https://pomax.github.io/react-formbuilder/example/](https://pomax.github.io/react-formbuilder/example/)
+
 ## Form definition data
 
 The basic form data looks like this:
