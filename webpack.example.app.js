@@ -7,6 +7,11 @@ module.exports = [{
     filename: `/app.compiled.js`,
     path: `${__dirname}/example`
   },
+  externals: [
+    {
+      fetch: 'Fetch'
+    }
+  ],
   module: {
     loaders: [
       {

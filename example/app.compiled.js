@@ -22820,6 +22820,10 @@ var Form = ReactFormBuilder.Form;
 var App = function (_React$Component) {
 	_inherits(App, _React$Component);
 
+	/**
+  * Set up an initial state and then try to fetch this file as text
+  * so we can show the source code alongside the form and form definition.
+  */
 	function App(props) {
 		_classCallCheck(this, App);
 
@@ -22831,14 +22835,26 @@ var App = function (_React$Component) {
 			submitting: false,
 			ratio: 0
 		};
+
+		fetch('./app.js').then(function (response) {
+			response.text().then(function (sourceCode) {
+				_this.setState({ sourceCode: sourceCode });
+			});
+		});
 		return _this;
 	}
+
+	/**
+  * Render a form, with its associated form definition data and the app's source code.
+  */
+
 
 	_createClass(App, [{
 		key: 'render',
 		value: function render() {
 			var _this2 = this;
 
+			// Composing the properties first makes code far easier to read.
 			var formProps = {
 				fields: this.state.fields,
 				submitting: this.state.submitting,
@@ -22884,9 +22900,25 @@ var App = function (_React$Component) {
 					'pre',
 					null,
 					JSON.stringify(this.state.fields, false, 2)
+				),
+				React.createElement('hr', null),
+				React.createElement(
+					'h2',
+					null,
+					'App code used: '
+				),
+				React.createElement(
+					'pre',
+					null,
+					this.state.sourceCode
 				)
 			);
 		}
+
+		/**
+   * Handle function for form data, triggered whenever the user modifies form values.
+   */
+
 	}, {
 		key: 'onUpdate',
 		value: function onUpdate(evt, field, value) {
@@ -22894,11 +22926,22 @@ var App = function (_React$Component) {
 			values[field.name] = value;
 			this.setState({ values: values });
 		}
+
+		/**
+   * Handle function for form progress, updated whenever the user modifies form values.
+   */
+
 	}, {
 		key: 'onProgress',
 		value: function onProgress(ratio) {
 			this.setState({ ratio: ratio });
 		}
+
+		/**
+   * "submit" function that checks whether the form passes validation, and if so,
+   * does "something" with the data. We'll leave the "something" implied.
+   */
+
 	}, {
 		key: 'submitForm',
 		value: function submitForm() {
@@ -22910,6 +22953,7 @@ var App = function (_React$Component) {
 				}
 				// we're good to go.
 				var values = _this3.state.values;
+				// ... now do things with that data, like posting to some remote end point
 			});
 		}
 	}]);
@@ -22919,6 +22963,7 @@ var App = function (_React$Component) {
 
 ;
 
+// Get this app up and running on the page:
 ReactDOM.render(React.createElement(App, null), document.getElementById('app'));
 
 /***/ })
