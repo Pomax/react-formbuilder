@@ -124,7 +124,8 @@ var Form = React.createClass({
         label = field.label,
         formfield = null,
         hasError = this.state.errorElements.indexOf(name) !== -1,
-        inputClass = hasError ? 'error' : '';
+        labelClass = field.labelClassname ? field.labelClassname : '',
+        inputClass = `${hasError ? 'error' : ''} ${field.fieldClassname}`;
 
     var common = {
       key: name + 'field',
@@ -159,7 +160,7 @@ var Form = React.createClass({
     }
 
     if (label) {
-      label = <label key={name + 'label'}>{label}</label>;
+      label = <label key={name + 'label'} className={labelClass}>{label}</label>;
       // mark optional fields that have a label as being optional:
       if (field.optional) {
         label = [label, <span key={name + 'label-optional'} > (optional)</span>];
@@ -178,7 +179,7 @@ var Form = React.createClass({
     } else if (Type === "checkbox") {
       // FIXME: while clickable, this does not seem to tick the checkbox...
       formfield = <div>
-        <label>
+        <label className={labelClass}>
           <input className={inputClass} {...common} type="checkbox"/>
           { label }
         </label>
@@ -193,7 +194,7 @@ var Form = React.createClass({
       for (let c=0; c<colCount; c++) {
         let choiceset = choices.slice(c*bracket, (c+1)*bracket).map(value => {
           return <div key={value}>
-            <label>
+            <label className={labelClass}>
               <input className={inputClass} type="radio" name={name} value={value} checked={this.state[name] === value} onChange={common.onChange}/>
               {value}
             </label>
@@ -213,7 +214,7 @@ var Form = React.createClass({
       for (let c=0; c<colCount; c++) {
         let choiceset = choices.slice(c*bracket, (c+1)*bracket).map(value => {
           return <div key={value}>
-            <label>
+            <label className={labelClass}>
               <input className={inputClass} type="checkbox" name={name} value={value} checked={this.state[name].indexOf(value)>-1} onChange={common.onChange}/>
               {value}
             </label>
