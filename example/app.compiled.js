@@ -9556,6 +9556,7 @@ var Form = React.createClass({
       label: React.PropTypes.oneOfType([React.PropTypes.string, React.PropTypes.element]),
       placeholder: React.PropTypes.string,
       validator: React.PropTypes.oneOfType([validatorPropType, React.PropTypes.arrayOf(validatorPropType)]),
+      inlineErrors: React.PropTypes.boolean,
       metered: React.PropTypes.boolean,
       optional: React.PropTypes.boolean,
       controller: React.PropTypes.shape({
@@ -9667,7 +9668,8 @@ var Form = React.createClass({
         label = field.label,
         formfield = null,
         hasError = this.state.errorElements.indexOf(name) !== -1,
-        inputClass = hasError ? 'error' : '';
+        labelClass = field.labelClassname ? field.labelClassname : '',
+        inputClass = (hasError ? 'error' : '') + ' ' + field.fieldClassname;
 
     var common = {
       key: name + 'field',
@@ -9708,7 +9710,7 @@ var Form = React.createClass({
     if (label) {
       label = React.createElement(
         'label',
-        { key: name + 'label' },
+        { key: name + 'label', className: labelClass },
         label
       );
       // mark optional fields that have a label as being optional:
@@ -9737,7 +9739,7 @@ var Form = React.createClass({
         null,
         React.createElement(
           'label',
-          null,
+          { className: labelClass },
           React.createElement('input', _extends({ className: inputClass }, common, { type: 'checkbox' })),
           label
         )
@@ -9756,7 +9758,7 @@ var Form = React.createClass({
             { key: value },
             React.createElement(
               'label',
-              null,
+              { className: labelClass },
               React.createElement('input', { className: inputClass, type: 'radio', name: name, value: value, checked: _this4.state[name] === value, onChange: common.onChange }),
               value
             )
@@ -9788,7 +9790,7 @@ var Form = React.createClass({
             { key: value },
             React.createElement(
               'label',
-              null,
+              { className: labelClass },
               React.createElement('input', { className: inputClass, type: 'checkbox', name: name, value: value, checked: _this4.state[name].indexOf(value) > -1, onChange: common.onChange }),
               value
             )
@@ -9813,10 +9815,26 @@ var Form = React.createClass({
       formfield = React.createElement(Type, _extends({}, field, common, { className: inputClass }));
     }
 
+    var inlineErrors = null;
+    if (this.props.inlineErrors) {
+      var errors = this.state.errors;
+      if (errors.length > 0) {
+        var elements = this.state.errorElements;
+        var pos = elements.indexOf(name);
+        if (pos !== -1) {
+          var inlineErrors = React.createElement(
+            'div',
+            { className: 'inline error' },
+            errors[pos]
+          );
+        }
+      }
+    }
+
     return React.createElement(
       'fieldset',
       { key: name + 'set', className: name },
-      [label, formfield]
+      [label, formfield, inlineErrors]
     );
   },
 
@@ -10038,6 +10056,11 @@ var Form = React.createClass({
    */
   renderValidationErrors: function renderValidationErrors() {
     if (!this.state.errors || this.state.errors.length === 0) {
+      return null;
+    }
+
+    // handled in render on a per-field basis?
+    if (this.props.inlineErrors) {
       return null;
     }
 
@@ -22833,7 +22856,8 @@ var App = function (_React$Component) {
       fields: __webpack_require__(82),
       values: {},
       submitting: false,
-      ratio: 0
+      ratio: 0,
+      inlineErrors: true
     };
 
     fetch('./app.js').then(function (response) {
@@ -22844,18 +22868,24 @@ var App = function (_React$Component) {
     return _this;
   }
 
-  /**
-   * Render a form, with its associated form definition data and the app's source code.
-   */
-
-
   _createClass(App, [{
+    key: 'toggleInline',
+    value: function toggleInline() {
+      this.setState({ inlineErrors: !this.state.inlineErrors });
+    }
+
+    /**
+     * Render a form, with its associated form definition data and the app's source code.
+     */
+
+  }, {
     key: 'render',
     value: function render() {
       var _this2 = this;
 
       // Composing the properties first makes code far easier to read.
       var formProps = {
+        inlineErrors: this.state.inlineErrors,
         fields: this.state.fields,
         submitting: this.state.submitting,
         onUpdate: function onUpdate(e, f, v) {
@@ -22865,6 +22895,8 @@ var App = function (_React$Component) {
           return _this2.onProgress(r);
         }
       };
+
+      console.log(formProps.inlineErrors);
 
       return React.createElement(
         'div',
@@ -22890,6 +22922,10 @@ var App = function (_React$Component) {
           '%'
         ),
         ' complete)',
+        React.createElement('input', { type: 'checkbox', onClick: function onClick(e) {
+            return _this2.toggleInline();
+          }, checked: this.state.inlineErrors ? "checked" : null }),
+        ' show inline errors.',
         React.createElement('hr', null),
         React.createElement(
           'h2',

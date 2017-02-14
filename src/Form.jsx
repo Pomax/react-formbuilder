@@ -23,6 +23,7 @@ var Form = React.createClass({
           validatorPropType,
           React.PropTypes.arrayOf(validatorPropType)
         ]),
+        inlineErrors: React.PropTypes.boolean,
         metered: React.PropTypes.boolean,
         optional: React.PropTypes.boolean,
         controller: React.PropTypes.shape({
@@ -231,7 +232,19 @@ var Form = React.createClass({
       formfield = <Type {...field} {...common} className={inputClass} />;
     }
 
-    return <fieldset key={name + 'set'} className={name}>{ [label, formfield] }</fieldset>;
+    var inlineErrors = null;
+    if (this.props.inlineErrors) {
+      var errors = this.state.errors;
+      if (errors.length > 0) {
+        var elements = this.state.errorElements;
+        var pos = elements.indexOf(name);
+        if (pos !== -1) {
+          var inlineErrors = <div className="inline error">{ errors[pos] }</div>
+        }
+      }
+    }
+
+    return <fieldset key={name + 'set'} className={name}>{ [label, formfield, inlineErrors] }</fieldset>;
   },
 
   /**
@@ -444,6 +457,11 @@ var Form = React.createClass({
    */
   renderValidationErrors: function() {
     if (!this.state.errors || this.state.errors.length === 0) {
+      return null;
+    }
+
+    // handled in render on a per-field basis?
+    if (this.props.inlineErrors) {
       return null;
     }
 
