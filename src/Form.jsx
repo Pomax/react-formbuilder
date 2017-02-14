@@ -232,13 +232,16 @@ var Form = React.createClass({
       formfield = <Type {...field} {...common} className={inputClass} />;
     }
 
+    // See if we need to generate validation errors inline.
     var inlineErrors = null;
     if (this.props.inlineErrors) {
       var errors = this.state.errors;
       if (errors.length > 0) {
+        // there errors; are any for this particular element?
         var elements = this.state.errorElements;
         var pos = elements.indexOf(name);
         if (pos !== -1) {
+          // this particular element has a validation error!
           var inlineErrors = <div className="inline error">{ errors[pos] }</div>
         }
       }

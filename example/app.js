@@ -44,8 +44,6 @@ class App extends React.Component {
       onProgress: r => this.onProgress(r)
     };
 
-    console.log(formProps.inlineErrors)
-
     return (
       <div>
         <h2>An example form:</h2>
