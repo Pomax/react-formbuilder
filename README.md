@@ -89,6 +89,7 @@ The `Form` component defines a form based on a form data object using the format
 #### properties
 
 - `fields`: form definition data (see above). This property is required.
+- `inlineErrors`: boolean value; if `true` will show validation error messages next to each field. If falsey or missing, validation errors will show in a block on their own af the bottom of the form.
 
 #### Event handling
  
