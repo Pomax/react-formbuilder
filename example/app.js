@@ -16,7 +16,8 @@ class App extends React.Component {
       fields: require('./fields'),
       values: {},
       submitting: false,
-      ratio: 0
+      ratio: 0,
+      inlineErrors: true
     };
 
     fetch('./app.js').then(response => {
@@ -26,12 +27,17 @@ class App extends React.Component {
     })
   }
 
+  toggleInline() {
+    this.setState({ inlineErrors: !this.state.inlineErrors });
+  }
+
   /**
    * Render a form, with its associated form definition data and the app's source code.
    */
   render() {
     // Composing the properties first makes code far easier to read.
     var formProps = {
+      inlineErrors: this.state.inlineErrors,
       fields: this.state.fields,
       submitting: this.state.submitting,
       onUpdate: (e,f,v) => this.onUpdate(e,f,v),
@@ -43,6 +49,7 @@ class App extends React.Component {
         <h2>An example form:</h2>
         <Form ref="form" {...formProps} />
         <button onClick={e => this.submitForm(e)}>Submit</button> (<span>{this.state.ratio * 100}%</span> complete)
+        <input type="checkbox" onClick={e => this.toggleInline()} checked={this.state.inlineErrors ? "checked" : null} /> show inline errors.
 
         <hr/>
 
