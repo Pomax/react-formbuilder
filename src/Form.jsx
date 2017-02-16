@@ -1,44 +1,11 @@
 var React = require('react');
 var ReactDOM = require('react-dom');
-
-var validatorPropType = React.PropTypes.shape({
-  error: React.PropTypes.string,
-  validate: React.PropTypes.func
-});
+var fieldType = require('./field-type.js');
+var MultiplicityField = require('./MultiplicityField.jsx');
 
 var Form = React.createClass({
   propTypes: {
-    fields: React.PropTypes.objectOf(
-      React.PropTypes.shape({
-        type: React.PropTypes.oneOfType([
-          React.PropTypes.oneOf(['text','textarea','choiceGroup','checkbox','checkboxGroup']),
-          React.PropTypes.func
-        ]).isRequired,
-        label: React.PropTypes.oneOfType([
-          React.PropTypes.string,
-          React.PropTypes.element
-        ]),
-        placeholder: React.PropTypes.string,
-        validator: React.PropTypes.oneOfType([
-          validatorPropType,
-          React.PropTypes.arrayOf(validatorPropType)
-        ]),
-        inlineErrors: React.PropTypes.boolean,
-        metered: React.PropTypes.boolean,
-        optional: React.PropTypes.boolean,
-        controller: React.PropTypes.shape({
-          name: React.PropTypes.string,
-          value: React.PropTypes.oneOfType([
-            React.PropTypes.bool,
-            React.PropTypes.number,
-            React.PropTypes.string,
-            React.PropTypes.array,
-            React.PropTypes.object
-          ]),
-        }),
-        colCount: React.PropTypes.number
-      })
-    ).isRequired,
+    fields: React.PropTypes.objectOf(fieldType).isRequired,
     onProgress: React.PropTypes.func,
     onUpdate: React.PropTypes.func
   },
@@ -126,12 +93,13 @@ var Form = React.createClass({
         formfield = null,
         hasError = this.state.errorElements.indexOf(name) !== -1,
         labelClass = field.labelClassname ? field.labelClassname : '',
-        inputClass = `${hasError ? 'error' : ''} ${field.fieldClassname}`;
+        inputClass = `${hasError ? 'error' : ''} ${field.fieldClassname}`,
+        multiplicity = field.multiplicity;
 
     var common = {
       key: name + 'field',
-      value: this.state[name],
-      onChange: e => this.update(field, e),
+      value: this.state[name] || '',
+      onChange: e => this.update(name, field, e),
       placeholder: field.placeholder
     };
 
@@ -174,7 +142,12 @@ var Form = React.createClass({
     inputClass = inputClass.trim();
 
     if (ftype === "undefined" || Type === "text") {
-      formfield = <input className={inputClass} type={Type? Type : "text"} {...common}/>;
+      if (multiplicity) {
+        let values = typeof common.value === "object" ? common.value : [common.value];
+        formfield = <MultiplicityField name={name} field={field} {...common} values={values} onUpdate={(e,n,f,v) => this.update(n,f,e,v)} checkValidation={this.checkValidation} />;
+      } else {
+        formfield = <input className={inputClass} type={Type? Type : "text"} {...common}/>;
+      }
     } else if (Type === "textarea") {
       formfield = <textarea className={inputClass} {...common}/>;
     } else if (Type === "checkbox") {
@@ -232,6 +205,7 @@ var Form = React.createClass({
       formfield = <Type {...field} {...common} className={inputClass} />;
     }
 
+
     // See if we need to generate validation errors inline.
     var inlineErrors = null;
     if (this.props.inlineErrors) {
@@ -247,7 +221,7 @@ var Form = React.createClass({
       }
     }
 
-    return <fieldset key={name + 'set'} className={name}>{ [label, formfield, inlineErrors] }</fieldset>;
+    return <fieldset key={name + 'set'} className={name}>{ label }{ formfield }{ inlineErrors}</fieldset>;
   },
 
   /**
@@ -257,15 +231,14 @@ var Form = React.createClass({
    * @param {event} e the event associated with an onChange from an HTML element
    * @returns {undefined}
    */
-  update: function(field, e) {
+  update: function(name, field, e, value) {
     var state = {};
-    var fieldname = field.name;
-    var value = e.target? e.target.value : undefined;
+    var value = value ? value : e.target? e.target.value : undefined;
 
     if (field.type === "checkbox") {
-      state[fieldname] = e.target? e.target.checked : false;
+      state[name] = e.target? e.target.checked : false;
     } else if (field.type === "checkboxGroup") {
-      var curval = this.state[fieldname];
+      var curval = this.state[name];
       var pos = curval.indexOf(value);
 
       if (pos === -1) {
@@ -274,16 +247,16 @@ var Form = React.createClass({
         curval.splice(pos,1);
       }
 
-      state[fieldname] = curval;
+      state[name] = curval;
     } else {
-      state[fieldname] = (value !== undefined) ? value : e;
+      state[name] = (value !== undefined) ? value : e;
     }
 
     if (this.props.onUpdate) {
-      this.props.onUpdate(e, field, value);
+      this.props.onUpdate(e, name, field, value);
     }
 
-    this.setStateAsChange(fieldname, state);
+    this.setStateAsChange(name, state);
   },
 
   /**
