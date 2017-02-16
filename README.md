@@ -47,7 +47,7 @@ Where a field definition object takes the following form:
   controller: controller object (optional) - see below,
   validator: Single instance of, or array of, validator object(s) - see below,
 
-  multiplicity: number (optional) marking this field as a "there can be more than one of these", with automatic (+)/(-) controls (currently only works with "text" fields),
+  multiplicity: number (optional) marking this field as a "there can be more than one of these", with automatic (+)/(-) controls (currently only works with "text" fields). The number provided specifies the default number of fields to show when the form is bootstrapped,
   removeLabel: string (optional) for the "remove" button next to a multiples field,
   addLabel: string (optional) for the "add" button next to a multiples field
 }
