@@ -1,15 +1,18 @@
 module.exports = {
   'full_name': {
     type: "text",
-    label: "Name",
-    placeholder: "Your full name",
+    label: "Participant name",
+    placeholder: "Please use a full name...",
     validator: {
       error: "You must provide a full name."
-    }
+    },
+    multiplicity: 2,
+    addLabel: "add another participant",
+    removeLabel: "remove participant"
   },
   occupation: {
     type: "text",
-    label: "Occupation",
+    label: "Participant occupations",
     placeholder: "Student or professional at ...",
     validator: {
       error: "Please let us know what your occupation is."

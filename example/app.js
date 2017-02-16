@@ -2,6 +2,7 @@ var React = require('react');
 var ReactDOM = require('react-dom');
 
 var ReactFormBuilder = require('../dist/react-formbuilder');
+
 var Form = ReactFormBuilder.Form;
 
 class App extends React.Component {
@@ -40,7 +41,7 @@ class App extends React.Component {
       inlineErrors: this.state.inlineErrors,
       fields: this.state.fields,
       submitting: this.state.submitting,
-      onUpdate: (e,f,v) => this.onUpdate(e,f,v),
+      onUpdate: (e,n,f,v) => this.onUpdate(e,n,f,v),
       onProgress: r => this.onProgress(r)
     };
 
@@ -49,7 +50,7 @@ class App extends React.Component {
         <h2>An example form:</h2>
         <Form ref="form" {...formProps} />
         <button onClick={e => this.submitForm(e)}>Submit</button> (<span>{this.state.ratio * 100}%</span> complete)
-        <input type="checkbox" onClick={e => this.toggleInline()} checked={this.state.inlineErrors ? "checked" : null} /> show inline errors.
+        <input type="checkbox" onChange={e => this.toggleInline()} checked={this.state.inlineErrors ? "checked" : null} /> show inline errors.
 
         <hr/>
 
@@ -67,9 +68,9 @@ class App extends React.Component {
   /**
    * Handle function for form data, triggered whenever the user modifies form values.
    */
-  onUpdate(evt, field, value) {
+  onUpdate(evt, name, field, value) {
     let values = this.state.values;
-    values[field.name] = value;
+    values[name] = value;
     this.setState({ values });
   }
 
@@ -87,12 +88,12 @@ class App extends React.Component {
   submitForm() {
     this.refs.form.validates(valid => {
       if (!valid) {
-        return console.error("boo, form does not pass validation!");
+        return console.error("boo, form does not pass validation! Current data:", this.state.values);
       }
       // we're good to go, so do things with the form data, we've been
       // collecting through onUpdate. We can post it to a REST endpoint,
       // show it to the user, whatever we like.
-      console.log("yay, we're good to go!", this.state.values);
+      console.log("yay, we're good to go! Current data:", this.state.values);
     });
   }
 };

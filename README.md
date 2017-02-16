@@ -42,9 +42,14 @@ Where a field definition object takes the following form:
   placeholder: String data (optional)
   metered: boolean (optional),
   optional: boolean (optional),
+  options: array of strings for each option when "type" is choiceGroup, checkboxGroup, or a React component that takes "options" (like a ReactSelect component),
   colCount: number of columns to span, if choiceGroup or checkboxGroup type (optional),
   controller: controller object (optional) - see below,
-  validator: Single instance of, or array of, validator object(s) - see below
+  validator: Single instance of, or array of, validator object(s) - see below,
+
+  multiplicity: number (optional) marking this field as a "there can be more than one of these", with automatic (+)/(-) controls (currently only works with "text" fields). The number provided specifies the default number of fields to show when the form is bootstrapped,
+  removeLabel: string (optional) for the "remove" button next to a multiples field,
+  addLabel: string (optional) for the "add" button next to a multiples field
 }
 ```
 
@@ -86,21 +91,63 @@ Controllers are used for things like showing an input textfield when someone sel
 
 The `Form` component defines a form based on a form data object using the format explained above.
 
+Note that the `Form` component is **not** an HTML `<form>` element with an associated action, and as such does not come with a submit button. Instead, the form is responsible for aggregating and validating user data and notifying the owning component of data updates. As such, using a `<Form>` requires an owning component to slap on its own button:
+
+```
+class App extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      fields: require('./fields'),
+      values: {}
+    };
+  }
+
+  render() {
+    var formProps = {
+      fields: this.state.fields,
+      onUpdate: (evt,name,field,value) => this.onUpdate(evt,name,field,value)
+    };
+
+    return (
+      <div>
+        <Form ref="form" {...formProps} />
+        <button onClick={e => this.submitForm(e)}>Submit</button>
+      </div>
+    );
+  }
+
+  onUpdate(evt, name, field, value) {
+    let values = this.state.values;
+    values[name] = value;
+    this.setState({ values });
+  }
+
+  submitForm() {
+    this.refs.form.validates(valid => {
+      if (!valid) {
+        return console.error("boo, form does not pass validation!");
+      }
+      console.log("yay, we're good to go!", this.state.values);
+    });
+  }
+}
+```
+
 #### properties
 
 - `fields`: form definition data (see above). This property is required.
 - `inlineErrors`: boolean value; if `true` will show validation error messages next to each field. If falsey or missing, validation errors will show in a block on their own af the bottom of the form.
 
 #### Event handling
- 
-- `onProgress`: optional `function(ratio:number)` function that gets called every time the form is updated, reporting to its owner the fraction of metered components that pass validation as ratio of the total number of metered components. To convert this to percentages, simply compute `ratio * 100`.
-- `onUpdate`: optional `function onUpdate(event, field, value)` where event is the change event for a form field element, `field` is the field object from the form definition, and `value` is the updated value for that field.
 
+- `onProgress`: optional `function(ratio:number)` function that gets called every time the form is updated, reporting to its owner the fraction of metered components that pass validation as ratio of the total number of metered components. To convert this to percentages, simply compute `ratio * 100`.
+- `onUpdate`: optional `function onUpdate(event, name, field, value)` where event is the change event for a form field element, `field` is the field object from the form definition, and `value` is the updated value for that field.
 
 ### `MultiPageForm`
 
-...
+Documentation pending, the code for this is still in flux
 
 ### `MultiSectionedForm`
 
-...
+Documentation pending, the code for this is still in flux
