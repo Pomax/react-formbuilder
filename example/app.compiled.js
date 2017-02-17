@@ -9459,7 +9459,7 @@ module.exports = ReactPropTypesSecret;
 		exports["ReactFormBuilder"] = factory(require("react"), require("react-dom"));
 	else
 		root["ReactFormBuilder"] = factory(root["React"], root["ReactDOM"]);
-})(this, function(__WEBPACK_EXTERNAL_MODULE_0__, __WEBPACK_EXTERNAL_MODULE_3__) {
+})(this, function(__WEBPACK_EXTERNAL_MODULE_0__, __WEBPACK_EXTERNAL_MODULE_4__) {
 return /******/ (function(modules) { // webpackBootstrap
 /******/ 	// The module cache
 /******/ 	var installedModules = {};
@@ -9546,8 +9546,8 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
 var React = __webpack_require__(0);
-var ReactDOM = __webpack_require__(3);
-var fieldType = __webpack_require__(4);
+var ReactDOM = __webpack_require__(4);
+var fieldType = __webpack_require__(3);
 var MultiplicityField = __webpack_require__(6);
 
 var Form = React.createClass({
@@ -10281,12 +10281,6 @@ module.exports = MultiSectionedForm;
 
 /***/ }),
 /* 3 */
-/***/ (function(module, exports) {
-
-module.exports = __WEBPACK_EXTERNAL_MODULE_3__;
-
-/***/ }),
-/* 4 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -10313,6 +10307,12 @@ module.exports = React.PropTypes.shape({
   colCount: React.PropTypes.number,
   multiplicity: React.PropTypes.number
 });
+
+/***/ }),
+/* 4 */
+/***/ (function(module, exports) {
+
+module.exports = __WEBPACK_EXTERNAL_MODULE_4__;
 
 /***/ }),
 /* 5 */
@@ -10522,8 +10522,8 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
 var React = __webpack_require__(0);
-var ReactDOM = __webpack_require__(3);
-var fieldType = __webpack_require__(4);
+var ReactDOM = __webpack_require__(4);
+var fieldType = __webpack_require__(3);
 
 var defaultRemoveLabel = "(-)";
 var defaultAddLabel = "(+)";
