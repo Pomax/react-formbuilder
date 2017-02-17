@@ -38,5 +38,8 @@ module.exports = [{
         }
       }
     ]
+  },
+  resolve: {
+    aliasFields: [ `browser` ]
   }
 }];
