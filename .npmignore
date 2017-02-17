@@ -3,4 +3,4 @@ src/
 test/
 .gitignore
 webpack.config.js
-
+webpack.example.app.js
