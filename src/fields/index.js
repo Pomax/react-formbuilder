@@ -3,6 +3,7 @@ module.exports = {
   CheckBox: require("./CheckBox.jsx"),
   CheckBoxGroup: require("./CheckBoxGroup.jsx"),
   ChoiceGroup: require("./ChoiceGroup.jsx"),
+  Image: require("./Image.jsx"),
   Text: require('./Text.jsx'),
   TextArea: require('./TextArea.jsx')
 };

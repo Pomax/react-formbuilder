@@ -9525,7 +9525,7 @@ return /******/ (function(modules) { // webpackBootstrap
 /******/ 	__webpack_require__.p = "";
 
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 14);
+/******/ 	return __webpack_require__(__webpack_require__.s = 15);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -9563,7 +9563,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 var React = __webpack_require__(0);
 var ReactDOM = __webpack_require__(4);
 
-var Fields = __webpack_require__(13);
+var Fields = __webpack_require__(14);
 var fieldType = Fields.fieldType;
 
 var Form = React.createClass({
@@ -9744,6 +9744,28 @@ var Form = React.createClass({
     return { common: common, label: label, labelClass: labelClass };
   },
 
+  // See if we need to generate validation errors inline.
+  getInlineErrors: function getInlineErrors(name) {
+    if (!this.props.inlineErrors) return null;
+
+    var errors = this.state.errors;
+    if (errors.length > 0) {
+      // there errors; are any for this particular element?
+      var elements = this.state.errorElements;
+      var pos = elements.indexOf(name);
+      if (pos !== -1) {
+        // this particular element has a validation error!
+        return React.createElement(
+          'div',
+          { className: 'inline error' },
+          errors[pos]
+        );
+      }
+    }
+
+    return null;
+  },
+
   /**
    * Create the form field JSX definition to be used by React for rendering the form UI.
    * @param {string} name the form field name, based on its key in the this.props.field object
@@ -9774,29 +9796,15 @@ var Form = React.createClass({
       formfield = React.createElement(Fields.ChoiceGroup, common);
     } else if (Type === "checkboxGroup") {
       formfield = React.createElement(Fields.CheckBoxGroup, common);
+    } else if (Type === "image") {
+      formfield = React.createElement(Fields.Image, common);
     }
     if (ftype === "function") {
       formfield = React.createElement(Type, _extends({}, field, common));
     }
 
-    // See if we need to generate validation errors inline.
-    var inlineErrors = null;
-    if (this.props.inlineErrors) {
-      var errors = this.state.errors;
-      if (errors.length > 0) {
-        // there errors; are any for this particular element?
-        var elements = this.state.errorElements;
-        var pos = elements.indexOf(name);
-        if (pos !== -1) {
-          // this particular element has a validation error!
-          var inlineErrors = React.createElement(
-            'div',
-            { className: 'inline error' },
-            errors[pos]
-          );
-        }
-      }
-    }
+    // If there are any errors, do we need to show errors inline?
+    var inlineErrors = this.getInlineErrors(name);
 
     return React.createElement(
       'fieldset',
@@ -10265,6 +10273,161 @@ module.exports = __WEBPACK_EXTERNAL_MODULE_4__;
 "use strict";
 
 
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+
+var React = __webpack_require__(0);
+var ReactDOM = __webpack_require__(4);
+var fieldType = __webpack_require__(6);
+
+var defaultRemoveLabel = "(-)";
+var defaultAddLabel = "(+)";
+
+var MultiplicityField = React.createClass({
+  displayName: 'MultiplicityField',
+
+  propTypes: {
+    name: React.PropTypes.string.isRequired,
+    field: fieldType.isRequired
+  },
+
+  getInitialState: function getInitialState() {
+    var howmany = this.props.field.multiplicity;
+    var values = new Array(howmany).join('|').split('|').map(function (_) {
+      return '';
+    });
+    if (this.props.values) {
+      this.props.values.forEach(function (v, i) {
+        values[i] = v;
+      });
+    }
+    return { multiplicity: howmany, values: values };
+  },
+
+  moreFields: function moreFields() {
+    var multiplicity = this.state.multiplicity + 1;
+    var values = this.state.values;
+    values.push('');
+    this.setState({ multiplicity: multiplicity, values: values });
+  },
+
+  removeField: function removeField(pos) {
+    var values = this.state.values;
+    if (values.length === 1) {
+      return;
+    }
+    var multiplicity = this.state.multiplicity - 1;
+    values.splice(pos, 1);
+    this.setState({ multiplicity: multiplicity, values: values });
+  },
+
+  render: function render() {
+    var values = this.state.values;
+    return this.generateFields(this.props.name, this.props.field, values);
+  },
+
+  // geneate as many fields as are necessary for this one "thing"
+  generateFields: function generateFields(name, field, values) {
+    var _this = this;
+
+    var fields = values.map(function (value, pos) {
+      return _this.generateField(name, field, pos, value, function (e) {
+        return _this.updateField(e, name, field, pos);
+      });
+    });
+    return React.createElement(
+      'div',
+      { className: 'multiple' },
+      fields,
+      React.createElement(
+        'button',
+        { type: 'button', className: 'add-field button', onClick: this.moreFields },
+        this.props.field.addLabel ? this.props.field.addLabel : defaultAddLabel
+      )
+    );
+  },
+
+  // handler for when one of the fields gets updated
+  updateField: function updateField(e, name, field, position) {
+    var _this2 = this;
+
+    var newvalue = e.target.value;
+    var values = this.state.values;
+    values[position] = newvalue;
+    this.setStateAsChange({ values: values }, function () {
+      if (_this2.props.onUpdate) {
+        _this2.props.onUpdate(e, name, field, values);
+      };
+    });
+  },
+
+  // slightly modified wrt the <Form> component
+  setStateAsChange: function setStateAsChange(newState, andThenDoThis) {
+    var _this3 = this;
+
+    this.setState(newState, function () {
+      _this3.props.checkValidation();
+      if (_this3.props.onChange) {
+        _this3.props.onChange(newState);
+      }
+      andThenDoThis();
+    });
+  },
+
+  // there is a limited set of form fields that can be multiplicious
+  generateField: function generateField(name, field, position, value, onChange) {
+    var _this4 = this;
+
+    var Type = field.type,
+        ftype = typeof Type === 'undefined' ? 'undefined' : _typeof(Type),
+        formfield = null,
+        inputClass = field.fieldClassname || '';
+
+    var common = {
+      key: name + 'field' + position,
+      placeholder: field.placeholder,
+      value: value,
+      onChange: onChange
+    };
+
+    // TODO: Should we factor in shouldFocus here?
+
+    inputClass = (inputClass + " multiple").trim();
+
+    if (ftype === "undefined" || Type === "text") {
+      formfield = React.createElement('input', _extends({ className: inputClass, type: Type ? Type : "text" }, common));
+    } else if (Type === "textarea") {
+      formfield = React.createElement('textarea', _extends({ className: inputClass }, common));
+    }
+
+    var removeButton = position > 0 ? React.createElement(
+      'button',
+      { type: 'button', className: 'remove-field button', onClick: function onClick() {
+          return _this4.removeField(position);
+        } },
+      this.props.field.removeLabel ? this.props.field.removeLabel : defaultRemoveLabel
+    ) : null;
+
+    return React.createElement(
+      'div',
+      { key: name + '-row-' + position, className: 'row' },
+      formfield,
+      removeButton
+    );
+  }
+
+});
+
+module.exports = MultiplicityField;
+
+/***/ }),
+/* 6 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
 var React = __webpack_require__(0);
 
 var validatorPropType = React.PropTypes.shape({
@@ -10288,7 +10451,7 @@ module.exports = React.PropTypes.shape({
 });
 
 /***/ }),
-/* 6 */
+/* 7 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -10484,7 +10647,7 @@ var MultiPageForm = React.createClass({
 module.exports = MultiPageForm;
 
 /***/ }),
-/* 7 */
+/* 8 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -10516,7 +10679,7 @@ module.exports = React.createClass({
 });
 
 /***/ }),
-/* 8 */
+/* 9 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -10565,7 +10728,7 @@ module.exports = React.createClass({
 });
 
 /***/ }),
-/* 9 */
+/* 10 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -10614,161 +10777,6 @@ module.exports = React.createClass({
 });
 
 /***/ }),
-/* 10 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
-
-var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
-
-var React = __webpack_require__(0);
-var ReactDOM = __webpack_require__(4);
-var fieldType = __webpack_require__(5);
-
-var defaultRemoveLabel = "(-)";
-var defaultAddLabel = "(+)";
-
-var MultiplicityField = React.createClass({
-  displayName: 'MultiplicityField',
-
-  propTypes: {
-    name: React.PropTypes.string.isRequired,
-    field: fieldType.isRequired
-  },
-
-  getInitialState: function getInitialState() {
-    var howmany = this.props.field.multiplicity;
-    var values = new Array(howmany).join('|').split('|').map(function (_) {
-      return '';
-    });
-    if (this.props.values) {
-      this.props.values.forEach(function (v, i) {
-        values[i] = v;
-      });
-    }
-    return { multiplicity: howmany, values: values };
-  },
-
-  moreFields: function moreFields() {
-    var multiplicity = this.state.multiplicity + 1;
-    var values = this.state.values;
-    values.push('');
-    this.setState({ multiplicity: multiplicity, values: values });
-  },
-
-  removeField: function removeField(pos) {
-    var values = this.state.values;
-    if (values.length === 1) {
-      return;
-    }
-    var multiplicity = this.state.multiplicity - 1;
-    values.splice(pos, 1);
-    this.setState({ multiplicity: multiplicity, values: values });
-  },
-
-  render: function render() {
-    var values = this.state.values;
-    return this.generateFields(this.props.name, this.props.field, values);
-  },
-
-  // geneate as many fields as are necessary for this one "thing"
-  generateFields: function generateFields(name, field, values) {
-    var _this = this;
-
-    var fields = values.map(function (value, pos) {
-      return _this.generateField(name, field, pos, value, function (e) {
-        return _this.updateField(e, name, field, pos);
-      });
-    });
-    return React.createElement(
-      'div',
-      { className: 'multiple' },
-      fields,
-      React.createElement(
-        'button',
-        { type: 'button', className: 'add-field button', onClick: this.moreFields },
-        this.props.field.addLabel ? this.props.field.addLabel : defaultAddLabel
-      )
-    );
-  },
-
-  // handler for when one of the fields gets updated
-  updateField: function updateField(e, name, field, position) {
-    var _this2 = this;
-
-    var newvalue = e.target.value;
-    var values = this.state.values;
-    values[position] = newvalue;
-    this.setStateAsChange({ values: values }, function () {
-      if (_this2.props.onUpdate) {
-        _this2.props.onUpdate(e, name, field, values);
-      };
-    });
-  },
-
-  // slightly modified wrt the <Form> component
-  setStateAsChange: function setStateAsChange(newState, andThenDoThis) {
-    var _this3 = this;
-
-    this.setState(newState, function () {
-      _this3.props.checkValidation();
-      if (_this3.props.onChange) {
-        _this3.props.onChange(newState);
-      }
-      andThenDoThis();
-    });
-  },
-
-  // there is a limited set of form fields that can be multiplicious
-  generateField: function generateField(name, field, position, value, onChange) {
-    var _this4 = this;
-
-    var Type = field.type,
-        ftype = typeof Type === 'undefined' ? 'undefined' : _typeof(Type),
-        formfield = null,
-        inputClass = field.fieldClassname || '';
-
-    var common = {
-      key: name + 'field' + position,
-      placeholder: field.placeholder,
-      value: value,
-      onChange: onChange
-    };
-
-    // TODO: Should we factor in shouldFocus here?
-
-    inputClass = (inputClass + " multiple").trim();
-
-    if (ftype === "undefined" || Type === "text") {
-      formfield = React.createElement('input', _extends({ className: inputClass, type: Type ? Type : "text" }, common));
-    } else if (Type === "textarea") {
-      formfield = React.createElement('textarea', _extends({ className: inputClass }, common));
-    }
-
-    var removeButton = position > 0 ? React.createElement(
-      'button',
-      { type: 'button', className: 'remove-field button', onClick: function onClick() {
-          return _this4.removeField(position);
-        } },
-      this.props.field.removeLabel ? this.props.field.removeLabel : defaultRemoveLabel
-    ) : null;
-
-    return React.createElement(
-      'div',
-      { key: name + '-row-' + position, className: 'row' },
-      formfield,
-      removeButton
-    );
-  }
-
-});
-
-module.exports = MultiplicityField;
-
-/***/ }),
 /* 11 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -10781,7 +10789,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 
 var React = __webpack_require__(0);
 var cleanProps = __webpack_require__(1);
-var MultiplicityField = __webpack_require__(10);
+var MultiplicityField = __webpack_require__(5);
 
 module.exports = React.createClass({
   displayName: "exports",
@@ -10805,6 +10813,36 @@ module.exports = React.createClass({
 "use strict";
 
 
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+
+var React = __webpack_require__(0);
+var cleanProps = __webpack_require__(1);
+var MultiplicityField = __webpack_require__(5);
+
+module.exports = React.createClass({
+  displayName: "exports",
+  render: function render() {
+    var props = this.props;
+    var value = props.value;
+
+    if (props.multiplicity) {
+      var values = (typeof value === "undefined" ? "undefined" : _typeof(value)) === "object" ? value : [value];
+      return React.createElement(MultiplicityField, _extends({}, props, { values: values }));
+    }
+
+    return React.createElement("input", _extends({ type: "text" }, cleanProps(props)));
+  }
+});
+
+/***/ }),
+/* 13 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
 var React = __webpack_require__(0);
 var cleanProps = __webpack_require__(1);
 
@@ -10816,23 +10854,24 @@ module.exports = React.createClass({
 });
 
 /***/ }),
-/* 13 */
+/* 14 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
 module.exports = {
-  fieldType: __webpack_require__(5),
-  CheckBox: __webpack_require__(7),
-  CheckBoxGroup: __webpack_require__(8),
-  ChoiceGroup: __webpack_require__(9),
-  Text: __webpack_require__(11),
-  TextArea: __webpack_require__(12)
+  fieldType: __webpack_require__(6),
+  CheckBox: __webpack_require__(8),
+  CheckBoxGroup: __webpack_require__(9),
+  ChoiceGroup: __webpack_require__(10),
+  Image: __webpack_require__(11),
+  Text: __webpack_require__(12),
+  TextArea: __webpack_require__(13)
 };
 
 /***/ }),
-/* 14 */
+/* 15 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -10847,7 +10886,7 @@ var _Form = __webpack_require__(2);
 
 var _Form2 = _interopRequireDefault(_Form);
 
-var _MultiPageForm = __webpack_require__(6);
+var _MultiPageForm = __webpack_require__(7);
 
 var _MultiPageForm2 = _interopRequireDefault(_MultiPageForm);
 

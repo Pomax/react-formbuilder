@@ -150,10 +150,9 @@ var Form = React.createClass({
   },
 
   // See if we need to generate validation errors inline.
-  getInlineErrors: function() {
+  getInlineErrors: function(name) {
     if (!this.props.inlineErrors) return null;
 
-    var inlineErrors = null;
     var errors = this.state.errors;
     if (errors.length > 0) {
       // there errors; are any for this particular element?
@@ -161,11 +160,11 @@ var Form = React.createClass({
       var pos = elements.indexOf(name);
       if (pos !== -1) {
         // this particular element has a validation error!
-        var inlineErrors = <div className="inline error">{ errors[pos] }</div>
+        return <div className="inline error">{ errors[pos] }</div>
       }
     }
 
-    return inlineErrors;
+    return null;
   },
 
   /**
@@ -203,12 +202,15 @@ var Form = React.createClass({
     else if (Type === "checkboxGroup") {
       formfield = <Fields.CheckBoxGroup {...common} />;
     }
+    else if (Type === "image") {
+      formfield = <Fields.Image {...common} />;
+    }
     if (ftype === "function") {
       formfield = <Type {...field} {...common} />;
     }
 
     // If there are any errors, do we need to show errors inline?
-    var inlineErrors = this.getInlineErrors();
+    var inlineErrors = this.getInlineErrors(name);
 
     return <fieldset key={name + 'set'} className={name}>{ label }{ formfield }{ inlineErrors }</fieldset>;
   },
