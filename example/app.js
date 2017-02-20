@@ -45,12 +45,16 @@ class App extends React.Component {
       onProgress: r => this.onProgress(r)
     };
 
+    // note that this needs to be "false", not "null". If "null" is
+    // used, React throws a controlled/uncontrolled warning... =_=
+    var checked = this.state.inlineErrors ? "checked" : false;
+
     return (
       <div>
         <h2>An example form:</h2>
         <Form ref="form" {...formProps} />
         <button onClick={e => this.submitForm(e)}>Submit</button> (<span>{this.state.ratio * 100}%</span> complete)
-        <input type="checkbox" onChange={e => this.toggleInline()} checked={this.state.inlineErrors ? "checked" : null} /> show inline errors.
+        <input type="checkbox" onChange={e => this.toggleInline()} checked={checked} /> show inline errors.
 
         <hr/>
 

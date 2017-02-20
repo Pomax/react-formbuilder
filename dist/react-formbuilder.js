@@ -73,7 +73,7 @@ return /******/ (function(modules) { // webpackBootstrap
 /******/ 	__webpack_require__.p = "";
 
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 7);
+/******/ 	return __webpack_require__(__webpack_require__.s = 14);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -89,14 +89,30 @@ module.exports = __WEBPACK_EXTERNAL_MODULE_0__;
 "use strict";
 
 
+module.exports = function cleanProps(props) {
+  var cleaned = Object.assign({}, props);
+  ['field', 'multiplicity', 'labelClass', 'onUpdate', 'checkValidation', 'key'].forEach(function (p) {
+    return delete cleaned[p];
+  });
+  return cleaned;
+};
+
+/***/ }),
+/* 2 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
 var React = __webpack_require__(0);
 var ReactDOM = __webpack_require__(4);
-var fieldType = __webpack_require__(3);
-var MultiplicityField = __webpack_require__(6);
+
+var Fields = __webpack_require__(13);
+var fieldType = Fields.fieldType;
 
 var Form = React.createClass({
   displayName: 'Form',
@@ -154,21 +170,23 @@ var Form = React.createClass({
     var afelement = this.refs.autofocus;
 
     if (afelement) {
+      (function () {
 
-      // We need to use the following code to get around
-      // the bizar way in which react-select steals focus,
-      // even when the browser has issued a .focus() on
-      // a completely different HMTL element...
-      var forceFocus = function forceFocus() {
-        if (afelement !== document.activeElement) {
-          afelement.focus();
-          setTimeout(forceFocus, 10);
-        }
-      };
+        // We need to use the following code to get around
+        // the bizar way in which react-select steals focus,
+        // even when the browser has issued a .focus() on
+        // a completely different HMTL element...
+        var forceFocus = function forceFocus() {
+          if (afelement !== document.activeElement) {
+            afelement.focus();
+            setTimeout(forceFocus, 10);
+          }
+        };
 
-      afelement = ReactDOM.findDOMNode(afelement);
-      afelement.focus();
-      setTimeout(forceFocus, 100);
+        afelement = ReactDOM.findDOMNode(afelement);
+        afelement.focus();
+        setTimeout(forceFocus, 100);
+      })();
     }
   },
 
@@ -188,39 +206,39 @@ var Form = React.createClass({
     return reduced / total;
   },
 
-  /**
-   * Create the form field JSX definition to be used by React for rendering the form UI.
-   * @param {string} name the form field name, based on its key in the this.props.field object
-   * @param {fieldDefinition} field the field's associated field definition from this.props.fields
-   * @returns {JSX} the UI code necessary to render the form field, as fieldset
-   */
-  buildFormField: function buildFormField(name, field) {
+  // This forms the object that is passed down into specific form field components
+  formCommonObject: function formCommonObject(name, field) {
     var _this4 = this;
 
     field.name = name;
 
-    var Type = field.type,
-        ftype = typeof Type === 'undefined' ? 'undefined' : _typeof(Type),
-        label = field.label,
+    var label = field.label,
         formfield = null,
         hasError = this.state.errorElements.indexOf(name) !== -1,
         labelClass = field.labelClassname ? field.labelClassname : '',
-        inputClass = (hasError ? 'error' : '') + ' ' + field.fieldClassname,
-        multiplicity = field.multiplicity;
+        inputClass = (hasError ? 'error' : '') + ' ' + field.fieldClassname;
 
     var common = {
-      key: name + 'field',
+      name: name,
+      field: field,
+      multiplicity: field.multiplicity,
       value: this.state[name] || '',
-      onChange: function onChange(e) {
-        return _this4.update(name, field, e);
+      onChange: function onChange(e, v) {
+        return _this4.update(name, field, e, v);
       },
-      placeholder: field.placeholder
+      placeholder: field.placeholder,
+      onUpdate: function onUpdate(e, n, f, v) {
+        return _this4.update(n, f, e, v);
+      },
+      checkValidation: this.checkValidation
     };
 
     var shouldHide = false,
         choices = false,
         shouldFocus = false;
 
+    // Is this a controlled field? If so, we need some extra code for
+    // visibility toggling based on the controller's value
     if (field.controller) {
       var controller = field.controller.name;
       var controlValue = field.controller.value;
@@ -239,11 +257,14 @@ var Form = React.createClass({
 
     if (shouldHide) return null;
 
+    // Do we need to auto-focus on this field? (NOTE: this gets a
+    // bit weird if there are multiple autofocus elements!)
     if (shouldFocus) {
       common.ref = 'autofocus';
       inputClass += " controlled";
     }
 
+    // Does this field come with an associated label?
     if (label) {
       label = React.createElement(
         'label',
@@ -263,100 +284,47 @@ var Form = React.createClass({
       inputClass += " nolabel";
     }
 
+    // Make sure the input element className is set up properly
     inputClass = inputClass.trim();
+    common.className = inputClass;
+    common.labelClass = labelClass;
+
+    return { common: common, label: label, labelClass: labelClass };
+  },
+
+  /**
+   * Create the form field JSX definition to be used by React for rendering the form UI.
+   * @param {string} name the form field name, based on its key in the this.props.field object
+   * @param {fieldDefinition} field the field's associated field definition from this.props.fields
+   * @returns {JSX} the UI code necessary to render the form field, as fieldset
+   */
+  buildFormField: function buildFormField(name, field) {
+    var Type = field.type,
+        ftype = typeof Type === 'undefined' ? 'undefined' : _typeof(Type),
+        data = this.formCommonObject(name, field);
+
+    // if there is no data, this is a hidden field!
+    if (!data) return null;
+
+    var common = data.common,
+        label = data.label,
+        labelClass = data.labelClass,
+        formfield = false;
 
     if (ftype === "undefined" || Type === "text") {
-      if (multiplicity) {
-        var values = _typeof(common.value) === "object" ? common.value : [common.value];
-        formfield = React.createElement(MultiplicityField, _extends({ name: name, field: field }, common, { values: values, onUpdate: function onUpdate(e, n, f, v) {
-            return _this4.update(n, f, e, v);
-          }, checkValidation: this.checkValidation }));
-      } else {
-        formfield = React.createElement('input', _extends({ className: inputClass, type: Type ? Type : "text" }, common));
-      }
+      formfield = React.createElement(Fields.Text, common);
     } else if (Type === "textarea") {
-      formfield = React.createElement('textarea', _extends({ className: inputClass }, common));
+      formfield = React.createElement(Fields.TextArea, common);
     } else if (Type === "checkbox") {
-      // FIXME: while clickable, this does not seem to tick the checkbox...
-      formfield = React.createElement(
-        'div',
-        null,
-        React.createElement(
-          'label',
-          { className: labelClass },
-          React.createElement('input', _extends({ className: inputClass }, common, { type: 'checkbox' })),
-          label
-        )
-      );
+      formfield = React.createElement(Fields.CheckBox, _extends({}, common, { label: label, labelClass: labelClass }));
       label = null;
     } else if (Type === "choiceGroup") {
-      choices = field.options;
-      var colCount = field.colCount || 2;
-      var bracket = Math.floor(choices.length / colCount);
-      var columns = [];
-
-      for (var c = 0; c < colCount; c++) {
-        var choiceset = choices.slice(c * bracket, (c + 1) * bracket).map(function (value) {
-          return React.createElement(
-            'div',
-            { key: value },
-            React.createElement(
-              'label',
-              { className: labelClass },
-              React.createElement('input', { className: inputClass, type: 'radio', name: name, value: value, checked: _this4.state[name] === value, onChange: common.onChange }),
-              value
-            )
-          );
-        });
-
-        columns.push(React.createElement(
-          'div',
-          { key: field.name + 'col' + c, className: 'column' },
-          choiceset
-        ));
-      }
-
-      formfield = React.createElement(
-        'div',
-        { className: Type, key: common.key },
-        columns
-      );
+      formfield = React.createElement(Fields.ChoiceGroup, common);
     } else if (Type === "checkboxGroup") {
-      choices = field.options;
-      var _colCount = field.colCount || 2;
-      var _bracket = Math.floor(choices.length / _colCount);
-      var _columns = [];
-
-      for (var _c = 0; _c < _colCount; _c++) {
-        var _choiceset = choices.slice(_c * _bracket, (_c + 1) * _bracket).map(function (value) {
-          return React.createElement(
-            'div',
-            { key: value },
-            React.createElement(
-              'label',
-              { className: labelClass },
-              React.createElement('input', { className: inputClass, type: 'checkbox', name: name, value: value, checked: _this4.state[name].indexOf(value) > -1, onChange: common.onChange }),
-              value
-            )
-          );
-        });
-
-        _columns.push(React.createElement(
-          'div',
-          { key: field.name + 'col' + _c, className: 'column' },
-          _choiceset
-        ));
-      }
-
-      formfield = React.createElement(
-        'div',
-        { className: Type, key: common.key },
-        _columns
-      );
+      formfield = React.createElement(Fields.CheckBoxGroup, common);
     }
-
     if (ftype === "function") {
-      formfield = React.createElement(Type, _extends({}, field, common, { className: inputClass }));
+      formfield = React.createElement(Type, _extends({}, field, common));
     }
 
     // See if we need to generate validation errors inline.
@@ -396,29 +364,36 @@ var Form = React.createClass({
    */
   update: function update(name, field, e, value) {
     var state = {};
-    var value = value ? value : e.target ? e.target.value : undefined;
+    value = value ? value : e.target ? e.target.value : undefined;
 
+    // checkboxes use `checked`, not `value`
     if (field.type === "checkbox") {
-      state[name] = e.target ? e.target.checked : false;
-    } else if (field.type === "checkboxGroup") {
-      var curval = this.state[name];
-      var pos = curval.indexOf(value);
-
-      if (pos === -1) {
-        curval.push(value);
-      } else {
-        curval.splice(pos, 1);
-      }
-
-      state[name] = curval;
-    } else {
-      state[name] = value !== undefined ? value : e;
+      value = e.target ? e.target.checked : false;
     }
 
+    // checkboxGroups need to build an array of checkmark positions
+    else if (field.type === "checkboxGroup") {
+        var curval = this.state[name];
+        var pos = curval.indexOf(value);
+
+        if (pos === -1) {
+          curval.push(value);
+        } else {
+          curval.splice(pos, 1);
+        }
+
+        value = curval;
+      }
+
+    // record the updated value
+    state[name] = value;
+
+    // do we need to propagate the update?
     if (this.props.onUpdate) {
       this.props.onUpdate(e, name, field, value);
     }
 
+    // finally, perform state change binding
     this.setStateAsChange(name, state);
   },
 
@@ -640,14 +615,14 @@ var Form = React.createClass({
 module.exports = Form;
 
 /***/ }),
-/* 2 */
+/* 3 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
 var React = __webpack_require__(0);
-var Form = __webpack_require__(1);
+var Form = __webpack_require__(2);
 
 /**
   A multi-section form, where part of the form is only revealed
@@ -826,7 +801,13 @@ var MultiSectionedForm = React.createClass({
 module.exports = MultiSectionedForm;
 
 /***/ }),
-/* 3 */
+/* 4 */
+/***/ (function(module, exports) {
+
+module.exports = __WEBPACK_EXTERNAL_MODULE_4__;
+
+/***/ }),
+/* 5 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -855,21 +836,15 @@ module.exports = React.PropTypes.shape({
 });
 
 /***/ }),
-/* 4 */
-/***/ (function(module, exports) {
-
-module.exports = __WEBPACK_EXTERNAL_MODULE_4__;
-
-/***/ }),
-/* 5 */
+/* 6 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
 var React = __webpack_require__(0);
-var Form = __webpack_require__(1);
-var MultiSectionedForm = __webpack_require__(2);
+var Form = __webpack_require__(2);
+var MultiSectionedForm = __webpack_require__(3);
 
 /**
  * A moderately complex form builer for React.
@@ -1057,7 +1032,137 @@ var MultiPageForm = React.createClass({
 module.exports = MultiPageForm;
 
 /***/ }),
-/* 6 */
+/* 7 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
+var React = __webpack_require__(0);
+var cleanProps = __webpack_require__(1);
+
+module.exports = React.createClass({
+  displayName: "exports",
+  render: function render() {
+    var props = this.props;
+    var label = props.label;
+    var labelClass = props.labelClass;
+
+    return React.createElement(
+      "div",
+      null,
+      React.createElement(
+        "label",
+        { className: labelClass, ref: "label" },
+        React.createElement("input", _extends({}, cleanProps(props), { type: "checkbox", ref: "box" })),
+        label.props.children
+      )
+    );
+  }
+});
+
+/***/ }),
+/* 8 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var React = __webpack_require__(0);
+var cleanProps = __webpack_require__(1);
+
+module.exports = React.createClass({
+  displayName: "exports",
+  render: function render() {
+    var props = this.props;
+    var field = props.field;
+    var choices = field.options;
+    var colCount = field.colCount || 2;
+    var bracket = Math.floor(choices.length / colCount);
+    var columns = [];
+
+    for (var c = 0; c < colCount; c++) {
+      var choiceset = choices.slice(c * bracket, (c + 1) * bracket).map(function (choice) {
+        return React.createElement(
+          "div",
+          { key: choice },
+          React.createElement(
+            "label",
+            { className: props.labelClass },
+            React.createElement("input", { type: "checkbox", name: props.name, value: choice, checked: props.value.indexOf(choice) > -1, onChange: props.onChange }),
+            choice
+          )
+        );
+      });
+
+      columns.push(React.createElement(
+        "div",
+        { key: field.name + 'col' + c, className: "column" },
+        choiceset
+      ));
+    }
+
+    return React.createElement(
+      "div",
+      { className: "checkboxGroup", key: this.props.key },
+      columns
+    );
+  }
+});
+
+/***/ }),
+/* 9 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var React = __webpack_require__(0);
+var cleanProps = __webpack_require__(1);
+
+module.exports = React.createClass({
+  displayName: "exports",
+  render: function render() {
+    var props = this.props;
+    var field = props.field;
+    var choices = field.options;
+    var colCount = field.colCount || 2;
+    var bracket = Math.floor(choices.length / colCount);
+    var columns = [];
+
+    for (var c = 0; c < colCount; c++) {
+      var choiceset = choices.slice(c * bracket, (c + 1) * bracket).map(function (choice) {
+        return React.createElement(
+          "div",
+          { key: choice },
+          React.createElement(
+            "label",
+            { className: props.labelClass },
+            React.createElement("input", { type: "radio", name: props.name, value: choice, checked: props.value === choice, onChange: props.onChange }),
+            choice
+          )
+        );
+      });
+
+      columns.push(React.createElement(
+        "div",
+        { key: field.name + 'col' + c, className: "column" },
+        choiceset
+      ));
+    }
+
+    return React.createElement(
+      "div",
+      { className: "choiceGroup", key: this.props.key },
+      columns
+    );
+  }
+});
+
+/***/ }),
+/* 10 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1069,7 +1174,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 
 var React = __webpack_require__(0);
 var ReactDOM = __webpack_require__(4);
-var fieldType = __webpack_require__(3);
+var fieldType = __webpack_require__(5);
 
 var defaultRemoveLabel = "(-)";
 var defaultAddLabel = "(+)";
@@ -1212,7 +1317,70 @@ var MultiplicityField = React.createClass({
 module.exports = MultiplicityField;
 
 /***/ }),
-/* 7 */
+/* 11 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+
+var React = __webpack_require__(0);
+var cleanProps = __webpack_require__(1);
+var MultiplicityField = __webpack_require__(10);
+
+module.exports = React.createClass({
+  displayName: "exports",
+  render: function render() {
+    var props = this.props;
+    var value = props.value;
+
+    if (props.multiplicity) {
+      var values = (typeof value === "undefined" ? "undefined" : _typeof(value)) === "object" ? value : [value];
+      return React.createElement(MultiplicityField, _extends({}, props, { values: values }));
+    }
+
+    return React.createElement("input", _extends({ type: "text" }, cleanProps(props)));
+  }
+});
+
+/***/ }),
+/* 12 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var React = __webpack_require__(0);
+var cleanProps = __webpack_require__(1);
+
+module.exports = React.createClass({
+  displayName: "exports",
+  render: function render() {
+    return React.createElement("textarea", cleanProps(this.props));
+  }
+});
+
+/***/ }),
+/* 13 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+module.exports = {
+  fieldType: __webpack_require__(5),
+  CheckBox: __webpack_require__(7),
+  CheckBoxGroup: __webpack_require__(8),
+  ChoiceGroup: __webpack_require__(9),
+  Text: __webpack_require__(11),
+  TextArea: __webpack_require__(12)
+};
+
+/***/ }),
+/* 14 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1223,15 +1391,15 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.MultiSectionedForm = exports.MultiPageForm = exports.Form = undefined;
 
-var _Form = __webpack_require__(1);
+var _Form = __webpack_require__(2);
 
 var _Form2 = _interopRequireDefault(_Form);
 
-var _MultiPageForm = __webpack_require__(5);
+var _MultiPageForm = __webpack_require__(6);
 
 var _MultiPageForm2 = _interopRequireDefault(_MultiPageForm);
 
-var _MultiSectionedForm = __webpack_require__(2);
+var _MultiSectionedForm = __webpack_require__(3);
 
 var _MultiSectionedForm2 = _interopRequireDefault(_MultiSectionedForm);
 

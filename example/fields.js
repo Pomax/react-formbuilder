@@ -40,6 +40,22 @@ module.exports = {
       error: "If you wish to receive update notifications, please specify your email address."
     }
   },
+  'email choices': {
+    type: "checkbox",
+    label:"I would like to pick the emails you send me",
+  },
+  'email cats': {
+    type: "checkboxGroup",
+    label: "Which emails would you like to receive",
+    options: [ "News", "Promotional", "All the spam we can think of" ],
+    controller: {
+      name: "email choices",
+      value: true
+    },
+    validator: {
+      error: "Please pick at least one category of emails you would like to receive."
+    }
+  },
   notes: {
     type: "textarea",
     label: "Specify additional notes",
@@ -51,13 +67,13 @@ module.exports = {
       {
         validate: function(value) {
           if (!value) {
-            return false;
+            return undefined;
           }
 
           let err = value.trim().split(' ').length < 45;
           if (err) return new Error("value does not split into 45 words or more!");
 
-          return false;
+          return undefined;
         },
         error: "Your notes must be at least 45 words."
       }

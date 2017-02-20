@@ -1,7 +1,8 @@
 var React = require('react');
 var ReactDOM = require('react-dom');
-var fieldType = require('./field-type.js');
-var MultiplicityField = require('./MultiplicityField.jsx');
+
+var Fields = require('./fields');
+var fieldType = Fields.fieldType;
 
 var Form = React.createClass({
   propTypes: {
@@ -78,33 +79,31 @@ var Form = React.createClass({
     return reduced/total;
   },
 
-  /**
-   * Create the form field JSX definition to be used by React for rendering the form UI.
-   * @param {string} name the form field name, based on its key in the this.props.field object
-   * @param {fieldDefinition} field the field's associated field definition from this.props.fields
-   * @returns {JSX} the UI code necessary to render the form field, as fieldset
-   */
-  buildFormField: function(name, field) {
+  // This forms the object that is passed down into specific form field components
+  formCommonObject: function(name, field) {
     field.name = name;
 
-    var Type = field.type,
-        ftype = typeof Type,
-        label = field.label,
+    var label = field.label,
         formfield = null,
         hasError = this.state.errorElements.indexOf(name) !== -1,
         labelClass = field.labelClassname ? field.labelClassname : '',
-        inputClass = `${hasError ? 'error' : ''} ${field.fieldClassname}`,
-        multiplicity = field.multiplicity;
+        inputClass = `${hasError ? 'error' : ''} ${field.fieldClassname}`;
 
     var common = {
-      key: name + 'field',
+      name: name,
+      field: field,
+      multiplicity: field.multiplicity,
       value: this.state[name] || '',
-      onChange: e => this.update(name, field, e),
-      placeholder: field.placeholder
+      onChange: (e,v) => this.update(name, field, e, v),
+      placeholder: field.placeholder,
+      onUpdate: (e,n,f,v) => this.update(n,f,e,v),
+      checkValidation: this.checkValidation
     };
 
     var shouldHide = false, choices = false, shouldFocus = false;
 
+    // Is this a controlled field? If so, we need some extra code for
+    // visibility toggling based on the controller's value
     if (field.controller) {
       var controller = field.controller.name;
       var controlValue = field.controller.value;
@@ -123,11 +122,14 @@ var Form = React.createClass({
 
     if (shouldHide) return null;
 
+    // Do we need to auto-focus on this field? (NOTE: this gets a
+    // bit weird if there are multiple autofocus elements!)
     if (shouldFocus) {
       common.ref = 'autofocus';
       inputClass += " controlled";
     }
 
+    // Does this field come with an associated label?
     if (label) {
       label = <label key={name + 'label'} className={labelClass}>{label}</label>;
       // mark optional fields that have a label as being optional:
@@ -139,72 +141,52 @@ var Form = React.createClass({
       inputClass += " nolabel";
     }
 
+    // Make sure the input element className is set up properly
     inputClass = inputClass.trim();
+    common.className = inputClass;
+    common.labelClass = labelClass;
+
+    return { common, label, labelClass };
+  },
+
+  /**
+   * Create the form field JSX definition to be used by React for rendering the form UI.
+   * @param {string} name the form field name, based on its key in the this.props.field object
+   * @param {fieldDefinition} field the field's associated field definition from this.props.fields
+   * @returns {JSX} the UI code necessary to render the form field, as fieldset
+   */
+  buildFormField: function(name, field) {
+    var Type = field.type,
+        ftype = typeof Type,
+        data = this.formCommonObject(name, field);
+
+    // if there is no data, this is a hidden field!
+    if (!data) return null;
+
+    var common = data.common,
+        label = data.label,
+        labelClass = data.labelClass,
+        formfield = false;
 
     if (ftype === "undefined" || Type === "text") {
-      if (multiplicity) {
-        let values = typeof common.value === "object" ? common.value : [common.value];
-        formfield = <MultiplicityField name={name} field={field} {...common} values={values} onUpdate={(e,n,f,v) => this.update(n,f,e,v)} checkValidation={this.checkValidation} />;
-      } else {
-        formfield = <input className={inputClass} type={Type? Type : "text"} {...common}/>;
-      }
-    } else if (Type === "textarea") {
-      formfield = <textarea className={inputClass} {...common}/>;
-    } else if (Type === "checkbox") {
-      // FIXME: while clickable, this does not seem to tick the checkbox...
-      formfield = <div>
-        <label className={labelClass}>
-          <input className={inputClass} {...common} type="checkbox"/>
-          { label }
-        </label>
-      </div>;
+      formfield = <Fields.Text {...common} />;
+    }
+    else if (Type === "textarea") {
+      formfield = <Fields.TextArea {...common} />;
+    }
+    else if (Type === "checkbox") {
+      formfield = <Fields.CheckBox {...common} label={label} labelClass={labelClass} />;
       label = null;
-    } else if (Type === "choiceGroup") {
-      choices = field.options;
-      let colCount = field.colCount || 2;
-      let bracket = Math.floor(choices.length/colCount);
-      let columns = [];
-
-      for (let c=0; c<colCount; c++) {
-        let choiceset = choices.slice(c*bracket, (c+1)*bracket).map(value => {
-          return <div key={value}>
-            <label className={labelClass}>
-              <input className={inputClass} type="radio" name={name} value={value} checked={this.state[name] === value} onChange={common.onChange}/>
-              {value}
-            </label>
-          </div>;
-        });
-
-        columns.push(<div key={field.name + 'col' + c} className="column">{choiceset}</div>);
-      }
-
-      formfield = <div className={Type} key={common.key}>{columns}</div>;
-    } else if (Type === "checkboxGroup") {
-      choices = field.options;
-      let colCount = field.colCount || 2;
-      let bracket = Math.floor(choices.length/colCount);
-      let columns = [];
-
-      for (let c=0; c<colCount; c++) {
-        let choiceset = choices.slice(c*bracket, (c+1)*bracket).map(value => {
-          return <div key={value}>
-            <label className={labelClass}>
-              <input className={inputClass} type="checkbox" name={name} value={value} checked={this.state[name].indexOf(value)>-1} onChange={common.onChange}/>
-              {value}
-            </label>
-          </div>;
-        });
-
-        columns.push(<div key={field.name + 'col' + c} className="column">{choiceset}</div>);
-      }
-
-      formfield = <div className={Type} key={common.key}>{columns}</div>;
     }
-
+    else if (Type === "choiceGroup") {
+      formfield = <Fields.ChoiceGroup {...common} />;
+    }
+    else if (Type === "checkboxGroup") {
+      formfield = <Fields.CheckBoxGroup {...common} />;
+    }
     if (ftype === "function") {
-      formfield = <Type {...field} {...common} className={inputClass} />;
+      formfield = <Type {...field} {...common} />;
     }
-
 
     // See if we need to generate validation errors inline.
     var inlineErrors = null;
@@ -233,11 +215,15 @@ var Form = React.createClass({
    */
   update: function(name, field, e, value) {
     var state = {};
-    var value = value ? value : e.target? e.target.value : undefined;
+    value = value ? value : e.target? e.target.value : undefined;
 
+    // checkboxes use `checked`, not `value`
     if (field.type === "checkbox") {
-      state[name] = e.target? e.target.checked : false;
-    } else if (field.type === "checkboxGroup") {
+      value = e.target? e.target.checked : false;
+    }
+
+    // checkboxGroups need to build an array of checkmark positions
+    else if (field.type === "checkboxGroup") {
       var curval = this.state[name];
       var pos = curval.indexOf(value);
 
@@ -247,15 +233,18 @@ var Form = React.createClass({
         curval.splice(pos,1);
       }
 
-      state[name] = curval;
-    } else {
-      state[name] = (value !== undefined) ? value : e;
+      value = curval;
     }
 
+    // record the updated value
+    state[name] = value;
+
+    // do we need to propagate the update?
     if (this.props.onUpdate) {
       this.props.onUpdate(e, name, field, value);
     }
 
+    // finally, perform state change binding
     this.setStateAsChange(name, state);
   },
 
