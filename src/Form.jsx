@@ -149,6 +149,25 @@ var Form = React.createClass({
     return { common, label, labelClass };
   },
 
+  // See if we need to generate validation errors inline.
+  getInlineErrors: function() {
+    if (!this.props.inlineErrors) return null;
+
+    var inlineErrors = null;
+    var errors = this.state.errors;
+    if (errors.length > 0) {
+      // there errors; are any for this particular element?
+      var elements = this.state.errorElements;
+      var pos = elements.indexOf(name);
+      if (pos !== -1) {
+        // this particular element has a validation error!
+        var inlineErrors = <div className="inline error">{ errors[pos] }</div>
+      }
+    }
+
+    return inlineErrors;
+  },
+
   /**
    * Create the form field JSX definition to be used by React for rendering the form UI.
    * @param {string} name the form field name, based on its key in the this.props.field object
@@ -188,22 +207,10 @@ var Form = React.createClass({
       formfield = <Type {...field} {...common} />;
     }
 
-    // See if we need to generate validation errors inline.
-    var inlineErrors = null;
-    if (this.props.inlineErrors) {
-      var errors = this.state.errors;
-      if (errors.length > 0) {
-        // there errors; are any for this particular element?
-        var elements = this.state.errorElements;
-        var pos = elements.indexOf(name);
-        if (pos !== -1) {
-          // this particular element has a validation error!
-          var inlineErrors = <div className="inline error">{ errors[pos] }</div>
-        }
-      }
-    }
+    // If there are any errors, do we need to show errors inline?
+    var inlineErrors = this.getInlineErrors();
 
-    return <fieldset key={name + 'set'} className={name}>{ label }{ formfield }{ inlineErrors}</fieldset>;
+    return <fieldset key={name + 'set'} className={name}>{ label }{ formfield }{ inlineErrors }</fieldset>;
   },
 
   /**
