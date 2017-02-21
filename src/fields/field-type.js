@@ -7,7 +7,7 @@ var validatorPropType = React.PropTypes.shape({
 
 module.exports = React.PropTypes.shape({
   type: React.PropTypes.oneOfType([
-    React.PropTypes.oneOf(['text','textarea','choiceGroup','checkbox','checkboxGroup']),
+    React.PropTypes.oneOf(['image','text','textarea','choiceGroup','checkbox','checkboxGroup']),
     React.PropTypes.func
   ]).isRequired,
   label: React.PropTypes.oneOfType([

@@ -984,7 +984,7 @@ var validatorPropType = React.PropTypes.shape({
 });
 
 module.exports = React.PropTypes.shape({
-  type: React.PropTypes.oneOfType([React.PropTypes.oneOf(['text', 'textarea', 'choiceGroup', 'checkbox', 'checkboxGroup']), React.PropTypes.func]).isRequired,
+  type: React.PropTypes.oneOfType([React.PropTypes.oneOf(['image', 'text', 'textarea', 'choiceGroup', 'checkbox', 'checkboxGroup']), React.PropTypes.func]).isRequired,
   label: React.PropTypes.oneOfType([React.PropTypes.string, React.PropTypes.element]),
   placeholder: React.PropTypes.string,
   validator: React.PropTypes.oneOfType([validatorPropType, React.PropTypes.arrayOf(validatorPropType)]),
@@ -1331,26 +1331,91 @@ module.exports = React.createClass({
 "use strict";
 
 
-var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
-
-var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
-
 var React = __webpack_require__(0);
 var cleanProps = __webpack_require__(1);
 var MultiplicityField = __webpack_require__(5);
 
 module.exports = React.createClass({
   displayName: "exports",
+  getInitialState: function getInitialState() {
+    console.log(this.props);
+    return {
+      attachment: false
+    };
+  },
   render: function render() {
-    var props = this.props;
-    var value = props.value;
+    var _this = this;
 
-    if (props.multiplicity) {
-      var values = (typeof value === "undefined" ? "undefined" : _typeof(value)) === "object" ? value : [value];
-      return React.createElement(MultiplicityField, _extends({}, props, { values: values }));
+    var props = this.props;
+    var className = (this.props.className || '') + ' image';
+
+    return React.createElement(
+      "div",
+      { className: className },
+      React.createElement("input", { type: "file", hidden: "hidden", ref: "optionalFile", onChange: function onChange(e) {
+          return _this.handleFiles(e);
+        } }),
+      this.generatePicker()
+    );
+  },
+
+
+  generatePicker: function generatePicker() {
+    var _this2 = this;
+
+    if (!this.state.attachment) {
+      return React.createElement("input", { type: "button", className: "btn attach", onClick: function onClick(e) {
+          return _this2.selectFiles(e);
+        }, value: "Click here to pick an image" });
     }
 
-    return React.createElement("input", _extends({ type: "text" }, cleanProps(props)));
+    return [React.createElement("img", { key: "preview", src: "data:image/jpg;base64," + this.state.attachment.base64 }), React.createElement("input", { key: "attach", type: "button", className: "btn reattach", onClick: function onClick(e) {
+        return _this2.selectFiles(e);
+      }, value: "Click here to pick a different image" })];
+  },
+
+  selectFiles: function selectFiles() {
+    this.refs.optionalFile.click();
+  },
+
+  handleFiles: function handleFiles(evt) {
+    var _this3 = this;
+
+    var files = evt.target.files;
+
+    var attachment = {};
+
+    var parse = function parse(file) {
+      var reader = new FileReader();
+      var bootstrap = function bootstrap(f) {
+        return function (e) {
+          var name = escape(f.name);
+          var data = e.target.result;
+
+          if (data) {
+            data = data.substring(data.indexOf('base64,') + 'base64,'.length);
+            attachment = {
+              name: name,
+              base64: data
+            };
+            _this3.setState({ attachment: attachment }, _this3.handleImageAttached);
+          }
+        };
+      };
+
+      reader.onload = bootstrap(file);
+      reader.readAsDataURL(file);
+    };
+
+    Array.from(files).forEach(parse);
+  },
+
+  handleImageAttached: function handleImageAttached() {
+    this.props.onChange({
+      target: {
+        value: this.state.attachment
+      }
+    });
   }
 });
 

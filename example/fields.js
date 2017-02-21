@@ -1,4 +1,9 @@
 module.exports = {
+  'avatar': {
+    type: "image",
+    label: "Select an avatar",
+    fieldClassname: "avatar"
+  },
   'full_name': {
     type: "text",
     label: "Participant name",

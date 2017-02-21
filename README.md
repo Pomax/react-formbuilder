@@ -37,8 +37,10 @@ Where a field definition object takes the following form:
 
 ```
 {
-  type: ["text"|"textarea"|"choiceGroup"|"checkbox"|"checkboxGroup"|ReactComponentClass],
+  type: ["image"|text"|"textarea"|"choiceGroup"|"checkbox"|"checkboxGroup"|ReactComponentClass],
   label: String data,
+  fieldClassname: String data (optional) representing a custom CSS class for this field's form element,
+  labelClassname: String data (optional) representing a custom CSS class for this field's label element,
   placeholder: String data (optional)
   metered: boolean (optional),
   optional: boolean (optional),
