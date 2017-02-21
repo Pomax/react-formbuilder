@@ -131,11 +131,12 @@ var Form = React.createClass({
 
     // Does this field come with an associated label?
     if (label) {
-      label = <label key={name + 'label'} className={labelClass}>{label}</label>;
+      let optional = '';
       // mark optional fields that have a label as being optional:
       if (field.optional) {
-        label = [label, <span key={name + 'label-optional'} > (optional)</span>];
+        optional = <span key={name + 'label-optional'} className="optional">(optional)</span>;
       }
+      label = <label key={name + 'label'} className={labelClass}>{ label }{ optional }</label>;
     } else {
       label = null;
       inputClass += " nolabel";

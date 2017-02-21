@@ -2,7 +2,9 @@ module.exports = {
   'avatar': {
     type: "image",
     label: "Select an avatar",
-    fieldClassname: "avatar"
+    fieldClassname: "avatar",
+    prompt: "Pick image",
+    reprompt: "Pick different image"
   },
   'full_name': {
     type: "text",
@@ -47,7 +49,9 @@ module.exports = {
   },
   'email choices': {
     type: "checkbox",
-    label:"I would like to pick the emails you send me",
+    label: "I would like to pick the emails you send me",
+    metered: false,
+    optional: true
   },
   'email cats': {
     type: "checkboxGroup",
@@ -57,9 +61,8 @@ module.exports = {
       name: "email choices",
       value: true
     },
-    validator: {
-      error: "Please pick at least one category of emails you would like to receive."
-    }
+    metered: false,
+    optional: true
   },
   notes: {
     type: "textarea",

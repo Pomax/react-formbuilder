@@ -4,7 +4,6 @@ var MultiplicityField = require('./MultiplicityField.jsx');
 
 module.exports = React.createClass({
   getInitialState() {
-    console.log(this.props);
     return {
       attachment: false
     }
@@ -12,59 +11,59 @@ module.exports = React.createClass({
 
   render() {
     let props = this.props;
-    let className = (this.props.className || '') + ' image';
+    let field = props.field;
+    let className = ((props.className || '') + ' image').trim();
 
     return (
       <div className={className}>
-        <input type="file" hidden={"hidden"} ref="optionalFile" onChange={e => this.handleFiles(e)}/>
-        { this.generatePicker() }
+        <input type="file" hidden={"hidden"} ref="filePicker" onChange={e => this.handleFiles(e)}/>
+        { this.generatePicker(field.prompt, field.reprompt) }
       </div>
     );
   },
 
-  generatePicker: function() {
+  generatePicker: function(prompt, reprompt) {
     if (!this.state.attachment) {
-      return <input type="button" className="btn attach" onClick={e => this.selectFiles(e)} value="Click here to pick an image" />;
+      prompt = prompt || "Click here to pick an image";
+
+      return <input type="button" className="btn attach" onClick={e => this.selectFiles(e)} value={prompt} />;
     }
+
+    reprompt = reprompt || "Click here to pick a different image";
 
     return [
       <img key='preview' src={"data:image/jpg;base64," + this.state.attachment.base64}/>,
-      <input key='attach' type="button" className="btn reattach" onClick={e => this.selectFiles(e)} value="Click here to pick a different image" />
+      <input key='attach' type="button" className="btn reattach" onClick={e => this.selectFiles(e)} value={reprompt} />
     ];
   },
 
   selectFiles: function() {
-    this.refs.optionalFile.click();
+    this.refs.filePicker.click();
   },
 
   handleFiles: function(evt) {
     var files = evt.target.files;
-
-    var attachment = {};
+    var b64str = 'base64,';
 
     var parse = (file) => {
       var reader = new FileReader();
-      var bootstrap = (f) => {
-        return (e) => {
-          var name = escape(f.name);
-          var data = e.target.result;
-
+      var fileAsBase64 = (selectedFile) => {
+        return (evt) => {
+          var name = escape(selectedFile.name);
+          var data = evt.target.result;
           if (data) {
-            data = data.substring(data.indexOf('base64,')+'base64,'.length);
-            attachment = {
-              name: name,
-              base64: data
-            };
+            var base64 = data.substring(data.indexOf(b64str) + b64str.length);
+            var attachment = { name, base64 };
             this.setState({ attachment }, this.handleImageAttached);
           }
         };
       };
 
-      reader.onload = bootstrap(file);
+      reader.onload = fileAsBase64(file);
       reader.readAsDataURL(file);
     };
 
-    Array.from(files).forEach(parse);
+    parse(Array.from(files).slice(-1)[0]);
   },
 
   handleImageAttached: function() {

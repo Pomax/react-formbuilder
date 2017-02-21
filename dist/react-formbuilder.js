@@ -266,19 +266,21 @@ var Form = React.createClass({
 
     // Does this field come with an associated label?
     if (label) {
+      var optional = '';
+      // mark optional fields that have a label as being optional:
+      if (field.optional) {
+        optional = React.createElement(
+          'span',
+          { key: name + 'label-optional', className: 'optional' },
+          '(optional)'
+        );
+      }
       label = React.createElement(
         'label',
         { key: name + 'label', className: labelClass },
-        label
+        label,
+        optional
       );
-      // mark optional fields that have a label as being optional:
-      if (field.optional) {
-        label = [label, React.createElement(
-          'span',
-          { key: name + 'label-optional' },
-          ' (optional)'
-        )];
-      }
     } else {
       label = null;
       inputClass += " nolabel";
@@ -977,25 +979,30 @@ module.exports = MultiplicityField;
 
 
 var React = __webpack_require__(0);
+var types = React.PropTypes;
 
-var validatorPropType = React.PropTypes.shape({
-  error: React.PropTypes.string,
-  validate: React.PropTypes.func
+var validatorPropType = types.shape({
+  error: types.string,
+  validate: types.func
 });
 
-module.exports = React.PropTypes.shape({
-  type: React.PropTypes.oneOfType([React.PropTypes.oneOf(['image', 'text', 'textarea', 'choiceGroup', 'checkbox', 'checkboxGroup']), React.PropTypes.func]).isRequired,
-  label: React.PropTypes.oneOfType([React.PropTypes.string, React.PropTypes.element]),
-  placeholder: React.PropTypes.string,
-  validator: React.PropTypes.oneOfType([validatorPropType, React.PropTypes.arrayOf(validatorPropType)]),
-  metered: React.PropTypes.boolean,
-  optional: React.PropTypes.boolean,
-  controller: React.PropTypes.shape({
-    name: React.PropTypes.string,
-    value: React.PropTypes.oneOfType([React.PropTypes.bool, React.PropTypes.number, React.PropTypes.string, React.PropTypes.array, React.PropTypes.object])
-  }),
-  colCount: React.PropTypes.number,
-  multiplicity: React.PropTypes.number
+var controllerPropType = {
+  name: types.string,
+  value: types.oneOfType([types.bool, types.number, types.string, types.array, types.object])
+};
+
+module.exports = types.shape({
+  type: types.oneOfType([types.oneOf(['image', 'text', 'textarea', 'choiceGroup', 'checkbox', 'checkboxGroup']), types.func]).isRequired,
+  label: types.oneOfType([types.string, types.element]),
+  placeholder: types.string,
+  validator: types.oneOfType([validatorPropType, types.arrayOf(validatorPropType)]),
+  metered: types.boolean,
+  optional: types.boolean,
+  controller: types.shape(controllerPropType),
+  colCount: types.number,
+  multiplicity: types.number, // used by text
+  prompt: types.string, // used by image
+  reprompt: types.string // used by image
 });
 
 /***/ }),
@@ -1338,7 +1345,6 @@ var MultiplicityField = __webpack_require__(5);
 module.exports = React.createClass({
   displayName: "exports",
   getInitialState: function getInitialState() {
-    console.log(this.props);
     return {
       attachment: false
     };
@@ -1347,67 +1353,67 @@ module.exports = React.createClass({
     var _this = this;
 
     var props = this.props;
-    var className = (this.props.className || '') + ' image';
+    var field = props.field;
+    var className = ((props.className || '') + ' image').trim();
 
     return React.createElement(
       "div",
       { className: className },
-      React.createElement("input", { type: "file", hidden: "hidden", ref: "optionalFile", onChange: function onChange(e) {
+      React.createElement("input", { type: "file", hidden: "hidden", ref: "filePicker", onChange: function onChange(e) {
           return _this.handleFiles(e);
         } }),
-      this.generatePicker()
+      this.generatePicker(field.prompt, field.reprompt)
     );
   },
 
 
-  generatePicker: function generatePicker() {
+  generatePicker: function generatePicker(prompt, reprompt) {
     var _this2 = this;
 
     if (!this.state.attachment) {
+      prompt = prompt || "Click here to pick an image";
+
       return React.createElement("input", { type: "button", className: "btn attach", onClick: function onClick(e) {
           return _this2.selectFiles(e);
-        }, value: "Click here to pick an image" });
+        }, value: prompt });
     }
+
+    reprompt = reprompt || "Click here to pick a different image";
 
     return [React.createElement("img", { key: "preview", src: "data:image/jpg;base64," + this.state.attachment.base64 }), React.createElement("input", { key: "attach", type: "button", className: "btn reattach", onClick: function onClick(e) {
         return _this2.selectFiles(e);
-      }, value: "Click here to pick a different image" })];
+      }, value: reprompt })];
   },
 
   selectFiles: function selectFiles() {
-    this.refs.optionalFile.click();
+    this.refs.filePicker.click();
   },
 
   handleFiles: function handleFiles(evt) {
     var _this3 = this;
 
     var files = evt.target.files;
-
-    var attachment = {};
+    var b64str = 'base64,';
 
     var parse = function parse(file) {
       var reader = new FileReader();
-      var bootstrap = function bootstrap(f) {
-        return function (e) {
-          var name = escape(f.name);
-          var data = e.target.result;
-
+      var fileAsBase64 = function fileAsBase64(selectedFile) {
+        return function (evt) {
+          var name = escape(selectedFile.name);
+          var data = evt.target.result;
           if (data) {
-            data = data.substring(data.indexOf('base64,') + 'base64,'.length);
-            attachment = {
-              name: name,
-              base64: data
-            };
+            var base64 = data.substring(data.indexOf(b64str) + b64str.length);
+            var attachment = { name: name, base64: base64 };
             _this3.setState({ attachment: attachment }, _this3.handleImageAttached);
           }
         };
       };
 
-      reader.onload = bootstrap(file);
+      reader.onload = fileAsBase64(file);
       reader.readAsDataURL(file);
     };
 
-    Array.from(files).forEach(parse);
+    parse(Array.from(files).slice(-1)[0]);
   },
 
   handleImageAttached: function handleImageAttached() {
