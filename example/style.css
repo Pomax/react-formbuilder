@@ -12,3 +12,14 @@ fieldset textarea, fieldset input[type='text']:not(.multiple) {
 	display: block;
 	width: 20em;
 }
+
+fieldset .avatar.image img {
+	max-width: 200px;
+	max-height: 150px;
+	display: block;
+}
+
+fieldset label .optional {
+	color: rgba(0,0,0,0.3);
+	margin-left: 1em;
+}

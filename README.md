@@ -37,8 +37,10 @@ Where a field definition object takes the following form:
 
 ```
 {
-  type: ["text"|"textarea"|"choiceGroup"|"checkbox"|"checkboxGroup"|ReactComponentClass],
+  type: ["image"|text"|"textarea"|"choiceGroup"|"checkbox"|"checkboxGroup"|ReactComponentClass],
   label: String data,
+  fieldClassname: String data (optional) representing a custom CSS class for this field's form element,
+  labelClassname: String data (optional) representing a custom CSS class for this field's label element,
   placeholder: String data (optional)
   metered: boolean (optional),
   optional: boolean (optional),
@@ -50,6 +52,9 @@ Where a field definition object takes the following form:
   multiplicity: number (optional) marking this field as a "there can be more than one of these", with automatic (+)/(-) controls (currently only works with "text" fields). The number provided specifies the default number of fields to show when the form is bootstrapped,
   removeLabel: string (optional) for the "remove" button next to a multiples field,
   addLabel: string (optional) for the "add" button next to a multiples field
+
+  prompt: string (optional) for the "pick a file from your computer" image button
+  reprompt: string (optional) for the "pick a different file from your computer" image button, after initial image selection
 }
 ```
 

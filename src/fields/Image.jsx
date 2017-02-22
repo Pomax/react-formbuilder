@@ -3,15 +3,74 @@ var cleanProps = require("./clean-props");
 var MultiplicityField = require('./MultiplicityField.jsx');
 
 module.exports = React.createClass({
+  getInitialState() {
+    return {
+      attachment: false
+    }
+  },
+
   render() {
     let props = this.props;
-    let value = props.value;
+    let field = props.field;
+    let className = ((props.className || '') + ' image').trim();
 
-    if (props.multiplicity) {
-      let values = typeof value === "object" ? value : [value];
-      return <MultiplicityField {...props} values={values} />;
+    return (
+      <div className={className}>
+        <input type="file" hidden={"hidden"} ref="filePicker" onChange={e => this.handleFiles(e)}/>
+        { this.generatePicker(field.prompt, field.reprompt) }
+      </div>
+    );
+  },
+
+  generatePicker: function(prompt, reprompt) {
+    if (!this.state.attachment) {
+      prompt = prompt || "Click here to pick an image";
+
+      return <input type="button" className="btn attach" onClick={e => this.selectFiles(e)} value={prompt} />;
     }
 
-    return <input type="text" {...cleanProps(props)}/>;
+    reprompt = reprompt || "Click here to pick a different image";
+
+    return [
+      <img key='preview' src={"data:image/jpg;base64," + this.state.attachment.base64}/>,
+      <input key='attach' type="button" className="btn reattach" onClick={e => this.selectFiles(e)} value={reprompt} />
+    ];
+  },
+
+  selectFiles: function() {
+    this.refs.filePicker.click();
+  },
+
+  handleFiles: function(evt) {
+    var files = evt.target.files;
+    var b64str = 'base64,';
+
+    var parse = (file) => {
+      var reader = new FileReader();
+      var fileAsBase64 = (selectedFile) => {
+        return (evt) => {
+          var name = escape(selectedFile.name);
+          var data = evt.target.result;
+          if (data) {
+            var base64 = data.substring(data.indexOf(b64str) + b64str.length);
+            var attachment = { name, base64 };
+            this.setState({ attachment }, this.handleImageAttached);
+          }
+        };
+      };
+
+      reader.onload = fileAsBase64(file);
+      reader.readAsDataURL(file);
+    };
+
+    parse(Array.from(files).slice(-1)[0]);
+  },
+
+  handleImageAttached: function() {
+    this.props.onChange({
+      target: {
+        value: this.state.attachment
+      }
+    });
   }
 });

@@ -9718,19 +9718,21 @@ var Form = React.createClass({
 
     // Does this field come with an associated label?
     if (label) {
+      var optional = '';
+      // mark optional fields that have a label as being optional:
+      if (field.optional) {
+        optional = React.createElement(
+          'span',
+          { key: name + 'label-optional', className: 'optional' },
+          '(optional)'
+        );
+      }
       label = React.createElement(
         'label',
         { key: name + 'label', className: labelClass },
-        label
+        label,
+        optional
       );
-      // mark optional fields that have a label as being optional:
-      if (field.optional) {
-        label = [label, React.createElement(
-          'span',
-          { key: name + 'label-optional' },
-          ' (optional)'
-        )];
-      }
     } else {
       label = null;
       inputClass += " nolabel";
@@ -10429,25 +10431,30 @@ module.exports = MultiplicityField;
 
 
 var React = __webpack_require__(0);
+var types = React.PropTypes;
 
-var validatorPropType = React.PropTypes.shape({
-  error: React.PropTypes.string,
-  validate: React.PropTypes.func
+var validatorPropType = types.shape({
+  error: types.string,
+  validate: types.func
 });
 
-module.exports = React.PropTypes.shape({
-  type: React.PropTypes.oneOfType([React.PropTypes.oneOf(['text', 'textarea', 'choiceGroup', 'checkbox', 'checkboxGroup']), React.PropTypes.func]).isRequired,
-  label: React.PropTypes.oneOfType([React.PropTypes.string, React.PropTypes.element]),
-  placeholder: React.PropTypes.string,
-  validator: React.PropTypes.oneOfType([validatorPropType, React.PropTypes.arrayOf(validatorPropType)]),
-  metered: React.PropTypes.boolean,
-  optional: React.PropTypes.boolean,
-  controller: React.PropTypes.shape({
-    name: React.PropTypes.string,
-    value: React.PropTypes.oneOfType([React.PropTypes.bool, React.PropTypes.number, React.PropTypes.string, React.PropTypes.array, React.PropTypes.object])
-  }),
-  colCount: React.PropTypes.number,
-  multiplicity: React.PropTypes.number
+var controllerPropType = {
+  name: types.string,
+  value: types.oneOfType([types.bool, types.number, types.string, types.array, types.object])
+};
+
+module.exports = types.shape({
+  type: types.oneOfType([types.oneOf(['image', 'text', 'textarea', 'choiceGroup', 'checkbox', 'checkboxGroup']), types.func]).isRequired,
+  label: types.oneOfType([types.string, types.element]),
+  placeholder: types.string,
+  validator: types.oneOfType([validatorPropType, types.arrayOf(validatorPropType)]),
+  metered: types.boolean,
+  optional: types.boolean,
+  controller: types.shape(controllerPropType),
+  colCount: types.number,
+  multiplicity: types.number, // used by text
+  prompt: types.string, // used by image
+  reprompt: types.string // used by image
 });
 
 /***/ }),
@@ -10783,26 +10790,90 @@ module.exports = React.createClass({
 "use strict";
 
 
-var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
-
-var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
-
 var React = __webpack_require__(0);
 var cleanProps = __webpack_require__(1);
 var MultiplicityField = __webpack_require__(5);
 
 module.exports = React.createClass({
   displayName: "exports",
+  getInitialState: function getInitialState() {
+    return {
+      attachment: false
+    };
+  },
   render: function render() {
-    var props = this.props;
-    var value = props.value;
+    var _this = this;
 
-    if (props.multiplicity) {
-      var values = (typeof value === "undefined" ? "undefined" : _typeof(value)) === "object" ? value : [value];
-      return React.createElement(MultiplicityField, _extends({}, props, { values: values }));
+    var props = this.props;
+    var field = props.field;
+    var className = ((props.className || '') + ' image').trim();
+
+    return React.createElement(
+      "div",
+      { className: className },
+      React.createElement("input", { type: "file", hidden: "hidden", ref: "filePicker", onChange: function onChange(e) {
+          return _this.handleFiles(e);
+        } }),
+      this.generatePicker(field.prompt, field.reprompt)
+    );
+  },
+
+
+  generatePicker: function generatePicker(prompt, reprompt) {
+    var _this2 = this;
+
+    if (!this.state.attachment) {
+      prompt = prompt || "Click here to pick an image";
+
+      return React.createElement("input", { type: "button", className: "btn attach", onClick: function onClick(e) {
+          return _this2.selectFiles(e);
+        }, value: prompt });
     }
 
-    return React.createElement("input", _extends({ type: "text" }, cleanProps(props)));
+    reprompt = reprompt || "Click here to pick a different image";
+
+    return [React.createElement("img", { key: "preview", src: "data:image/jpg;base64," + this.state.attachment.base64 }), React.createElement("input", { key: "attach", type: "button", className: "btn reattach", onClick: function onClick(e) {
+        return _this2.selectFiles(e);
+      }, value: reprompt })];
+  },
+
+  selectFiles: function selectFiles() {
+    this.refs.filePicker.click();
+  },
+
+  handleFiles: function handleFiles(evt) {
+    var _this3 = this;
+
+    var files = evt.target.files;
+    var b64str = 'base64,';
+
+    var parse = function parse(file) {
+      var reader = new FileReader();
+      var fileAsBase64 = function fileAsBase64(selectedFile) {
+        return function (evt) {
+          var name = escape(selectedFile.name);
+          var data = evt.target.result;
+          if (data) {
+            var base64 = data.substring(data.indexOf(b64str) + b64str.length);
+            var attachment = { name: name, base64: base64 };
+            _this3.setState({ attachment: attachment }, _this3.handleImageAttached);
+          }
+        };
+      };
+
+      reader.onload = fileAsBase64(file);
+      reader.readAsDataURL(file);
+    };
+
+    parse(Array.from(files).slice(-1)[0]);
+  },
+
+  handleImageAttached: function handleImageAttached() {
+    this.props.onChange({
+      target: {
+        value: this.state.attachment
+      }
+    });
   }
 });
 
@@ -10912,6 +10983,13 @@ var MultiSectionedForm = exports.MultiSectionedForm = _MultiSectionedForm2.defau
 
 
 module.exports = {
+  'avatar': {
+    type: "image",
+    label: "Select an avatar",
+    fieldClassname: "avatar",
+    prompt: "Pick image",
+    reprompt: "Pick different image"
+  },
   'full_name': {
     type: "text",
     label: "Participant name",
@@ -10955,7 +11033,9 @@ module.exports = {
   },
   'email choices': {
     type: "checkbox",
-    label: "I would like to pick the emails you send me"
+    label: "I would like to pick the emails you send me",
+    metered: false,
+    optional: true
   },
   'email cats': {
     type: "checkboxGroup",
@@ -10965,9 +11045,8 @@ module.exports = {
       name: "email choices",
       value: true
     },
-    validator: {
-      error: "Please pick at least one category of emails you would like to receive."
-    }
+    metered: false,
+    optional: true
   },
   notes: {
     type: "textarea",
@@ -23305,6 +23384,8 @@ var App = function (_React$Component) {
       // used, React throws a controlled/uncontrolled warning... =_=
       var checked = this.state.inlineErrors ? "checked" : false;
 
+      var percentage = parseInt(this.state.ratio * 100);
+
       return React.createElement(
         'div',
         null,
@@ -23325,14 +23406,18 @@ var App = function (_React$Component) {
         React.createElement(
           'span',
           null,
-          this.state.ratio * 100,
+          percentage,
           '%'
         ),
         ' complete)',
-        React.createElement('input', { type: 'checkbox', onChange: function onChange(e) {
-            return _this2.toggleInline();
-          }, checked: checked }),
-        ' show inline errors.',
+        React.createElement(
+          'label',
+          null,
+          React.createElement('input', { type: 'checkbox', onChange: function onChange(e) {
+              return _this2.toggleInline();
+            }, checked: checked }),
+          ' show inline errors.'
+        ),
         React.createElement('hr', null),
         React.createElement(
           'h2',

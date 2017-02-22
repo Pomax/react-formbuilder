@@ -49,12 +49,14 @@ class App extends React.Component {
     // used, React throws a controlled/uncontrolled warning... =_=
     var checked = this.state.inlineErrors ? "checked" : false;
 
+    var percentage = parseInt(this.state.ratio * 100);
+
     return (
       <div>
         <h2>An example form:</h2>
         <Form ref="form" {...formProps} />
-        <button onClick={e => this.submitForm(e)}>Submit</button> (<span>{this.state.ratio * 100}%</span> complete)
-        <input type="checkbox" onChange={e => this.toggleInline()} checked={checked} /> show inline errors.
+        <button onClick={e => this.submitForm(e)}>Submit</button> (<span>{percentage}%</span> complete)
+        <label><input type="checkbox" onChange={e => this.toggleInline()} checked={checked} /> show inline errors.</label>
 
         <hr/>
 
