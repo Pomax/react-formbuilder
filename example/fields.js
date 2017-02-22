@@ -55,6 +55,7 @@ module.exports = {
   },
   'email cats': {
     type: "checkboxGroup",
+    fieldClassname: "cats",
     label: "Which emails would you like to receive",
     options: [ "News", "Promotional", "All the spam we can think of" ],
     controller: {

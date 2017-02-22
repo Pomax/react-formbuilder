@@ -216,7 +216,7 @@ var Form = React.createClass({
         formfield = null,
         hasError = this.state.errorElements.indexOf(name) !== -1,
         labelClass = field.labelClassname ? field.labelClassname : '',
-        inputClass = (hasError ? 'error' : '') + ' ' + field.fieldClassname;
+        inputClass = (hasError ? 'error' : '') + ' ' + (field.fieldClassname || '');
 
     var common = {
       name: name,
@@ -1274,9 +1274,11 @@ module.exports = React.createClass({
       ));
     }
 
+    var className = props.className || "checkboxGroup";
+
     return React.createElement(
       "div",
-      { className: "checkboxGroup", key: this.props.key },
+      { className: className, key: this.props.key },
       columns
     );
   }
@@ -1323,9 +1325,11 @@ module.exports = React.createClass({
       ));
     }
 
+    var className = props.className || "choiceGroup";
+
     return React.createElement(
       "div",
-      { className: "choiceGroup", key: this.props.key },
+      { className: className, key: this.props.key },
       columns
     );
   }

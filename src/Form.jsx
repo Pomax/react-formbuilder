@@ -87,7 +87,7 @@ var Form = React.createClass({
         formfield = null,
         hasError = this.state.errorElements.indexOf(name) !== -1,
         labelClass = field.labelClassname ? field.labelClassname : '',
-        inputClass = `${hasError ? 'error' : ''} ${field.fieldClassname}`;
+        inputClass = `${hasError ? 'error' : ''} ${field.fieldClassname || ''}`;
 
     var common = {
       name: name,
