@@ -23,6 +23,8 @@ module.exports = React.createClass({
       columns.push(<div key={field.name + 'col' + c} className="column">{choiceset}</div>);
     }
 
-    return <div className="choiceGroup" key={this.props.key}>{columns}</div>;
+    let className = props.className || "choiceGroup";
+
+    return <div className={className} key={this.props.key}>{columns}</div>;
   }
 });
