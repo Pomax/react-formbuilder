@@ -7,45 +7,45 @@
 		exports["ReactFormBuilder"] = factory(require("react"), require("react-dom"));
 	else
 		root["ReactFormBuilder"] = factory(root["React"], root["ReactDOM"]);
-})(this, function(__WEBPACK_EXTERNAL_MODULE_0__, __WEBPACK_EXTERNAL_MODULE_4__) {
+})(this, function(__WEBPACK_EXTERNAL_MODULE_0__, __WEBPACK_EXTERNAL_MODULE_6__) {
 return /******/ (function(modules) { // webpackBootstrap
 /******/ 	// The module cache
 /******/ 	var installedModules = {};
-
+/******/
 /******/ 	// The require function
 /******/ 	function __webpack_require__(moduleId) {
-
+/******/
 /******/ 		// Check if module is in cache
-/******/ 		if(installedModules[moduleId])
+/******/ 		if(installedModules[moduleId]) {
 /******/ 			return installedModules[moduleId].exports;
-
+/******/ 		}
 /******/ 		// Create a new module (and put it into the cache)
 /******/ 		var module = installedModules[moduleId] = {
 /******/ 			i: moduleId,
 /******/ 			l: false,
 /******/ 			exports: {}
 /******/ 		};
-
+/******/
 /******/ 		// Execute the module function
 /******/ 		modules[moduleId].call(module.exports, module, module.exports, __webpack_require__);
-
+/******/
 /******/ 		// Flag the module as loaded
 /******/ 		module.l = true;
-
+/******/
 /******/ 		// Return the exports of the module
 /******/ 		return module.exports;
 /******/ 	}
-
-
+/******/
+/******/
 /******/ 	// expose the modules object (__webpack_modules__)
 /******/ 	__webpack_require__.m = modules;
-
+/******/
 /******/ 	// expose the module cache
 /******/ 	__webpack_require__.c = installedModules;
-
+/******/
 /******/ 	// identity function for calling harmony imports with the correct context
 /******/ 	__webpack_require__.i = function(value) { return value; };
-
+/******/
 /******/ 	// define getter function for harmony exports
 /******/ 	__webpack_require__.d = function(exports, name, getter) {
 /******/ 		if(!__webpack_require__.o(exports, name)) {
@@ -56,7 +56,7 @@ return /******/ (function(modules) { // webpackBootstrap
 /******/ 			});
 /******/ 		}
 /******/ 	};
-
+/******/
 /******/ 	// getDefaultExport function for compatibility with non-harmony modules
 /******/ 	__webpack_require__.n = function(module) {
 /******/ 		var getter = module && module.__esModule ?
@@ -65,15 +65,15 @@ return /******/ (function(modules) { // webpackBootstrap
 /******/ 		__webpack_require__.d(getter, 'a', getter);
 /******/ 		return getter;
 /******/ 	};
-
+/******/
 /******/ 	// Object.prototype.hasOwnProperty.call
 /******/ 	__webpack_require__.o = function(object, property) { return Object.prototype.hasOwnProperty.call(object, property); };
-
+/******/
 /******/ 	// __webpack_public_path__
 /******/ 	__webpack_require__.p = "";
-
+/******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 15);
+/******/ 	return __webpack_require__(__webpack_require__.s = 8);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -109,9 +109,9 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
 var React = __webpack_require__(0);
-var ReactDOM = __webpack_require__(4);
+var ReactDOM = __webpack_require__(6);
 
-var Fields = __webpack_require__(14);
+var Fields = __webpack_require__(15);
 var fieldType = Fields.fieldType;
 
 var Form = React.createClass({
@@ -170,23 +170,21 @@ var Form = React.createClass({
     var afelement = this.refs.autofocus;
 
     if (afelement) {
-      (function () {
 
-        // We need to use the following code to get around
-        // the bizar way in which react-select steals focus,
-        // even when the browser has issued a .focus() on
-        // a completely different HMTL element...
-        var forceFocus = function forceFocus() {
-          if (afelement !== document.activeElement) {
-            afelement.focus();
-            setTimeout(forceFocus, 10);
-          }
-        };
+      // We need to use the following code to get around
+      // the bizar way in which react-select steals focus,
+      // even when the browser has issued a .focus() on
+      // a completely different HMTL element...
+      var forceFocus = function forceFocus() {
+        if (afelement !== document.activeElement) {
+          afelement.focus();
+          setTimeout(forceFocus, 10);
+        }
+      };
 
-        afelement = ReactDOM.findDOMNode(afelement);
-        afelement.focus();
-        setTimeout(forceFocus, 100);
-      })();
+      afelement = ReactDOM.findDOMNode(afelement);
+      afelement.focus();
+      setTimeout(forceFocus, 100);
     }
   },
 
@@ -812,12 +810,6 @@ module.exports = MultiSectionedForm;
 
 /***/ }),
 /* 4 */
-/***/ (function(module, exports) {
-
-module.exports = __WEBPACK_EXTERNAL_MODULE_4__;
-
-/***/ }),
-/* 5 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -828,8 +820,8 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
 var React = __webpack_require__(0);
-var ReactDOM = __webpack_require__(4);
-var fieldType = __webpack_require__(6);
+var ReactDOM = __webpack_require__(6);
+var fieldType = __webpack_require__(5);
 
 var defaultRemoveLabel = "(-)";
 var defaultAddLabel = "(+)";
@@ -972,7 +964,7 @@ var MultiplicityField = React.createClass({
 module.exports = MultiplicityField;
 
 /***/ }),
-/* 6 */
+/* 5 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1004,6 +996,12 @@ module.exports = types.shape({
   prompt: types.string, // used by image
   reprompt: types.string // used by image
 });
+
+/***/ }),
+/* 6 */
+/***/ (function(module, exports) {
+
+module.exports = __WEBPACK_EXTERNAL_MODULE_6__;
 
 /***/ }),
 /* 7 */
@@ -1208,6 +1206,36 @@ module.exports = MultiPageForm;
 "use strict";
 
 
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.MultiSectionedForm = exports.MultiPageForm = exports.Form = undefined;
+
+var _Form = __webpack_require__(2);
+
+var _Form2 = _interopRequireDefault(_Form);
+
+var _MultiPageForm = __webpack_require__(7);
+
+var _MultiPageForm2 = _interopRequireDefault(_MultiPageForm);
+
+var _MultiSectionedForm = __webpack_require__(3);
+
+var _MultiSectionedForm2 = _interopRequireDefault(_MultiSectionedForm);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var Form = exports.Form = _Form2.default;
+var MultiPageForm = exports.MultiPageForm = _MultiPageForm2.default;
+var MultiSectionedForm = exports.MultiSectionedForm = _MultiSectionedForm2.default;
+
+/***/ }),
+/* 9 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
 var React = __webpack_require__(0);
@@ -1234,7 +1262,7 @@ module.exports = React.createClass({
 });
 
 /***/ }),
-/* 9 */
+/* 10 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1285,7 +1313,7 @@ module.exports = React.createClass({
 });
 
 /***/ }),
-/* 10 */
+/* 11 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1336,7 +1364,7 @@ module.exports = React.createClass({
 });
 
 /***/ }),
-/* 11 */
+/* 12 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1344,7 +1372,7 @@ module.exports = React.createClass({
 
 var React = __webpack_require__(0);
 var cleanProps = __webpack_require__(1);
-var MultiplicityField = __webpack_require__(5);
+var MultiplicityField = __webpack_require__(4);
 
 module.exports = React.createClass({
   displayName: "exports",
@@ -1430,7 +1458,7 @@ module.exports = React.createClass({
 });
 
 /***/ }),
-/* 12 */
+/* 13 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1442,7 +1470,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 
 var React = __webpack_require__(0);
 var cleanProps = __webpack_require__(1);
-var MultiplicityField = __webpack_require__(5);
+var MultiplicityField = __webpack_require__(4);
 
 module.exports = React.createClass({
   displayName: "exports",
@@ -1460,7 +1488,7 @@ module.exports = React.createClass({
 });
 
 /***/ }),
-/* 13 */
+/* 14 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1477,51 +1505,21 @@ module.exports = React.createClass({
 });
 
 /***/ }),
-/* 14 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-module.exports = {
-  fieldType: __webpack_require__(6),
-  CheckBox: __webpack_require__(8),
-  CheckBoxGroup: __webpack_require__(9),
-  ChoiceGroup: __webpack_require__(10),
-  Image: __webpack_require__(11),
-  Text: __webpack_require__(12),
-  TextArea: __webpack_require__(13)
-};
-
-/***/ }),
 /* 15 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.MultiSectionedForm = exports.MultiPageForm = exports.Form = undefined;
-
-var _Form = __webpack_require__(2);
-
-var _Form2 = _interopRequireDefault(_Form);
-
-var _MultiPageForm = __webpack_require__(7);
-
-var _MultiPageForm2 = _interopRequireDefault(_MultiPageForm);
-
-var _MultiSectionedForm = __webpack_require__(3);
-
-var _MultiSectionedForm2 = _interopRequireDefault(_MultiSectionedForm);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-var Form = exports.Form = _Form2.default;
-var MultiPageForm = exports.MultiPageForm = _MultiPageForm2.default;
-var MultiSectionedForm = exports.MultiSectionedForm = _MultiSectionedForm2.default;
+module.exports = {
+  fieldType: __webpack_require__(5),
+  CheckBox: __webpack_require__(9),
+  CheckBoxGroup: __webpack_require__(10),
+  ChoiceGroup: __webpack_require__(11),
+  Image: __webpack_require__(12),
+  Text: __webpack_require__(13),
+  TextArea: __webpack_require__(14)
+};
 
 /***/ })
 /******/ ]);

@@ -4,7 +4,7 @@ module.exports = [{
     javascript: `./exports.js`
   },
   output: {
-    filename: `/react-formbuilder.js`,
+    filename: `react-formbuilder.js`,
     path: `${__dirname}/dist`,
     library: `ReactFormBuilder`,
     libraryTarget: `umd`

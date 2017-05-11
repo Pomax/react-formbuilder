@@ -4,7 +4,7 @@ module.exports = [{
     javascript: `./app.js`
   },
   output: {
-    filename: `/app.compiled.js`,
+    filename: `app.compiled.js`,
     path: `${__dirname}/example`
   },
   externals: [
