@@ -10923,20 +10923,26 @@ module.exports = React.createClass({
       React.createElement("input", { type: "file", hidden: "hidden", ref: "filePicker", onChange: function onChange(e) {
           return _this.handleFiles(e);
         } }),
-      this.generatePicker(field.prompt, field.reprompt)
+      this.generatePicker(field.prompt, field.reprompt, field.hintText)
     );
   },
 
 
-  generatePicker: function generatePicker(prompt, reprompt) {
+  generatePicker: function generatePicker(prompt, reprompt, hintText) {
     var _this2 = this;
 
     if (!this.state.attachment) {
+      var hint = hintText ? React.createElement(
+        "span",
+        { className: "hint" },
+        hintText
+      ) : null;
+
       prompt = prompt || "Click here to pick an image";
 
-      return React.createElement("input", { type: "button", className: "btn attach", onClick: function onClick(e) {
+      return [React.createElement("input", { type: "button", className: "btn attach", onClick: function onClick(e) {
           return _this2.selectFiles(e);
-        }, value: prompt });
+        }, value: prompt }), hint];
     }
 
     reprompt = reprompt || "Click here to pick a different image";
@@ -11067,7 +11073,8 @@ module.exports = {
     label: "Select an avatar",
     fieldClassname: "avatar",
     prompt: "Pick image",
-    reprompt: "Pick different image"
+    reprompt: "Pick different image",
+    hintText: "looks best at 500px × 500px"
   },
   'full_name': {
     type: "text",

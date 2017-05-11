@@ -4,7 +4,8 @@ module.exports = {
     label: "Select an avatar",
     fieldClassname: "avatar",
     prompt: "Pick image",
-    reprompt: "Pick different image"
+    reprompt: "Pick different image",
+    hintText: "looks best at 300px × 300px"
   },
   'full_name': {
     type: "text",
