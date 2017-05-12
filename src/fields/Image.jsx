@@ -17,20 +17,19 @@ module.exports = React.createClass({
     return (
       <div className={className}>
         <input type="file" hidden={"hidden"} ref="filePicker" onChange={e => this.handleFiles(e)}/>
-        { this.generatePicker(field.prompt, field.reprompt, field.hintText) }
+        { this.generatePicker(field.prompt, field.reprompt, field.helpText) }
       </div>
     );
   },
 
-  generatePicker: function(prompt, reprompt, hintText) {
+  generatePicker: function(prompt, reprompt, helpText) {
     if (!this.state.attachment) {
-      let hint = hintText ? <span className="hint">{hintText}</span> : null;
-
       prompt = prompt || "Click here to pick an image";
+      helpText = helpText ? <span className="help-text">{helpText}</span> : null;
 
       return [
         <input type="button" className="btn attach" onClick={e => this.selectFiles(e)} value={prompt} />,
-        hint
+        helpText
       ];
     }
 
