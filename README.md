@@ -55,6 +55,7 @@ Where a field definition object takes the following form:
 
   prompt: string (optional) for the "pick a file from your computer" image button
   reprompt: string (optional) for the "pick a different file from your computer" image button, after initial image selection
+  helpText: string (optional) help text to show before the initial image selection
 }
 ```
 
