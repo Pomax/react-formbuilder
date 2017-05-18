@@ -61,8 +61,6 @@ Where a field definition object takes the following form:
 
 Each field is built off of the supplied information, with additional functionality based on supplying optional definition properties.
 
-Note that the `type` property can take a React component as value, in which case an instance of that component will be created. In this case, it is assumed the component has an "onChange" property, in line with React's way of handling change events for HTML form elements.
-
 Validator objects look like this:
 
 ```
@@ -90,6 +88,43 @@ Controller objects look like this:
 ```
 
 Controllers are used for things like showing an input textfield when someone selects an "Other" value in a dropdown list, radio group, or checkbox group.
+
+## Using a Component as a field type
+
+Note that when you use the `type` property to refer to a React component as value, refer to the component class:
+
+```
+type: ReactTagCloud,
+...
+```
+
+When used with the form builder, it is assumed the component has an "onChange" property, in line with React's way of handling change events for HTML form elements.
+
+IF you're writing your own components, you can either set any `onChange` handler to point to `this.props.onChange` to automatically fall through to the Form Builder's update management, or you use your own onChange handler, as long as you make sure to call `this.props.onChange` eventually. For example:
+
+```
+class CustomThing extends React.Component {
+  onChange(evt) {
+    // do a thing here first
+    // then pass it on!
+    this.props.onChange(evt);
+    
+    // Or pass it on with an explicitly know value,
+    // if you abstracted that during onChange handling.
+    this.props.onChange(evt, this.explicitValue);
+  }
+}
+
+...
+
+const fields = {
+  customthing: {
+    type: CustomThing,
+    label: "Custom declaration",
+    ...
+  }
+}
+```
 
 ## Components
 
