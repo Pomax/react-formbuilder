@@ -1,9 +1,7 @@
-var React = require('react');
-var ReactDOM = require('react-dom');
-var PropTypes = require('prop-types');
-
-var Fields = require('./fields');
-var fieldType = Fields.fieldType;
+import React from 'react';
+import ReactDOM from 'react-dom';
+import PropTypes from 'prop-types';
+import Fields, { fieldType } from './fields';
 
 class Form extends React.Component {
   // boilerplate

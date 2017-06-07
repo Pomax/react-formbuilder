@@ -1,7 +1,7 @@
-var React = require('react');
-var PropTypes = require('prop-types');
-var Form = require('./Form.jsx');
-var MultiSectionedForm = require('./MultiSectionedForm.jsx');
+import React from 'react';
+import PropTypes from 'prop-types';
+import Form from './Form.jsx';
+import MultiSectionedForm from './MultiSectionedForm.jsx';
 
 /**
  * A moderately complex form builer for React.
@@ -170,4 +170,4 @@ MultiPageForm.propTypes = {
   onProgress: PropTypes.func
 };
 
-module.exports = MultiPageForm;
+export default MultiPageForm;

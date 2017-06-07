@@ -1,6 +1,6 @@
-var React = require('react');
-var PropTypes = require('prop-types');
-var Form = require('./Form.jsx');
+import React from 'react';
+import PropTypes from 'prop-types';
+import Form from './Form.jsx';
 
 /**
   A multi-section form, where part of the form is only revealed
@@ -168,4 +168,4 @@ MultiSectionedForm.propTypes = {
   onProgress:PropTypes.func
 };
 
-module.exports = MultiSectionedForm;
+export default MultiSectionedForm;

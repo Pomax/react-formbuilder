@@ -9870,18 +9870,29 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
+var _react = __webpack_require__(0);
+
+var _react2 = _interopRequireDefault(_react);
+
+var _reactDom = __webpack_require__(12);
+
+var _reactDom2 = _interopRequireDefault(_reactDom);
+
+var _propTypes = __webpack_require__(3);
+
+var _propTypes2 = _interopRequireDefault(_propTypes);
+
+var _fields = __webpack_require__(21);
+
+var _fields2 = _interopRequireDefault(_fields);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-var React = __webpack_require__(0);
-var ReactDOM = __webpack_require__(12);
-var PropTypes = __webpack_require__(3);
-
-var Fields = __webpack_require__(21);
-var fieldType = Fields.fieldType;
 
 var Form = function (_React$Component) {
   _inherits(Form, _React$Component);
@@ -9926,7 +9937,7 @@ var Form = function (_React$Component) {
       var sm = this.props.submitting;
       var className = ("form " + (cn ? cn : '')).trim();
 
-      return React.createElement(
+      return _react2.default.createElement(
         'form',
         { className: className, hidden: this.props.hidden, disabled: this.props.submitting },
         Object.keys(this.props.fields).map(function (name) {
@@ -9956,7 +9967,7 @@ var Form = function (_React$Component) {
           }
         };
 
-        afelement = ReactDOM.findDOMNode(afelement);
+        afelement = _reactDom2.default.findDOMNode(afelement);
         afelement.focus();
         setTimeout(_forceFocus, 100);
       }
@@ -10047,13 +10058,13 @@ var Form = function (_React$Component) {
         var optional = '';
         // mark optional fields that have a label as being optional:
         if (field.optional) {
-          optional = React.createElement(
+          optional = _react2.default.createElement(
             'span',
             { key: name + 'label-optional', className: 'optional' },
             '(optional)'
           );
         }
-        label = React.createElement(
+        label = _react2.default.createElement(
           'label',
           { key: name + 'label', className: labelClass },
           label,
@@ -10086,7 +10097,7 @@ var Form = function (_React$Component) {
         var pos = elements.indexOf(name);
         if (pos !== -1) {
           // this particular element has a validation error!
-          return React.createElement(
+          return _react2.default.createElement(
             'div',
             { className: 'inline error' },
             errors[pos]
@@ -10120,27 +10131,27 @@ var Form = function (_React$Component) {
           formfield = false;
 
       if (ftype === "undefined" || Type === "text") {
-        formfield = React.createElement(Fields.Text, common);
+        formfield = _react2.default.createElement(_fields2.default.Text, common);
       } else if (Type === "textarea") {
-        formfield = React.createElement(Fields.TextArea, common);
+        formfield = _react2.default.createElement(_fields2.default.TextArea, common);
       } else if (Type === "checkbox") {
-        formfield = React.createElement(Fields.CheckBox, _extends({}, common, { label: label, labelClass: labelClass }));
+        formfield = _react2.default.createElement(_fields2.default.CheckBox, _extends({}, common, { label: label, labelClass: labelClass }));
         label = null;
       } else if (Type === "choiceGroup") {
-        formfield = React.createElement(Fields.ChoiceGroup, common);
+        formfield = _react2.default.createElement(_fields2.default.ChoiceGroup, common);
       } else if (Type === "checkboxGroup") {
-        formfield = React.createElement(Fields.CheckBoxGroup, common);
+        formfield = _react2.default.createElement(_fields2.default.CheckBoxGroup, common);
       } else if (Type === "image") {
-        formfield = React.createElement(Fields.Image, common);
+        formfield = _react2.default.createElement(_fields2.default.Image, common);
       }
       if (ftype === "function") {
-        formfield = React.createElement(Type, _extends({}, field, common));
+        formfield = _react2.default.createElement(Type, _extends({}, field, common));
       }
 
       // If there are any errors, do we need to show errors inline?
       var inlineErrors = this.getInlineErrors(name);
 
-      return React.createElement(
+      return _react2.default.createElement(
         'fieldset',
         { key: name + 'set', className: name },
         label,
@@ -10410,19 +10421,19 @@ var Form = function (_React$Component) {
 
       var label = this.props.validationLabel || "Unfortunately, there are some problems with your form fields:";
 
-      return React.createElement(
+      return _react2.default.createElement(
         'div',
         { className: 'alert alert-danger' },
-        React.createElement(
+        _react2.default.createElement(
           'p',
           null,
           label
         ),
-        React.createElement(
+        _react2.default.createElement(
           'ul',
           null,
           this.state.errors.map(function (text, i) {
-            return React.createElement(
+            return _react2.default.createElement(
               'li',
               { key: i },
               text
@@ -10434,12 +10445,12 @@ var Form = function (_React$Component) {
   }]);
 
   return Form;
-}(React.Component);
+}(_react2.default.Component);
 
 Form.propTypes = {
-  fields: PropTypes.objectOf(fieldType).isRequired,
-  onProgress: PropTypes.func,
-  onUpdate: PropTypes.func
+  fields: _propTypes2.default.objectOf(_fields.fieldType).isRequired,
+  onProgress: _propTypes2.default.func,
+  onUpdate: _propTypes2.default.func
 };
 
 module.exports = Form;
@@ -10578,17 +10589,31 @@ module.exports = ReactPropTypesSecret;
 "use strict";
 
 
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _react = __webpack_require__(0);
+
+var _react2 = _interopRequireDefault(_react);
+
+var _propTypes = __webpack_require__(3);
+
+var _propTypes2 = _interopRequireDefault(_propTypes);
+
+var _Form = __webpack_require__(4);
+
+var _Form2 = _interopRequireDefault(_Form);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-var React = __webpack_require__(0);
-var PropTypes = __webpack_require__(3);
-var Form = __webpack_require__(4);
 
 /**
   A multi-section form, where part of the form is only revealed
@@ -10623,7 +10648,6 @@ var Form = __webpack_require__(4);
   section-reveal.
 
 **/
-
 var MultiSectionedForm = function (_React$Component) {
   _inherits(MultiSectionedForm, _React$Component);
 
@@ -10657,7 +10681,7 @@ var MultiSectionedForm = function (_React$Component) {
 
       // the first section of the form is always a regular controller form.
       var initialFields = fields[0];
-      var initial = React.createElement(Form, {
+      var initial = _react2.default.createElement(_Form2.default, {
         ref: 'initial',
         fields: initialFields,
         onChange: this.onChange(0),
@@ -10686,11 +10710,11 @@ var MultiSectionedForm = function (_React$Component) {
             submitting: _this2.props.submitting
           };
 
-          sections.push(React.createElement(Form, props));
+          sections.push(_react2.default.createElement(_Form2.default, props));
         });
       });
 
-      return React.createElement(
+      return _react2.default.createElement(
         'div',
         { className: 'multi-page', hidden: this.props.hidden },
         initial,
@@ -10772,17 +10796,17 @@ var MultiSectionedForm = function (_React$Component) {
   }]);
 
   return MultiSectionedForm;
-}(React.Component);
+}(_react2.default.Component);
 
 ;
 
 MultiSectionedForm.propTypes = {
-  fields: PropTypes.arrayOf(React.PropTypes.object).isRequired,
-  onSubmit: PropTypes.func.isRequired,
-  onProgress: PropTypes.func
+  fields: _propTypes2.default.arrayOf(_react2.default.PropTypes.object).isRequired,
+  onSubmit: _propTypes2.default.func.isRequired,
+  onProgress: _propTypes2.default.func
 };
 
-module.exports = MultiSectionedForm;
+exports.default = MultiSectionedForm;
 
 /***/ }),
 /* 9 */
@@ -11111,7 +11135,29 @@ module.exports = __WEBPACK_EXTERNAL_MODULE_12__;
 "use strict";
 
 
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _react = __webpack_require__(0);
+
+var _react2 = _interopRequireDefault(_react);
+
+var _propTypes = __webpack_require__(3);
+
+var _propTypes2 = _interopRequireDefault(_propTypes);
+
+var _Form = __webpack_require__(4);
+
+var _Form2 = _interopRequireDefault(_Form);
+
+var _MultiSectionedForm = __webpack_require__(8);
+
+var _MultiSectionedForm2 = _interopRequireDefault(_MultiSectionedForm);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -11119,15 +11165,9 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-var React = __webpack_require__(0);
-var PropTypes = __webpack_require__(3);
-var Form = __webpack_require__(4);
-var MultiSectionedForm = __webpack_require__(8);
-
 /**
  * A moderately complex form builer for React.
  */
-
 var MultiPageForm = function (_React$Component) {
   _inherits(MultiPageForm, _React$Component);
 
@@ -11163,7 +11203,7 @@ var MultiPageForm = function (_React$Component) {
       var last = forms.length - 1;
 
       var formComponents = forms.map(function (fields, id) {
-        var Type = fields.forEach && fields.length ? MultiSectionedForm : Form;
+        var Type = fields.forEach && fields.length ? _MultiSectionedForm2.default : _Form2.default;
 
         var props = {
           fields: fields,
@@ -11177,10 +11217,10 @@ var MultiPageForm = function (_React$Component) {
           submitting: _this2.props.submitting
         };
 
-        return React.createElement(Type, props);
+        return _react2.default.createElement(Type, props);
       });
 
-      return React.createElement(
+      return _react2.default.createElement(
         'div',
         { className: 'multi-form' },
         formComponents,
@@ -11200,15 +11240,15 @@ var MultiPageForm = function (_React$Component) {
       var backLabel = 'back';
       var nextLabel = lastStep ? 'Submit' : 'Next';
 
-      return React.createElement(
+      return _react2.default.createElement(
         'div',
         { className: 'navigation' },
-        this.state.step > 0 ? React.createElement(
+        this.state.step > 0 ? _react2.default.createElement(
           'button',
           { className: 'back', onClick: this.stepBack },
           backLabel
         ) : null,
-        React.createElement(
+        _react2.default.createElement(
           'button',
           { onClick: this.stepForward },
           nextLabel
@@ -11321,15 +11361,15 @@ var MultiPageForm = function (_React$Component) {
   }]);
 
   return MultiPageForm;
-}(React.Component);
+}(_react2.default.Component);
 
 MultiPageForm.propTypes = {
-  formdata: PropTypes.arrayOf(PropTypes.oneOfType([PropTypes.array, PropTypes.object])).isRequired,
-  onSubmit: PropTypes.func.isRequired,
-  onProgress: PropTypes.func
+  formdata: _propTypes2.default.arrayOf(_propTypes2.default.oneOfType([_propTypes2.default.array, _propTypes2.default.object])).isRequired,
+  onSubmit: _propTypes2.default.func.isRequired,
+  onProgress: _propTypes2.default.func
 };
 
-module.exports = MultiPageForm;
+exports.default = MultiPageForm;
 
 /***/ }),
 /* 14 */
