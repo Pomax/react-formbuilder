@@ -30,6 +30,7 @@ class Form extends React.Component {
 
     this.state = initial;
   }
+
   // boilerplate
   render() {
     let cn = this.props.className;

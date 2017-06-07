@@ -7,7 +7,7 @@
 		exports["ReactFormBuilder"] = factory(require("react"), require("react-dom"));
 	else
 		root["ReactFormBuilder"] = factory(root["React"], root["ReactDOM"]);
-})(this, function(__WEBPACK_EXTERNAL_MODULE_0__, __WEBPACK_EXTERNAL_MODULE_11__) {
+})(this, function(__WEBPACK_EXTERNAL_MODULE_0__, __WEBPACK_EXTERNAL_MODULE_12__) {
 return /******/ (function(modules) { // webpackBootstrap
 /******/ 	// The module cache
 /******/ 	var installedModules = {};
@@ -73,7 +73,7 @@ return /******/ (function(modules) { // webpackBootstrap
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 13);
+/******/ 	return __webpack_require__(__webpack_require__.s = 14);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -307,10 +307,10 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
 var React = __webpack_require__(0);
-var ReactDOM = __webpack_require__(11);
-var PropTypes = __webpack_require__(24);
+var ReactDOM = __webpack_require__(12);
+var PropTypes = __webpack_require__(11);
 
-var Fields = __webpack_require__(20);
+var Fields = __webpack_require__(21);
 var fieldType = Fields.fieldType;
 
 var Form = function (_React$Component) {
@@ -343,6 +343,7 @@ var Form = function (_React$Component) {
     _this.state = initial;
     return _this;
   }
+
   // boilerplate
 
 
@@ -1198,7 +1199,7 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
 var React = __webpack_require__(0);
-var ReactDOM = __webpack_require__(11);
+var ReactDOM = __webpack_require__(12);
 var fieldType = __webpack_require__(9);
 
 var defaultRemoveLabel = "(-)";
@@ -1450,208 +1451,276 @@ module.exports = warning;
 
 /***/ }),
 /* 11 */
-/***/ (function(module, exports) {
+/***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __WEBPACK_EXTERNAL_MODULE_11__;
+/* WEBPACK VAR INJECTION */(function(process) {/**
+ * Copyright 2013-present, Facebook, Inc.
+ * All rights reserved.
+ *
+ * This source code is licensed under the BSD-style license found in the
+ * LICENSE file in the root directory of this source tree. An additional grant
+ * of patent rights can be found in the PATENTS file in the same directory.
+ */
+
+if (process.env.NODE_ENV !== 'production') {
+  var REACT_ELEMENT_TYPE = (typeof Symbol === 'function' &&
+    Symbol.for &&
+    Symbol.for('react.element')) ||
+    0xeac7;
+
+  var isValidElement = function(object) {
+    return typeof object === 'object' &&
+      object !== null &&
+      object.$$typeof === REACT_ELEMENT_TYPE;
+  };
+
+  // By explicitly using `prop-types` you are opting into new development behavior.
+  // http://fb.me/prop-types-in-prod
+  var throwOnDirectAccess = true;
+  module.exports = __webpack_require__(24)(isValidElement, throwOnDirectAccess);
+} else {
+  // By explicitly using `prop-types` you are opting into new production behavior.
+  // http://fb.me/prop-types-in-prod
+  module.exports = __webpack_require__(23)();
+}
+
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(2)))
 
 /***/ }),
 /* 12 */
+/***/ (function(module, exports) {
+
+module.exports = __WEBPACK_EXTERNAL_MODULE_12__;
+
+/***/ }),
+/* 13 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
 var React = __webpack_require__(0);
+var PropTypes = __webpack_require__(11);
 var Form = __webpack_require__(3);
 var MultiSectionedForm = __webpack_require__(7);
 
 /**
  * A moderately complex form builer for React.
  */
-var MultiPageForm = React.createClass({
-  displayName: 'MultiPageForm',
 
-  propTypes: {
-    formdata: React.PropTypes.arrayOf(React.PropTypes.oneOfType([React.PropTypes.array, React.PropTypes.object])).isRequired,
-    onSubmit: React.PropTypes.func.isRequired,
-    onProgress: React.PropTypes.func
-  },
+var MultiPageForm = function (_React$Component) {
+  _inherits(MultiPageForm, _React$Component);
 
-  /**
-   * Get this component's state upon initialisation
-   * @returns {object} this component's initial state
-   */
-  getInitialState: function getInitialState() {
+  function MultiPageForm(props) {
+    _classCallCheck(this, MultiPageForm);
+
     // Form data is tracked outside of state, as
     // it does not influence the UI of this component
     // in the slightest.
-    this.formData = {};
-    return {
+    var _this = _possibleConstructorReturn(this, (MultiPageForm.__proto__ || Object.getPrototypeOf(MultiPageForm)).call(this, props));
+
+    _this.formData = {};
+    _this.state = {
       step: 0,
-      steps: this.props.formdata.length,
+      steps: _this.props.formdata.length,
       valid: []
     };
-  },
-
+    return _this;
+  }
 
   /**
    * Render this component
    * @returns {JSX} this component as HTML UI
    */
-  render: function render() {
-    var _this = this;
-
-    var forms = this.props.formdata;
-    var last = forms.length - 1;
-
-    var formComponents = forms.map(function (fields, id) {
-      var Type = fields.forEach && fields.length ? MultiSectionedForm : Form;
-
-      var props = {
-        fields: fields,
-        key: id,
-        ref: id === _this.state.step ? 'current' : null,
-        onChange: _this.onChange,
-        onSubmit: last === id ? _this.onSubmit : function () {},
-        className: id === _this.state.step ? 'highlight' : '',
-        hidden: id !== _this.state.step,
-        validates: _this.validates,
-        submitting: _this.props.submitting
-      };
-
-      return React.createElement(Type, props);
-    });
-
-    return React.createElement(
-      'div',
-      { className: 'multi-form' },
-      formComponents,
-      this.renderControls()
-    );
-  },
 
 
-  /**
-   * Render the back/next buttons for internal form navigation
-   * @returns {JSX} the navigation buttons, wrapped in a div for ease of styling
-   */
-  renderControls: function renderControls() {
-    var lastStep = this.state.step === this.state.steps - 1;
-    var backLabel = 'back';
-    var nextLabel = lastStep ? 'Submit' : 'Next';
+  _createClass(MultiPageForm, [{
+    key: 'render',
+    value: function render() {
+      var _this2 = this;
 
-    return React.createElement(
-      'div',
-      { className: 'navigation' },
-      this.state.step > 0 ? React.createElement(
-        'button',
-        { className: 'back', onClick: this.stepBack },
-        backLabel
-      ) : null,
-      React.createElement(
-        'button',
-        { onClick: this.stepForward },
-        nextLabel
-      )
-    );
-  },
+      var forms = this.props.formdata;
+      var last = forms.length - 1;
 
+      var formComponents = forms.map(function (fields, id) {
+        var Type = fields.forEach && fields.length ? MultiSectionedForm : Form;
 
-  /**
-   * Step back to the previous form
-   * @returns {undefined}
-   */
-  stepBack: function stepBack() {
-    this.step(-1);
-  },
+        var props = {
+          fields: fields,
+          key: id,
+          ref: id === _this2.state.step ? 'current' : null,
+          onChange: _this2.onChange,
+          onSubmit: last === id ? _this2.onSubmit : function () {},
+          className: id === _this2.state.step ? 'highlight' : '',
+          hidden: id !== _this2.state.step,
+          validates: _this2.validates,
+          submitting: _this2.props.submitting
+        };
 
+        return React.createElement(Type, props);
+      });
 
-  /**
-   * Step forward to the next form, or submit the
-   * full form if this was the last form in the set.
-   * @returns {undefined}
-   */
-  stepForward: function stepForward() {
-    var form = this.refs.current;
-    var passes = form.checkValidation();
-
-    if (!passes) {
-      return;
+      return React.createElement(
+        'div',
+        { className: 'multi-form' },
+        formComponents,
+        this.renderControls()
+      );
     }
 
-    // just to be sure, do this check, too
-    if (!this.state.valid[this.state.step]) {
-      this.pendingStepValidation = this.state.step;
+    /**
+     * Render the back/next buttons for internal form navigation
+     * @returns {JSX} the navigation buttons, wrapped in a div for ease of styling
+     */
+
+  }, {
+    key: 'renderControls',
+    value: function renderControls() {
+      var lastStep = this.state.step === this.state.steps - 1;
+      var backLabel = 'back';
+      var nextLabel = lastStep ? 'Submit' : 'Next';
+
+      return React.createElement(
+        'div',
+        { className: 'navigation' },
+        this.state.step > 0 ? React.createElement(
+          'button',
+          { className: 'back', onClick: this.stepBack },
+          backLabel
+        ) : null,
+        React.createElement(
+          'button',
+          { onClick: this.stepForward },
+          nextLabel
+        )
+      );
     }
 
-    if (this.state.step === this.state.steps - 1) {
-      this.onSubmit();
-    } else {
-      this.step(1);
-    }
-  },
+    /**
+     * Step back to the previous form
+     * @returns {undefined}
+     */
 
-
-  /**
-   * Step us back or forward
-   * @param {number} direction -1 if stepping back, +1 if stepping forward
-   * @returns {undefined}
-   */
-  step: function step(direction) {
-    var step = this.state.step + direction;
-
-    if (step < 0) {
-      step = 0;
+  }, {
+    key: 'stepBack',
+    value: function stepBack() {
+      this.step(-1);
     }
 
-    if (step >= this.state.steps) {
-      step = this.state.steps - 1;
+    /**
+     * Step forward to the next form, or submit the
+     * full form if this was the last form in the set.
+     * @returns {undefined}
+     */
+
+  }, {
+    key: 'stepForward',
+    value: function stepForward() {
+      var form = this.refs.current;
+      var passes = form.checkValidation();
+
+      if (!passes) {
+        return;
+      }
+
+      // just to be sure, do this check, too
+      if (!this.state.valid[this.state.step]) {
+        this.pendingStepValidation = this.state.step;
+      }
+
+      if (this.state.step === this.state.steps - 1) {
+        this.onSubmit();
+      } else {
+        this.step(1);
+      }
     }
 
-    this.setState({ step: step });
-  },
+    /**
+     * Step us back or forward
+     * @param {number} direction -1 if stepping back, +1 if stepping forward
+     * @returns {undefined}
+     */
 
+  }, {
+    key: 'step',
+    value: function step(direction) {
+      var step = this.state.step + direction;
 
-  /**
-   * Update our knowledge of form field content so far
-   * @param {object} update a {key:value} state update object
-   * @returns {undefined}
-   */
-  onChange: function onChange(update) {
-    Object.assign(this.formData, update);
-  },
+      if (step < 0) {
+        step = 0;
+      }
 
+      if (step >= this.state.steps) {
+        step = this.state.steps - 1;
+      }
 
-  /**
-   * Communicate the full form's dataset to our parent
-   * @returns {undefined}
-   */
-  onSubmit: function onSubmit() {
-    this.props.onSubmit(this.formData);
-  },
+      this.setState({ step: step });
+    }
 
+    /**
+     * Update our knowledge of form field content so far
+     * @param {object} update a {key:value} state update object
+     * @returns {undefined}
+     */
 
-  /**
-   * Marks the current step as passing validation or not,
-   * which is used to enable/disable the "next" button.
-   * @param {boolean} bool the current step's form validity.
-   * @returns {undefined}
-   */
-  validates: function validates(bool) {
-    var valid = this.state.valid;
-    var step = this.pendingStepValidation ? this.pendingStepValidation : this.state.step;
+  }, {
+    key: 'onChange',
+    value: function onChange(update) {
+      Object.assign(this.formData, update);
+    }
 
-    valid[step] = bool;
-    this.setState({ valid: valid });
+    /**
+     * Communicate the full form's dataset to our parent
+     * @returns {undefined}
+     */
 
-    this.pendingStepValidation = false;
-  }
-});
+  }, {
+    key: 'onSubmit',
+    value: function onSubmit() {
+      this.props.onSubmit(this.formData);
+    }
+
+    /**
+     * Marks the current step as passing validation or not,
+     * which is used to enable/disable the "next" button.
+     * @param {boolean} bool the current step's form validity.
+     * @returns {undefined}
+     */
+
+  }, {
+    key: 'validates',
+    value: function validates(bool) {
+      var valid = this.state.valid;
+      var step = this.pendingStepValidation ? this.pendingStepValidation : this.state.step;
+
+      valid[step] = bool;
+      this.setState({ valid: valid });
+
+      this.pendingStepValidation = false;
+    }
+  }]);
+
+  return MultiPageForm;
+}(React.Component);
+
+MultiPageForm.propTypes = {
+  formdata: PropTypes.arrayOf(PropTypes.oneOfType([PropTypes.array, PropTypes.object])).isRequired,
+  onSubmit: PropTypes.func.isRequired,
+  onProgress: PropTypes.func
+};
 
 module.exports = MultiPageForm;
 
 /***/ }),
-/* 13 */
+/* 14 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1666,7 +1735,7 @@ var _Form = __webpack_require__(3);
 
 var _Form2 = _interopRequireDefault(_Form);
 
-var _MultiPageForm = __webpack_require__(12);
+var _MultiPageForm = __webpack_require__(13);
 
 var _MultiPageForm2 = _interopRequireDefault(_MultiPageForm);
 
@@ -1681,7 +1750,7 @@ var MultiPageForm = exports.MultiPageForm = _MultiPageForm2.default;
 var MultiSectionedForm = exports.MultiSectionedForm = _MultiSectionedForm2.default;
 
 /***/ }),
-/* 14 */
+/* 15 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1713,7 +1782,7 @@ module.exports = React.createClass({
 });
 
 /***/ }),
-/* 15 */
+/* 16 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1764,7 +1833,7 @@ module.exports = React.createClass({
 });
 
 /***/ }),
-/* 16 */
+/* 17 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1815,7 +1884,7 @@ module.exports = React.createClass({
 });
 
 /***/ }),
-/* 17 */
+/* 18 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1914,7 +1983,7 @@ module.exports = React.createClass({
 });
 
 /***/ }),
-/* 18 */
+/* 19 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1944,7 +2013,7 @@ module.exports = React.createClass({
 });
 
 /***/ }),
-/* 19 */
+/* 20 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1961,7 +2030,7 @@ module.exports = React.createClass({
 });
 
 /***/ }),
-/* 20 */
+/* 21 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1969,16 +2038,16 @@ module.exports = React.createClass({
 
 module.exports = {
   fieldType: __webpack_require__(9),
-  CheckBox: __webpack_require__(14),
-  CheckBoxGroup: __webpack_require__(15),
-  ChoiceGroup: __webpack_require__(16),
-  Image: __webpack_require__(17),
-  Text: __webpack_require__(18),
-  TextArea: __webpack_require__(19)
+  CheckBox: __webpack_require__(15),
+  CheckBoxGroup: __webpack_require__(16),
+  ChoiceGroup: __webpack_require__(17),
+  Image: __webpack_require__(18),
+  Text: __webpack_require__(19),
+  TextArea: __webpack_require__(20)
 };
 
 /***/ }),
-/* 21 */
+/* 22 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2047,7 +2116,7 @@ module.exports = checkPropTypes;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(2)))
 
 /***/ }),
-/* 22 */
+/* 23 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2113,7 +2182,7 @@ module.exports = function() {
 
 
 /***/ }),
-/* 23 */
+/* 24 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2133,7 +2202,7 @@ var invariant = __webpack_require__(5);
 var warning = __webpack_require__(10);
 
 var ReactPropTypesSecret = __webpack_require__(6);
-var checkPropTypes = __webpack_require__(21);
+var checkPropTypes = __webpack_require__(22);
 
 module.exports = function(isValidElement, throwOnDirectAccess) {
   /* global Symbol */
@@ -2629,43 +2698,6 @@ module.exports = function(isValidElement, throwOnDirectAccess) {
 
   return ReactPropTypes;
 };
-
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(2)))
-
-/***/ }),
-/* 24 */
-/***/ (function(module, exports, __webpack_require__) {
-
-/* WEBPACK VAR INJECTION */(function(process) {/**
- * Copyright 2013-present, Facebook, Inc.
- * All rights reserved.
- *
- * This source code is licensed under the BSD-style license found in the
- * LICENSE file in the root directory of this source tree. An additional grant
- * of patent rights can be found in the PATENTS file in the same directory.
- */
-
-if (process.env.NODE_ENV !== 'production') {
-  var REACT_ELEMENT_TYPE = (typeof Symbol === 'function' &&
-    Symbol.for &&
-    Symbol.for('react.element')) ||
-    0xeac7;
-
-  var isValidElement = function(object) {
-    return typeof object === 'object' &&
-      object !== null &&
-      object.$$typeof === REACT_ELEMENT_TYPE;
-  };
-
-  // By explicitly using `prop-types` you are opting into new development behavior.
-  // http://fb.me/prop-types-in-prod
-  var throwOnDirectAccess = true;
-  module.exports = __webpack_require__(23)(isValidElement, throwOnDirectAccess);
-} else {
-  // By explicitly using `prop-types` you are opting into new production behavior.
-  // http://fb.me/prop-types-in-prod
-  module.exports = __webpack_require__(22)();
-}
 
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(2)))
 
