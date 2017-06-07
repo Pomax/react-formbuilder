@@ -11663,11 +11663,11 @@ var Image = function (_React$Component) {
         prompt = prompt || "Click here to pick an image";
         helpText = helpText ? _react2.default.createElement(
           'span',
-          { className: 'help-text' },
+          { key: 'text', className: 'help-text' },
           helpText
         ) : null;
 
-        return [_react2.default.createElement('input', { type: 'button', className: 'btn attach', onClick: function onClick(e) {
+        return [_react2.default.createElement('input', { key: 'button', type: 'button', className: 'btn attach', onClick: function onClick(e) {
             return _this3.selectFiles(e);
           }, value: prompt }), helpText];
       }

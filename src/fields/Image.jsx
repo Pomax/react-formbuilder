@@ -26,10 +26,10 @@ export default class Image extends React.Component {
   generatePicker(prompt, reprompt, helpText) {
     if (!this.state.attachment) {
       prompt = prompt || "Click here to pick an image";
-      helpText = helpText ? <span className="help-text">{helpText}</span> : null;
+      helpText = helpText ? <span key="text" className="help-text">{helpText}</span> : null;
 
       return [
-        <input type="button" className="btn attach" onClick={e => this.selectFiles(e)} value={prompt} />,
+        <input key="button" type="button" className="btn attach" onClick={e => this.selectFiles(e)} value={prompt} />,
         helpText
       ];
     }
