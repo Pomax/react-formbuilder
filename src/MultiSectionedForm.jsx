@@ -1,4 +1,5 @@
 var React = require('react');
+var PropTypes = require('prop-types');
 var Form = require('./Form.jsx');
 
 /**
@@ -34,25 +35,22 @@ var Form = require('./Form.jsx');
   section-reveal.
 
 **/
-var MultiSectionedForm = React.createClass({
-  propTypes: {
-    fields: React.PropTypes.arrayOf(React.PropTypes.object).isRequired,
-    onSubmit: React.PropTypes.func.isRequired,
-    onProgress: React.PropTypes.func
-  },
+class MultiSectionedForm extends React.Component {
 
   // boilerplate
-  getInitialState() {
+  constructor(props) {
+    super(props);
+
     // we use the "revealed" list to, at each section of the form,
     // note what the last field's value is. This is definitely
     // suboptimal, but works for now.
     //
     // TODO: assign a special flag to fields so that they can be
     //       clearly identified as the "next section" controller.
-    return {
+    this.state = {
       revealed: []
     };
-  },
+  }
 
   // boilerplate
   render() {
@@ -99,7 +97,7 @@ var MultiSectionedForm = React.createClass({
         { sections }
       </div>
     );
-  },
+  }
 
   /**
    * Generate the event handler for form field updates, keeping
@@ -132,7 +130,7 @@ var MultiSectionedForm = React.createClass({
       // further processing.
       this.props.onChange(update);
     };
-  },
+  }
 
   /**
    * checkValidation is called by parents to intiate a validation
@@ -140,7 +138,7 @@ var MultiSectionedForm = React.createClass({
    * and causes the form to show its validation result.
    * @returns {boolean} true if no errors occurred, otherwise false.
    */
-  checkValidation: function() {
+  checkValidation() {
     var passes = this.refs.initial.checkValidation();
     var fields = this.props.fields;
 
@@ -161,7 +159,13 @@ var MultiSectionedForm = React.createClass({
     });
 
     return passes;
-  },
-});
+  }
+};
+
+MultiSectionedForm.propTypes = {
+  fields: PropTypes.arrayOf(React.PropTypes.object).isRequired,
+  onSubmit: PropTypes.func.isRequired,
+  onProgress:PropTypes.func
+};
 
 module.exports = MultiSectionedForm;

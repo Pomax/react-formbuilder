@@ -308,7 +308,7 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 
 var React = __webpack_require__(0);
 var ReactDOM = __webpack_require__(12);
-var PropTypes = __webpack_require__(11);
+var PropTypes = __webpack_require__(6);
 
 var Fields = __webpack_require__(21);
 var fieldType = Fields.fieldType;
@@ -984,6 +984,43 @@ module.exports = invariant;
 /* 6 */
 /***/ (function(module, exports, __webpack_require__) {
 
+/* WEBPACK VAR INJECTION */(function(process) {/**
+ * Copyright 2013-present, Facebook, Inc.
+ * All rights reserved.
+ *
+ * This source code is licensed under the BSD-style license found in the
+ * LICENSE file in the root directory of this source tree. An additional grant
+ * of patent rights can be found in the PATENTS file in the same directory.
+ */
+
+if (process.env.NODE_ENV !== 'production') {
+  var REACT_ELEMENT_TYPE = (typeof Symbol === 'function' &&
+    Symbol.for &&
+    Symbol.for('react.element')) ||
+    0xeac7;
+
+  var isValidElement = function(object) {
+    return typeof object === 'object' &&
+      object !== null &&
+      object.$$typeof === REACT_ELEMENT_TYPE;
+  };
+
+  // By explicitly using `prop-types` you are opting into new development behavior.
+  // http://fb.me/prop-types-in-prod
+  var throwOnDirectAccess = true;
+  module.exports = __webpack_require__(24)(isValidElement, throwOnDirectAccess);
+} else {
+  // By explicitly using `prop-types` you are opting into new production behavior.
+  // http://fb.me/prop-types-in-prod
+  module.exports = __webpack_require__(23)();
+}
+
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(2)))
+
+/***/ }),
+/* 7 */
+/***/ (function(module, exports, __webpack_require__) {
+
 "use strict";
 /**
  * Copyright 2013-present, Facebook, Inc.
@@ -1002,13 +1039,22 @@ module.exports = ReactPropTypesSecret;
 
 
 /***/ }),
-/* 7 */
+/* 8 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
 var React = __webpack_require__(0);
+var PropTypes = __webpack_require__(6);
 var Form = __webpack_require__(3);
 
 /**
@@ -1044,151 +1090,169 @@ var Form = __webpack_require__(3);
   section-reveal.
 
 **/
-var MultiSectionedForm = React.createClass({
-  displayName: 'MultiSectionedForm',
 
-  propTypes: {
-    fields: React.PropTypes.arrayOf(React.PropTypes.object).isRequired,
-    onSubmit: React.PropTypes.func.isRequired,
-    onProgress: React.PropTypes.func
-  },
+var MultiSectionedForm = function (_React$Component) {
+  _inherits(MultiSectionedForm, _React$Component);
 
   // boilerplate
-  getInitialState: function getInitialState() {
+  function MultiSectionedForm(props) {
+    _classCallCheck(this, MultiSectionedForm);
+
     // we use the "revealed" list to, at each section of the form,
     // note what the last field's value is. This is definitely
     // suboptimal, but works for now.
     //
     // TODO: assign a special flag to fields so that they can be
     //       clearly identified as the "next section" controller.
-    return {
+    var _this = _possibleConstructorReturn(this, (MultiSectionedForm.__proto__ || Object.getPrototypeOf(MultiSectionedForm)).call(this, props));
+
+    _this.state = {
       revealed: []
     };
-  },
-
+    return _this;
+  }
 
   // boilerplate
-  render: function render() {
-    var _this = this;
 
-    var fields = this.props.fields;
 
-    // the first section of the form is always a regular controller form.
-    var initialFields = fields[0];
-    var initial = React.createElement(Form, {
-      ref: 'initial',
-      fields: initialFields,
-      onChange: this.onChange(0),
-      onSubmit: this.props.onSubmit,
-      submitting: this.props.submitting
-    });
+  _createClass(MultiSectionedForm, [{
+    key: 'render',
+    value: function render() {
+      var _this2 = this;
 
-    // the next section(s) are value-controlled, and so can consist of
-    // any number of variations
-    var sections = [];
+      var fields = this.props.fields;
 
-    fields.forEach(function (fieldsets, id) {
-      if (id === 0) {
-        return;
-      }
-
-      Object.keys(fieldsets).forEach(function (controlValue) {
-        var props = {
-          ref: controlValue,
-          key: controlValue,
-          fields: fieldsets[controlValue],
-          onSubmit: _this.props.onSubmit,
-          onChange: _this.onChange(id),
-          hidden: _this.state.revealed[id - 1] !== controlValue,
-          validates: _this.props.validates,
-          submitting: _this.props.submitting
-        };
-
-        sections.push(React.createElement(Form, props));
+      // the first section of the form is always a regular controller form.
+      var initialFields = fields[0];
+      var initial = React.createElement(Form, {
+        ref: 'initial',
+        fields: initialFields,
+        onChange: this.onChange(0),
+        onSubmit: this.props.onSubmit,
+        submitting: this.props.submitting
       });
-    });
 
-    return React.createElement(
-      'div',
-      { className: 'multi-page', hidden: this.props.hidden },
-      initial,
-      sections
-    );
-  },
+      // the next section(s) are value-controlled, and so can consist of
+      // any number of variations
+      var sections = [];
 
-
-  /**
-   * Generate the event handler for form field updates, keeping
-   * a record of which section this field is from.
-   * @param {number} id the section for which onChange is triggering
-   * @return {function} the onChange event handler for this section of form.
-   */
-  onChange: function onChange(id) {
-    var _this2 = this;
-
-    /**
-     * onChange handler for form fields in a multi-section form.
-     * @param {anything} update the new field value associated with the onChange event.
-     * @returns {undefined}
-     */
-    return function (update) {
-      // See if there's a form associated with the value
-      // selected by this field, in the set of next forms.
-      var revealed = _this2.state.revealed;
-      var key = Object.keys(update)[0];
-      var val = update[key];
-      var ref = _this2.refs[val];
-
-      // If so, record this value so that the associated
-      // form can unhide itself in render()
-      if (ref) {
-        revealed[id] = val;
-        _this2.setState({ revealed: revealed });
-      }
-
-      // send the onChange on to the parent component for
-      // further processing.
-      _this2.props.onChange(update);
-    };
-  },
-
-
-  /**
-   * checkValidation is called by parents to intiate a validation
-   * pass that both informs the parent of errors with the form,
-   * and causes the form to show its validation result.
-   * @returns {boolean} true if no errors occurred, otherwise false.
-   */
-  checkValidation: function checkValidation() {
-    var _this3 = this;
-
-    var passes = this.refs.initial.checkValidation();
-    var fields = this.props.fields;
-
-    fields.forEach(function (fieldsets, id) {
-      if (id === 0) {
-        return;
-      }
-
-      Object.keys(fieldsets).forEach(function (controlValue) {
-        if (_this3.state.revealed[id - 1] !== controlValue) {
+      fields.forEach(function (fieldsets, id) {
+        if (id === 0) {
           return;
         }
 
-        var form = _this3.refs[controlValue];
+        Object.keys(fieldsets).forEach(function (controlValue) {
+          var props = {
+            ref: controlValue,
+            key: controlValue,
+            fields: fieldsets[controlValue],
+            onSubmit: _this2.props.onSubmit,
+            onChange: _this2.onChange(id),
+            hidden: _this2.state.revealed[id - 1] !== controlValue,
+            validates: _this2.props.validates,
+            submitting: _this2.props.submitting
+          };
 
-        passes = passes && form.checkValidation();
+          sections.push(React.createElement(Form, props));
+        });
       });
-    });
 
-    return passes;
-  }
-});
+      return React.createElement(
+        'div',
+        { className: 'multi-page', hidden: this.props.hidden },
+        initial,
+        sections
+      );
+    }
+
+    /**
+     * Generate the event handler for form field updates, keeping
+     * a record of which section this field is from.
+     * @param {number} id the section for which onChange is triggering
+     * @return {function} the onChange event handler for this section of form.
+     */
+
+  }, {
+    key: 'onChange',
+    value: function onChange(id) {
+      var _this3 = this;
+
+      /**
+       * onChange handler for form fields in a multi-section form.
+       * @param {anything} update the new field value associated with the onChange event.
+       * @returns {undefined}
+       */
+      return function (update) {
+        // See if there's a form associated with the value
+        // selected by this field, in the set of next forms.
+        var revealed = _this3.state.revealed;
+        var key = Object.keys(update)[0];
+        var val = update[key];
+        var ref = _this3.refs[val];
+
+        // If so, record this value so that the associated
+        // form can unhide itself in render()
+        if (ref) {
+          revealed[id] = val;
+          _this3.setState({ revealed: revealed });
+        }
+
+        // send the onChange on to the parent component for
+        // further processing.
+        _this3.props.onChange(update);
+      };
+    }
+
+    /**
+     * checkValidation is called by parents to intiate a validation
+     * pass that both informs the parent of errors with the form,
+     * and causes the form to show its validation result.
+     * @returns {boolean} true if no errors occurred, otherwise false.
+     */
+
+  }, {
+    key: 'checkValidation',
+    value: function checkValidation() {
+      var _this4 = this;
+
+      var passes = this.refs.initial.checkValidation();
+      var fields = this.props.fields;
+
+      fields.forEach(function (fieldsets, id) {
+        if (id === 0) {
+          return;
+        }
+
+        Object.keys(fieldsets).forEach(function (controlValue) {
+          if (_this4.state.revealed[id - 1] !== controlValue) {
+            return;
+          }
+
+          var form = _this4.refs[controlValue];
+
+          passes = passes && form.checkValidation();
+        });
+      });
+
+      return passes;
+    }
+  }]);
+
+  return MultiSectionedForm;
+}(React.Component);
+
+;
+
+MultiSectionedForm.propTypes = {
+  fields: PropTypes.arrayOf(React.PropTypes.object).isRequired,
+  onSubmit: PropTypes.func.isRequired,
+  onProgress: PropTypes.func
+};
 
 module.exports = MultiSectionedForm;
 
 /***/ }),
-/* 8 */
+/* 9 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1200,7 +1264,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 
 var React = __webpack_require__(0);
 var ReactDOM = __webpack_require__(12);
-var fieldType = __webpack_require__(9);
+var fieldType = __webpack_require__(10);
 
 var defaultRemoveLabel = "(-)";
 var defaultAddLabel = "(+)";
@@ -1343,7 +1407,7 @@ var MultiplicityField = React.createClass({
 module.exports = MultiplicityField;
 
 /***/ }),
-/* 9 */
+/* 10 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1377,7 +1441,7 @@ module.exports = types.shape({
 });
 
 /***/ }),
-/* 10 */
+/* 11 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1450,43 +1514,6 @@ module.exports = warning;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(2)))
 
 /***/ }),
-/* 11 */
-/***/ (function(module, exports, __webpack_require__) {
-
-/* WEBPACK VAR INJECTION */(function(process) {/**
- * Copyright 2013-present, Facebook, Inc.
- * All rights reserved.
- *
- * This source code is licensed under the BSD-style license found in the
- * LICENSE file in the root directory of this source tree. An additional grant
- * of patent rights can be found in the PATENTS file in the same directory.
- */
-
-if (process.env.NODE_ENV !== 'production') {
-  var REACT_ELEMENT_TYPE = (typeof Symbol === 'function' &&
-    Symbol.for &&
-    Symbol.for('react.element')) ||
-    0xeac7;
-
-  var isValidElement = function(object) {
-    return typeof object === 'object' &&
-      object !== null &&
-      object.$$typeof === REACT_ELEMENT_TYPE;
-  };
-
-  // By explicitly using `prop-types` you are opting into new development behavior.
-  // http://fb.me/prop-types-in-prod
-  var throwOnDirectAccess = true;
-  module.exports = __webpack_require__(24)(isValidElement, throwOnDirectAccess);
-} else {
-  // By explicitly using `prop-types` you are opting into new production behavior.
-  // http://fb.me/prop-types-in-prod
-  module.exports = __webpack_require__(23)();
-}
-
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(2)))
-
-/***/ }),
 /* 12 */
 /***/ (function(module, exports) {
 
@@ -1508,9 +1535,9 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
 var React = __webpack_require__(0);
-var PropTypes = __webpack_require__(11);
+var PropTypes = __webpack_require__(6);
 var Form = __webpack_require__(3);
-var MultiSectionedForm = __webpack_require__(7);
+var MultiSectionedForm = __webpack_require__(8);
 
 /**
  * A moderately complex form builer for React.
@@ -1739,7 +1766,7 @@ var _MultiPageForm = __webpack_require__(13);
 
 var _MultiPageForm2 = _interopRequireDefault(_MultiPageForm);
 
-var _MultiSectionedForm = __webpack_require__(7);
+var _MultiSectionedForm = __webpack_require__(8);
 
 var _MultiSectionedForm2 = _interopRequireDefault(_MultiSectionedForm);
 
@@ -1892,7 +1919,7 @@ module.exports = React.createClass({
 
 var React = __webpack_require__(0);
 var cleanProps = __webpack_require__(1);
-var MultiplicityField = __webpack_require__(8);
+var MultiplicityField = __webpack_require__(9);
 
 module.exports = React.createClass({
   displayName: "exports",
@@ -1995,7 +2022,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 
 var React = __webpack_require__(0);
 var cleanProps = __webpack_require__(1);
-var MultiplicityField = __webpack_require__(8);
+var MultiplicityField = __webpack_require__(9);
 
 module.exports = React.createClass({
   displayName: "exports",
@@ -2037,7 +2064,7 @@ module.exports = React.createClass({
 
 
 module.exports = {
-  fieldType: __webpack_require__(9),
+  fieldType: __webpack_require__(10),
   CheckBox: __webpack_require__(15),
   CheckBoxGroup: __webpack_require__(16),
   ChoiceGroup: __webpack_require__(17),
@@ -2064,8 +2091,8 @@ module.exports = {
 
 if (process.env.NODE_ENV !== 'production') {
   var invariant = __webpack_require__(5);
-  var warning = __webpack_require__(10);
-  var ReactPropTypesSecret = __webpack_require__(6);
+  var warning = __webpack_require__(11);
+  var ReactPropTypesSecret = __webpack_require__(7);
   var loggedTypeFailures = {};
 }
 
@@ -2133,7 +2160,7 @@ module.exports = checkPropTypes;
 
 var emptyFunction = __webpack_require__(4);
 var invariant = __webpack_require__(5);
-var ReactPropTypesSecret = __webpack_require__(6);
+var ReactPropTypesSecret = __webpack_require__(7);
 
 module.exports = function() {
   function shim(props, propName, componentName, location, propFullName, secret) {
@@ -2199,9 +2226,9 @@ module.exports = function() {
 
 var emptyFunction = __webpack_require__(4);
 var invariant = __webpack_require__(5);
-var warning = __webpack_require__(10);
+var warning = __webpack_require__(11);
 
-var ReactPropTypesSecret = __webpack_require__(6);
+var ReactPropTypesSecret = __webpack_require__(7);
 var checkPropTypes = __webpack_require__(22);
 
 module.exports = function(isValidElement, throwOnDirectAccess) {
