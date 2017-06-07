@@ -1,17 +1,15 @@
-var React = require('react');
-var ReactDOM = require('react-dom');
-var fieldType = require('./field-type.js');
+import React from 'react';
+import ReactDOM from 'react-dom';
+import PropTypes from 'prop-types';
+import fieldType from './field-type.js';
 
 const defaultRemoveLabel = "(-)";
 const defaultAddLabel = "(+)";
 
-var MultiplicityField = React.createClass({
-  propTypes: {
-    name: React.PropTypes.string.isRequired,
-    field: fieldType.isRequired
-  },
+class MultiplicityField extends React.Component {
+  constructor(props) {
+    super(props);
 
-  getInitialState: function() {
     var howmany = this.props.field.multiplicity;
     var values = (new Array(howmany)).join('|').split('|').map(_ => '');
     if (this.props.values) {
@@ -19,17 +17,18 @@ var MultiplicityField = React.createClass({
         values[i] = v;
       });
     }
-    return { multiplicity: howmany, values };
-  },
 
-  moreFields: function() {
+    this.state = { multiplicity: howmany, values };
+  }
+
+  moreFields() {
     var multiplicity = this.state.multiplicity + 1;
     var values = this.state.values;
     values.push('');
     this.setState({ multiplicity, values });
-  },
+  }
 
-  removeField: function(pos) {
+  removeField(pos) {
     var values = this.state.values;
     if (values.length === 1) {
       return;
@@ -37,15 +36,15 @@ var MultiplicityField = React.createClass({
     var multiplicity = this.state.multiplicity - 1;
     values.splice(pos, 1);
     this.setState({ multiplicity, values });
-  },
+  }
 
-  render: function() {
+  render() {
     var values = this.state.values;
     return this.generateFields(this.props.name, this.props.field, values);
-  },
+  }
 
   // geneate as many fields as are necessary for this one "thing"
-  generateFields: function(name, field, values) {
+  generateFields(name, field, values) {
     var fields = values.map((value, pos) => {
       return this.generateField(name, field, pos, value, e => this.updateField(e, name, field, pos));
     });
@@ -57,10 +56,10 @@ var MultiplicityField = React.createClass({
         }</button>
       </div>
     );
-  },
+  }
 
   // handler for when one of the fields gets updated
-  updateField: function(e, name, field, position) {
+  updateField(e, name, field, position) {
     var newvalue = e.target.value;
     var values = this.state.values;
     values[position] = newvalue;
@@ -69,10 +68,10 @@ var MultiplicityField = React.createClass({
         this.props.onUpdate(e, name, field, values);
       };
     });
-  },
+  }
 
   // slightly modified wrt the <Form> component
-  setStateAsChange: function(newState, andThenDoThis) {
+  setStateAsChange(newState, andThenDoThis) {
     this.setState(newState, () => {
       this.props.checkValidation();
       if (this.props.onChange) {
@@ -80,10 +79,10 @@ var MultiplicityField = React.createClass({
       }
       andThenDoThis();
     });
-  },
+  }
 
   // there is a limited set of form fields that can be multiplicious
-  generateField: function(name, field, position, value, onChange) {
+  generateField(name, field, position, value, onChange) {
     var Type = field.type,
         ftype = typeof Type,
         formfield = null,
@@ -113,6 +112,11 @@ var MultiplicityField = React.createClass({
     return <div key={name + '-row-' + position} className="row">{ formfield }{ removeButton }</div>;
   }
 
-});
+};
 
-module.exports = MultiplicityField;
+MultiplicityField.propTypes = {
+  name: PropTypes.string.isRequired,
+  field: fieldType.isRequired
+};
+
+export default MultiplicityField;

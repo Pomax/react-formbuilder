@@ -1,13 +1,14 @@
-var React = require("react");
-var cleanProps = require("./clean-props");
-var MultiplicityField = require('./MultiplicityField.jsx');
+import React from 'react';
+import { cleanProps } from './clean-props';
+import MultiplicityField from './MultiplicityField.jsx';
 
-module.exports = React.createClass({
-  getInitialState() {
-    return {
+export default class Image extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
       attachment: false
-    }
-  },
+    };
+  }
 
   render() {
     let props = this.props;
@@ -20,9 +21,9 @@ module.exports = React.createClass({
         { this.generatePicker(field.prompt, field.reprompt, field.helpText) }
       </div>
     );
-  },
+  }
 
-  generatePicker: function(prompt, reprompt, helpText) {
+  generatePicker(prompt, reprompt, helpText) {
     if (!this.state.attachment) {
       prompt = prompt || "Click here to pick an image";
       helpText = helpText ? <span className="help-text">{helpText}</span> : null;
@@ -39,13 +40,13 @@ module.exports = React.createClass({
       <img key='preview' src={"data:image/jpg;base64," + this.state.attachment.base64}/>,
       <input key='attach' type="button" className="btn reattach" onClick={e => this.selectFiles(e)} value={reprompt} />
     ];
-  },
+  }
 
-  selectFiles: function() {
+  selectFiles() {
     this.refs.filePicker.click();
-  },
+  }
 
-  handleFiles: function(evt) {
+  handleFiles(evt) {
     var files = evt.target.files;
     var b64str = 'base64,';
 
@@ -68,13 +69,13 @@ module.exports = React.createClass({
     };
 
     parse(Array.from(files).slice(-1)[0]);
-  },
+  }
 
-  handleImageAttached: function() {
+  handleImageAttached() {
     this.props.onChange({
       target: {
         value: this.state.attachment
       }
     });
   }
-});
+};

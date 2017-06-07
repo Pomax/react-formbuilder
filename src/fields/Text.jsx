@@ -1,8 +1,12 @@
-var React = require("react");
-var cleanProps = require("./clean-props");
-var MultiplicityField = require('./MultiplicityField.jsx');
+import React from 'react';
+import { cleanProps } from './clean-props';
+import MultiplicityField from './MultiplicityField.jsx';
 
-module.exports = React.createClass({
+export default class Text extends React.Component {
+  constructor(props) {
+    super(props);
+  }
+
   render() {
     let props = this.props;
     let value = props.value;
@@ -14,4 +18,4 @@ module.exports = React.createClass({
 
     return <input type="text" {...cleanProps(props)}/>;
   }
-});
+};

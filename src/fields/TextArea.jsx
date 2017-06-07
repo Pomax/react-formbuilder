@@ -1,8 +1,11 @@
-var React = require("react");
-var cleanProps = require("./clean-props");
+import React from 'react';
+import { cleanProps } from './clean-props';
 
-module.exports = React.createClass({
+export default class TextArea extends React.Component {
+  constructor(props) {
+    super(props);
+  }
 	render() {
     return <textarea {...cleanProps(this.props)}/>;
   }
-});
+};
