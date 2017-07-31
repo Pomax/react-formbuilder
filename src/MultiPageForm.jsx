@@ -1,37 +1,34 @@
-var React = require('react');
-var Form = require('./Form.jsx');
-var MultiSectionedForm = require('./MultiSectionedForm.jsx');
+import React from 'react';
+import PropTypes from 'prop-types';
+import Form from './Form.jsx';
+import MultiSectionedForm from './MultiSectionedForm.jsx';
 
 /**
  * A moderately complex form builer for React.
  */
-var MultiPageForm = React.createClass({
-  propTypes: {
-    formdata: React.PropTypes.arrayOf(
-      React.PropTypes.oneOfType([
-        React.PropTypes.array,
-        React.PropTypes.object
-      ])
-    ).isRequired,
-    onSubmit: React.PropTypes.func.isRequired,
-    onProgress: React.PropTypes.func
-  },
+class MultiPageForm extends React.Component {
 
-  /**
-   * Get this component's state upon initialisation
-   * @returns {object} this component's initial state
-   */
-  getInitialState() {
+  constructor(props) {
+    super(props);
+
+    this.reset();
+  }
+
+  reset() {
     // Form data is tracked outside of state, as
     // it does not influence the UI of this component
     // in the slightest.
     this.formData = {};
+    this.state = this.generateInitialState();
+  }
+
+  generateInitialState() {
     return {
       step: 0,
       steps: this.props.formdata.length,
       valid: []
     };
-  },
+  }
 
   /**
    * Render this component
@@ -65,7 +62,7 @@ var MultiPageForm = React.createClass({
         { this.renderControls() }
       </div>
     );
-  },
+  }
 
   /**
    * Render the back/next buttons for internal form navigation
@@ -82,7 +79,7 @@ var MultiPageForm = React.createClass({
         <button onClick={this.stepForward}>{nextLabel}</button>
       </div>
     );
-  },
+  }
 
   /**
    * Step back to the previous form
@@ -90,7 +87,7 @@ var MultiPageForm = React.createClass({
    */
   stepBack() {
     this.step(-1);
-  },
+  }
 
   /**
    * Step forward to the next form, or submit the
@@ -115,7 +112,7 @@ var MultiPageForm = React.createClass({
     } else {
       this.step(1);
     }
-  },
+  }
 
   /**
    * Step us back or forward
@@ -134,7 +131,7 @@ var MultiPageForm = React.createClass({
     }
 
     this.setState({ step });
-  },
+  }
 
   /**
    * Update our knowledge of form field content so far
@@ -143,7 +140,7 @@ var MultiPageForm = React.createClass({
    */
   onChange(update) {
     Object.assign(this.formData, update);
-  },
+  }
 
   /**
    * Communicate the full form's dataset to our parent
@@ -151,7 +148,7 @@ var MultiPageForm = React.createClass({
    */
   onSubmit() {
     this.props.onSubmit(this.formData);
-  },
+  }
 
   /**
    * Marks the current step as passing validation or not,
@@ -168,7 +165,17 @@ var MultiPageForm = React.createClass({
 
     this.pendingStepValidation = false;
   }
+}
 
-});
+MultiPageForm.propTypes = {
+  formdata: PropTypes.arrayOf(
+      PropTypes.oneOfType([
+      PropTypes.array,
+      PropTypes.object
+    ])
+  ).isRequired,
+  onSubmit: PropTypes.func.isRequired,
+  onProgress: PropTypes.func
+};
 
-module.exports = MultiPageForm;
+export default MultiPageForm;

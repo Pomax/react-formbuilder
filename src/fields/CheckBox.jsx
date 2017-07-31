@@ -1,14 +1,18 @@
-var React = require("react");
-var cleanProps = require("./clean-props");
+import React from 'react';
+import { cleanProps } from './clean-props';
 
-module.exports = React.createClass({
+export default class CheckBox extends React.Component {
+  constructor(props) {
+    super(props);
+  }
+
   render() {
     let props = this.props;
     let label = props.label;
     let labelClass = props.labelClass;
 
     return (
-    	<div>
+      <div>
         <label className={labelClass} ref="label">
           <input {...cleanProps(props)} type="checkbox" ref="box"/>
           { label.props.children }
@@ -16,4 +20,4 @@ module.exports = React.createClass({
       </div>
     );
   }
-});
+};

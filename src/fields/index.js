@@ -1,9 +1,16 @@
+import CheckBox from './CheckBox.jsx';
+import CheckBoxGroup from './CheckBoxGroup.jsx';
+import ChoiceGroup from './ChoiceGroup.jsx';
+import Image from './Image.jsx';
+import Text from './Text.jsx';
+import TextArea from './TextArea.jsx';
+
 module.exports = {
   fieldType: require('./field-type.js'),
-  CheckBox: require("./CheckBox.jsx"),
-  CheckBoxGroup: require("./CheckBoxGroup.jsx"),
-  ChoiceGroup: require("./ChoiceGroup.jsx"),
-  Image: require("./Image.jsx"),
-  Text: require('./Text.jsx'),
-  TextArea: require('./TextArea.jsx')
+  CheckBox: CheckBox,
+  CheckBoxGroup: CheckBoxGroup,
+  ChoiceGroup: ChoiceGroup,
+  Image: Image,
+  Text: Text,
+  TextArea: TextArea
 };

@@ -12,7 +12,7 @@
     "build": "run-s bootstrap build:**",
     "build:js": "webpack --config webpack.config.js --display-error-details",
     "build:app": "webpack --config webpack.example.app.js --display-error-details",
-    "watch:js": "chokidar 'src/**/*.jsx' 'example/*.js' 'webpack.config.js' -c 'npm run build'",
+    "watch:js": "chokidar 'src/**/*.{jsx,js}' 'example/*.js' '!example/app.compiled.js' 'webpack.config.js' -c 'npm run build'",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -33,8 +33,9 @@
     "chokidar": "^1.6.1",
     "chokidar-cli": "^1.2.0",
     "npm-run-all": "^4.0.1",
-    "react": "^15.4.2",
+    "react": "^15.5.4",
     "react-dom": "^15.4.2",
+    "prop-types": "^15.5.10",
     "shx": "^0.2.2",
     "webpack": "^2.2.1"
   },

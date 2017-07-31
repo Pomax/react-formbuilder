@@ -1,7 +1,11 @@
-var React = require("react");
-var cleanProps = require("./clean-props");
+import { Component } from 'react';
+import { cleanProps } from './clean-props';
 
-module.exports = React.createClass({
+export default class CheckBoxGroup extends Component {
+  constructor(props) {
+    super(props);
+  }
+  
   render() {
     let props = this.props;
     let field = props.field;
@@ -27,4 +31,4 @@ module.exports = React.createClass({
 
     return <div className={className} key={this.props.key}>{columns}</div>;
   }
-});
+};

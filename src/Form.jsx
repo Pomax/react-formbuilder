@@ -1,20 +1,22 @@
-var React = require('react');
-var ReactDOM = require('react-dom');
+import React from 'react';
+import ReactDOM from 'react-dom';
+import PropTypes from 'prop-types';
+import Fields, { fieldType } from './fields';
 
-var Fields = require('./fields');
-var fieldType = Fields.fieldType;
-
-var Form = React.createClass({
-  propTypes: {
-    fields: React.PropTypes.objectOf(fieldType).isRequired,
-    onProgress: React.PropTypes.func,
-    onUpdate: React.PropTypes.func
-  },
-
+class Form extends React.Component {
   // boilerplate
-  getInitialState: function() {
+  constructor(props) {
+    super(props);
+
+    this.reset(props);
+  }
+
+  reset(props = {}) {
+    this.state = this.generateInitialState(props.fields);
+  }
+
+  generateInitialState(fields = {}) {
     var initial = {};
-    var fields = this.props.fields || {};
 
     this.progressFields = [];
     Object.keys(fields).forEach(name => {
@@ -30,11 +32,12 @@ var Form = React.createClass({
     initial.errors = [];
     initial.errorElements = [];
     initial.hasValidated = false;
+
     return initial;
-  },
+  }
 
   // boilerplate
-  render: function() {
+  render() {
     let cn = this.props.className;
     let sm = this.props.submitting;
     let className = ("form " + (cn ? cn : '')).trim();
@@ -45,10 +48,10 @@ var Form = React.createClass({
         { this.renderValidationErrors() }
       </form>
     );
-  },
+  }
 
   // autofocus on anything that needs autofocussing.
-  componentDidUpdate: function(prevProps, prevState) {
+  componentDidUpdate(prevProps, prevState) {
     var afelement = this.refs.autofocus;
 
     if (afelement) {
@@ -67,20 +70,20 @@ var Form = React.createClass({
       }
       setTimeout(forceFocus, 100);
     }
-  },
+  }
 
   // This is to be used for updating a progress bar...
-  getProgress: function() {
+  getProgress() {
     // get the number of required fields that have a value filled in.
     var keys = Object.keys(this.props.fields).filter(key => this.props.fields[key].metered !== false);
     var reduced = keys.reduce((a,b) => a + (this.hasFieldValue(b, this.state[b])? 1 : 0), 0);
     var total = keys.length;
 
     return reduced/total;
-  },
+  }
 
   // This forms the object that is passed down into specific form field components
-  formCommonObject: function(name, field) {
+  formCommonObject(name, field) {
     field.name = name;
 
     var label = field.label,
@@ -148,10 +151,10 @@ var Form = React.createClass({
     common.labelClass = labelClass;
 
     return { common, label, labelClass };
-  },
+  }
 
   // See if we need to generate validation errors inline.
-  getInlineErrors: function(name) {
+  getInlineErrors(name) {
     if (!this.props.inlineErrors) return null;
 
     var errors = this.state.errors;
@@ -166,7 +169,7 @@ var Form = React.createClass({
     }
 
     return null;
-  },
+  }
 
   /**
    * Create the form field JSX definition to be used by React for rendering the form UI.
@@ -174,7 +177,7 @@ var Form = React.createClass({
    * @param {fieldDefinition} field the field's associated field definition from this.props.fields
    * @returns {JSX} the UI code necessary to render the form field, as fieldset
    */
-  buildFormField: function(name, field) {
+  buildFormField(name, field) {
     var Type = field.type,
         ftype = typeof Type,
         data = this.formCommonObject(name, field);
@@ -214,7 +217,7 @@ var Form = React.createClass({
     var inlineErrors = this.getInlineErrors(name);
 
     return <fieldset key={name + 'set'} className={name}>{ label }{ formfield }{ inlineErrors }</fieldset>;
-  },
+  }
 
   /**
    * Records an update for a form element. Updates can be any kind of data,
@@ -223,7 +226,7 @@ var Form = React.createClass({
    * @param {event} e the event associated with an onChange from an HTML element
    * @returns {undefined}
    */
-  update: function(name, field, e, value) {
+  update(name, field, e, value) {
     var state = {};
     value = value ? value : e.target? e.target.value : undefined;
 
@@ -256,7 +259,7 @@ var Form = React.createClass({
 
     // finally, perform state change binding
     this.setStateAsChange(name, state);
-  },
+  }
 
   /**
    * Similar to this.setChange, except with a bunch of event
@@ -266,7 +269,7 @@ var Form = React.createClass({
    * @param {varied} newState the new value for this field
    * @returns {undefined}
    */
-  setStateAsChange: function(fieldname, newState) {
+  setStateAsChange(fieldname, newState) {
     this.setState(newState, () => {
       // only revalidate on changes if we already validated before.
       if (this.state.hasValidated) {
@@ -279,7 +282,7 @@ var Form = React.createClass({
         this.props.onProgress(this.getProgress());
       }
     });
-  },
+  }
 
   /**
    * checkValidation is called by parents to intiate a validation
@@ -287,13 +290,13 @@ var Form = React.createClass({
    * and causes the form to show its validation result.
    * @returns {boolean} true if no errors occurred, otherwise false.
    */
-  checkValidation: function() {
+  checkValidation() {
     return this.validates(valid => {
       if (this.props.validates) {
         this.props.validates(valid);
       }
     });
-  },
+  }
 
   /**
    * Validates all form fields, records any errors, and then
@@ -302,7 +305,7 @@ var Form = React.createClass({
    * @param {function} postValidate the function to call after running validation
    * @returns {boolean} true if no errors were found, false otherwise.
    */
-  validates: function(postValidate) {
+  validates(postValidate) {
     var state = this.state;
     var errors = [];
     var errorElements = [];
@@ -322,7 +325,7 @@ var Form = React.createClass({
     });
 
     return !errors.length;
-  },
+  }
 
   /**
    * Validates a field and records whether it has an error, and if
@@ -333,7 +336,7 @@ var Form = React.createClass({
    * @param {array} errorElements a placeholder array for recording error elements
    * @returns {undefined}
    */
-  validateField: function(name, errors, errorElements) {
+  validateField(name, errors, errorElements) {
     var value = this.state[name];
     var validators = this.props.fields[name].validator;
 
@@ -360,7 +363,7 @@ var Form = React.createClass({
         }
       }
     });
-  },
+  }
 
   /**
    * Check whether this field "counts" towards form completion:
@@ -370,7 +373,7 @@ var Form = React.createClass({
    * @param {string} name the field name to test
    * @returns {boolean} whether or not this field counts towards form completion
    */
-  passesControl: function(name) {
+  passesControl(name) {
     var field = this.props.fields[name];
     var control = field.controller;
 
@@ -387,7 +390,7 @@ var Form = React.createClass({
     }
 
     return passes;
-  },
+  }
 
   /**
    * A field has a value if it's not null, falsey, an empty array, and the
@@ -398,7 +401,7 @@ var Form = React.createClass({
    * @param {anything} value the field's associated value
    * @returns {boolean} whether or not this field has an associated meaningful value
    */
-  hasFieldValue: function(name, value) {
+  hasFieldValue(name, value) {
     if (value === null) {
       return false;
     }
@@ -409,14 +412,14 @@ var Form = React.createClass({
       return false;
     }
     return true;
-  },
+  }
 
   /**
    * Get the CSS class for error reporting. This is hardcoded atm to "error".
    * @param {string} field the field name for which to determine whether there is an error.
    * @returns {string|boolean} "error" if the field has validation errors, false otherwise.
    */
-  getErrorClass: function(field) {
+  getErrorClass(field) {
     if (!this.state.errorElements) {
       return false;
     }
@@ -424,13 +427,13 @@ var Form = React.createClass({
     var error = this.state.errorElements.indexOf(field) > -1;
 
     return error ? "error" : false;
-  },
+  }
 
   /**
    * Render any validation errors in their own little error box.
    * @returns {JSX} the error box UI
    */
-  renderValidationErrors: function() {
+  renderValidationErrors() {
     if (!this.state.errors || this.state.errors.length === 0) {
       return null;
     }
@@ -449,6 +452,12 @@ var Form = React.createClass({
       </div>
     );
   }
-});
+}
+
+Form.propTypes = {
+  fields: PropTypes.objectOf(fieldType).isRequired,
+  onProgress: PropTypes.func,
+  onUpdate: PropTypes.func
+};
 
 module.exports = Form;
