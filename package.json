@@ -12,7 +12,7 @@
     "build": "run-s bootstrap build:**",
     "build:js": "webpack --config webpack.config.js --display-error-details",
     "build:app": "webpack --config webpack.example.app.js --display-error-details",
-    "watch:js": "chokidar 'src/**/*.jsx' 'src/**/*.js' 'example/*.js' 'webpack.config.js' -c 'npm run build'",
+    "watch:js": "chokidar 'src/**/*.{jsx,js}' 'example/*.js' '!example/app.compiled.js' 'webpack.config.js' -c 'npm run build'",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {

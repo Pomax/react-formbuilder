@@ -11,11 +11,19 @@ class MultiPageForm extends React.Component {
   constructor(props) {
     super(props);
 
+    this.reset();
+  }
+
+  reset() {
     // Form data is tracked outside of state, as
     // it does not influence the UI of this component
     // in the slightest.
     this.formData = {};
-    this.state = {
+    this.state = this.generateInitialState();
+  }
+
+  generateInitialState() {
+    return {
       step: 0,
       steps: this.props.formdata.length,
       valid: []

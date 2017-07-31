@@ -1,7 +1,7 @@
-import React from 'react';
+import { Component } from 'react';
 import { cleanProps } from './clean-props';
 
-export default class CheckBoxGroup extends React.Component {
+export default class CheckBoxGroup extends Component {
   constructor(props) {
     super(props);
   }

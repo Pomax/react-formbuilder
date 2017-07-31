@@ -8,8 +8,15 @@ class Form extends React.Component {
   constructor(props) {
     super(props);
 
+    this.reset(props);
+  }
+
+  reset(props = {}) {
+    this.state = this.generateInitialState(props.fields);
+  }
+
+  generateInitialState(fields = {}) {
     var initial = {};
-    var fields = this.props.fields || {};
 
     this.progressFields = [];
     Object.keys(fields).forEach(name => {
@@ -26,7 +33,7 @@ class Form extends React.Component {
     initial.errorElements = [];
     initial.hasValidated = false;
 
-    this.state = initial;
+    return initial;
   }
 
   // boilerplate

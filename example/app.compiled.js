@@ -9903,35 +9903,50 @@ var Form = function (_React$Component) {
 
     var _this = _possibleConstructorReturn(this, (Form.__proto__ || Object.getPrototypeOf(Form)).call(this, props));
 
-    var initial = {};
-    var fields = _this.props.fields || {};
-
-    _this.progressFields = [];
-    Object.keys(fields).forEach(function (name) {
-      initial[name] = null;
-      if (fields[name].type === "checkboxGroup") {
-        initial[name] = [];
-      }
-      if (fields[name].metered) {
-        _this.progressFields.push(name);
-      }
-    });
-    initial.valid = false;
-    initial.errors = [];
-    initial.errorElements = [];
-    initial.hasValidated = false;
-
-    _this.state = initial;
+    _this.reset(props);
     return _this;
   }
 
-  // boilerplate
-
-
   _createClass(Form, [{
+    key: 'reset',
+    value: function reset() {
+      var props = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
+
+      this.state = this.generateInitialState(props.fields);
+    }
+  }, {
+    key: 'generateInitialState',
+    value: function generateInitialState() {
+      var _this2 = this;
+
+      var fields = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
+
+      var initial = {};
+
+      this.progressFields = [];
+      Object.keys(fields).forEach(function (name) {
+        initial[name] = null;
+        if (fields[name].type === "checkboxGroup") {
+          initial[name] = [];
+        }
+        if (fields[name].metered) {
+          _this2.progressFields.push(name);
+        }
+      });
+      initial.valid = false;
+      initial.errors = [];
+      initial.errorElements = [];
+      initial.hasValidated = false;
+
+      return initial;
+    }
+
+    // boilerplate
+
+  }, {
     key: 'render',
     value: function render() {
-      var _this2 = this;
+      var _this3 = this;
 
       var cn = this.props.className;
       var sm = this.props.submitting;
@@ -9941,7 +9956,7 @@ var Form = function (_React$Component) {
         'form',
         { className: className, hidden: this.props.hidden, disabled: this.props.submitting },
         Object.keys(this.props.fields).map(function (name) {
-          return _this2.buildFormField(name, _this2.props.fields[name]);
+          return _this3.buildFormField(name, _this3.props.fields[name]);
         }),
         this.renderValidationErrors()
       );
@@ -9978,14 +9993,14 @@ var Form = function (_React$Component) {
   }, {
     key: 'getProgress',
     value: function getProgress() {
-      var _this3 = this;
+      var _this4 = this;
 
       // get the number of required fields that have a value filled in.
       var keys = Object.keys(this.props.fields).filter(function (key) {
-        return _this3.props.fields[key].metered !== false;
+        return _this4.props.fields[key].metered !== false;
       });
       var reduced = keys.reduce(function (a, b) {
-        return a + (_this3.hasFieldValue(b, _this3.state[b]) ? 1 : 0);
+        return a + (_this4.hasFieldValue(b, _this4.state[b]) ? 1 : 0);
       }, 0);
       var total = keys.length;
 
@@ -9997,7 +10012,7 @@ var Form = function (_React$Component) {
   }, {
     key: 'formCommonObject',
     value: function formCommonObject(name, field) {
-      var _this4 = this;
+      var _this5 = this;
 
       field.name = name;
 
@@ -10013,11 +10028,11 @@ var Form = function (_React$Component) {
         multiplicity: field.multiplicity,
         value: this.state[name] || '',
         onChange: function onChange(e, v) {
-          return _this4.update(name, field, e, v);
+          return _this5.update(name, field, e, v);
         },
         placeholder: field.placeholder,
         onUpdate: function onUpdate(e, n, f, v) {
-          return _this4.update(n, f, e, v);
+          return _this5.update(n, f, e, v);
         },
         checkValidation: this.checkValidation
       };
@@ -10217,18 +10232,18 @@ var Form = function (_React$Component) {
   }, {
     key: 'setStateAsChange',
     value: function setStateAsChange(fieldname, newState) {
-      var _this5 = this;
+      var _this6 = this;
 
       this.setState(newState, function () {
         // only revalidate on changes if we already validated before.
-        if (_this5.state.hasValidated) {
-          _this5.checkValidation();
+        if (_this6.state.hasValidated) {
+          _this6.checkValidation();
         }
-        if (_this5.props.onChange) {
-          _this5.props.onChange(newState);
+        if (_this6.props.onChange) {
+          _this6.props.onChange(newState);
         }
-        if (_this5.props.onProgress) {
-          _this5.props.onProgress(_this5.getProgress());
+        if (_this6.props.onProgress) {
+          _this6.props.onProgress(_this6.getProgress());
         }
       });
     }
@@ -10243,11 +10258,11 @@ var Form = function (_React$Component) {
   }, {
     key: 'checkValidation',
     value: function checkValidation() {
-      var _this6 = this;
+      var _this7 = this;
 
       return this.validates(function (valid) {
-        if (_this6.props.validates) {
-          _this6.props.validates(valid);
+        if (_this7.props.validates) {
+          _this7.props.validates(valid);
         }
       });
     }
@@ -10263,7 +10278,7 @@ var Form = function (_React$Component) {
   }, {
     key: 'validates',
     value: function validates(postValidate) {
-      var _this7 = this;
+      var _this8 = this;
 
       var state = this.state;
       var errors = [];
@@ -10271,7 +10286,7 @@ var Form = function (_React$Component) {
       var fields = this.props.fields || {};
 
       Object.keys(fields).forEach(function (name) {
-        _this7.validateField(name, errors, errorElements);
+        _this8.validateField(name, errors, errorElements);
       });
 
       this.setState({
@@ -10280,7 +10295,7 @@ var Form = function (_React$Component) {
         errors: errors,
         errorElements: errorElements
       }, function () {
-        postValidate(_this7.state.valid);
+        postValidate(_this8.state.valid);
       });
 
       return !errors.length;
@@ -10299,7 +10314,7 @@ var Form = function (_React$Component) {
   }, {
     key: 'validateField',
     value: function validateField(name, errors, errorElements) {
-      var _this8 = this;
+      var _this9 = this;
 
       var value = this.state[name];
       var validators = this.props.fields[name].validator;
@@ -10318,9 +10333,9 @@ var Form = function (_React$Component) {
         if (validator.validate) {
           err = validator.validate(value);
         } else {
-          err = !_this8.hasFieldValue(name, _this8.state[name]);
+          err = !_this9.hasFieldValue(name, _this9.state[name]);
         }
-        if (err && _this8.passesControl(name)) {
+        if (err && _this9.passesControl(name)) {
           errors.push(validator.error);
           if (errorElements.indexOf(name) === -1) {
             errorElements.push(name);
@@ -11174,27 +11189,37 @@ var MultiPageForm = function (_React$Component) {
   function MultiPageForm(props) {
     _classCallCheck(this, MultiPageForm);
 
-    // Form data is tracked outside of state, as
-    // it does not influence the UI of this component
-    // in the slightest.
     var _this = _possibleConstructorReturn(this, (MultiPageForm.__proto__ || Object.getPrototypeOf(MultiPageForm)).call(this, props));
 
-    _this.formData = {};
-    _this.state = {
-      step: 0,
-      steps: _this.props.formdata.length,
-      valid: []
-    };
+    _this.reset();
     return _this;
   }
 
-  /**
-   * Render this component
-   * @returns {JSX} this component as HTML UI
-   */
-
-
   _createClass(MultiPageForm, [{
+    key: 'reset',
+    value: function reset() {
+      // Form data is tracked outside of state, as
+      // it does not influence the UI of this component
+      // in the slightest.
+      this.formData = {};
+      this.state = this.generateInitialState();
+    }
+  }, {
+    key: 'generateInitialState',
+    value: function generateInitialState() {
+      return {
+        step: 0,
+        steps: this.props.formdata.length,
+        valid: []
+      };
+    }
+
+    /**
+     * Render this component
+     * @returns {JSX} this component as HTML UI
+     */
+
+  }, {
     key: 'render',
     value: function render() {
       var _this2 = this;
@@ -11480,11 +11505,7 @@ var _createClass = function () { function defineProperties(target, props) { for 
 
 var _react = __webpack_require__(0);
 
-var _react2 = _interopRequireDefault(_react);
-
 var _cleanProps = __webpack_require__(1);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -11492,8 +11513,8 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-var CheckBoxGroup = function (_React$Component) {
-  _inherits(CheckBoxGroup, _React$Component);
+var CheckBoxGroup = function (_Component) {
+  _inherits(CheckBoxGroup, _Component);
 
   function CheckBoxGroup(props) {
     _classCallCheck(this, CheckBoxGroup);
@@ -11513,19 +11534,19 @@ var CheckBoxGroup = function (_React$Component) {
 
       for (var c = 0; c < colCount; c++) {
         var choiceset = choices.slice(c * bracket, (c + 1) * bracket).map(function (choice) {
-          return _react2.default.createElement(
+          return React.createElement(
             'div',
             { key: choice },
-            _react2.default.createElement(
+            React.createElement(
               'label',
               { className: props.labelClass },
-              _react2.default.createElement('input', { type: 'checkbox', name: props.name, value: choice, checked: props.value.indexOf(choice) > -1, onChange: props.onChange }),
+              React.createElement('input', { type: 'checkbox', name: props.name, value: choice, checked: props.value.indexOf(choice) > -1, onChange: props.onChange }),
               choice
             )
           );
         });
 
-        columns.push(_react2.default.createElement(
+        columns.push(React.createElement(
           'div',
           { key: field.name + 'col' + c, className: 'column' },
           choiceset
@@ -11534,7 +11555,7 @@ var CheckBoxGroup = function (_React$Component) {
 
       var className = props.className || "checkboxGroup";
 
-      return _react2.default.createElement(
+      return React.createElement(
         'div',
         { className: className, key: this.props.key },
         columns
@@ -11543,7 +11564,7 @@ var CheckBoxGroup = function (_React$Component) {
   }]);
 
   return CheckBoxGroup;
-}(_react2.default.Component);
+}(_react.Component);
 
 exports.default = CheckBoxGroup;
 ;
