@@ -1,6 +1,6 @@
 {
   "name": "react-formbuilder",
-  "version": "0.4.0",
+  "version": "0.5.0",
   "description": "A relatively easy to use form builder (single or multipage), with error reporting and lots of room for customization ",
   "main": "dist/react-formbuilder.js",
   "directories": {
