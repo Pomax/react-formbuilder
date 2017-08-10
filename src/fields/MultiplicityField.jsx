@@ -51,7 +51,7 @@ class MultiplicityField extends React.Component {
     return (
       <div className="multiple">
         { fields }
-        <button type="button" className="add-field button" onClick={this.moreFields}>{
+        <button type="button" className="add-field button" onClick={() => this.moreFields()}>{
           this.props.field.addLabel ? this.props.field.addLabel : defaultAddLabel
         }</button>
       </div>
