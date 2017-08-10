@@ -100,7 +100,7 @@ class Form extends React.Component {
       onChange: (e,v) => this.update(name, field, e, v),
       placeholder: field.placeholder,
       onUpdate: (e,n,f,v) => this.update(n,f,e,v),
-      checkValidation: this.checkValidation
+      checkValidation: () => this.checkValidation()
     };
 
     var shouldHide = false, choices = false, shouldFocus = false;
