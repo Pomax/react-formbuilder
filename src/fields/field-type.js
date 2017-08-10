@@ -1,5 +1,5 @@
 var React = require('react');
-var types = React.PropTypes;
+var types = require('prop-types');
 
 var validatorPropType = types.shape({
   error: types.string,

@@ -10816,7 +10816,7 @@ var MultiSectionedForm = function (_React$Component) {
 ;
 
 MultiSectionedForm.propTypes = {
-  fields: _propTypes2.default.arrayOf(_react2.default.PropTypes.object).isRequired,
+  fields: _propTypes2.default.arrayOf(_propTypes2.default.object).isRequired,
   onSubmit: _propTypes2.default.func.isRequired,
   onProgress: _propTypes2.default.func
 };
@@ -11038,7 +11038,7 @@ exports.default = MultiplicityField;
 
 
 var React = __webpack_require__(0);
-var types = React.PropTypes;
+var types = __webpack_require__(3);
 
 var validatorPropType = types.shape({
   error: types.string,
