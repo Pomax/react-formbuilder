@@ -505,7 +505,9 @@ var Form = function (_React$Component) {
         onUpdate: function onUpdate(e, n, f, v) {
           return _this5.update(n, f, e, v);
         },
-        checkValidation: this.checkValidation
+        checkValidation: function checkValidation() {
+          return _this5.checkValidation();
+        }
       };
 
       var shouldHide = false,
@@ -1404,7 +1406,9 @@ var MultiplicityField = function (_React$Component) {
         fields,
         _react2.default.createElement(
           'button',
-          { type: 'button', className: 'add-field button', onClick: this.moreFields },
+          { type: 'button', className: 'add-field button', onClick: function onClick() {
+              return _this2.moreFields();
+            } },
           this.props.field.addLabel ? this.props.field.addLabel : defaultAddLabel
         )
       );
