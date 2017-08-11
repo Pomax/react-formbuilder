@@ -1301,7 +1301,7 @@ exports.default = MultiSectionedForm;
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-
+/* WEBPACK VAR INJECTION */(function(React) {
 
 Object.defineProperty(exports, "__esModule", {
   value: true
@@ -1314,8 +1314,6 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 var _react = __webpack_require__(0);
-
-var _react2 = _interopRequireDefault(_react);
 
 var _reactDom = __webpack_require__(12);
 
@@ -1340,8 +1338,8 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 var defaultRemoveLabel = "(-)";
 var defaultAddLabel = "(+)";
 
-var MultiplicityField = function (_React$Component) {
-  _inherits(MultiplicityField, _React$Component);
+var MultiplicityField = function (_Component) {
+  _inherits(MultiplicityField, _Component);
 
   function MultiplicityField(props) {
     _classCallCheck(this, MultiplicityField);
@@ -1400,11 +1398,11 @@ var MultiplicityField = function (_React$Component) {
           return _this2.updateField(e, name, field, pos);
         });
       });
-      return _react2.default.createElement(
+      return React.createElement(
         'div',
         { className: 'multiple' },
         fields,
-        _react2.default.createElement(
+        React.createElement(
           'button',
           { type: 'button', className: 'add-field button', onClick: function onClick() {
               return _this2.moreFields();
@@ -1471,12 +1469,12 @@ var MultiplicityField = function (_React$Component) {
       inputClass = (inputClass + " multiple").trim();
 
       if (ftype === "undefined" || Type === "text") {
-        formfield = _react2.default.createElement('input', _extends({ className: inputClass, type: Type ? Type : "text" }, common));
+        formfield = React.createElement('input', _extends({ className: inputClass, type: Type ? Type : "text" }, common));
       } else if (Type === "textarea") {
-        formfield = _react2.default.createElement('textarea', _extends({ className: inputClass }, common));
+        formfield = React.createElement('textarea', _extends({ className: inputClass }, common));
       }
 
-      var removeButton = position > 0 ? _react2.default.createElement(
+      var removeButton = position > 0 ? React.createElement(
         'button',
         { type: 'button', className: 'remove-field button', onClick: function onClick() {
             return _this5.removeField(position);
@@ -1484,7 +1482,7 @@ var MultiplicityField = function (_React$Component) {
         this.props.field.removeLabel ? this.props.field.removeLabel : defaultRemoveLabel
       ) : null;
 
-      return _react2.default.createElement(
+      return React.createElement(
         'div',
         { key: name + '-row-' + position, className: 'row' },
         formfield,
@@ -1494,7 +1492,7 @@ var MultiplicityField = function (_React$Component) {
   }]);
 
   return MultiplicityField;
-}(_react2.default.Component);
+}(_react.Component);
 
 ;
 
@@ -1504,6 +1502,7 @@ MultiplicityField.propTypes = {
 };
 
 exports.default = MultiplicityField;
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
 /* 10 */
@@ -1568,45 +1567,43 @@ var emptyFunction = __webpack_require__(5);
 var warning = emptyFunction;
 
 if (process.env.NODE_ENV !== 'production') {
-  (function () {
-    var printWarning = function printWarning(format) {
-      for (var _len = arguments.length, args = Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
-        args[_key - 1] = arguments[_key];
+  var printWarning = function printWarning(format) {
+    for (var _len = arguments.length, args = Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
+      args[_key - 1] = arguments[_key];
+    }
+
+    var argIndex = 0;
+    var message = 'Warning: ' + format.replace(/%s/g, function () {
+      return args[argIndex++];
+    });
+    if (typeof console !== 'undefined') {
+      console.error(message);
+    }
+    try {
+      // --- Welcome to debugging React ---
+      // This error was thrown as a convenience so that you can use this stack
+      // to find the callsite that caused this warning to fire.
+      throw new Error(message);
+    } catch (x) {}
+  };
+
+  warning = function warning(condition, format) {
+    if (format === undefined) {
+      throw new Error('`warning(condition, format, ...args)` requires a warning ' + 'message argument');
+    }
+
+    if (format.indexOf('Failed Composite propType: ') === 0) {
+      return; // Ignore CompositeComponent proptype check.
+    }
+
+    if (!condition) {
+      for (var _len2 = arguments.length, args = Array(_len2 > 2 ? _len2 - 2 : 0), _key2 = 2; _key2 < _len2; _key2++) {
+        args[_key2 - 2] = arguments[_key2];
       }
 
-      var argIndex = 0;
-      var message = 'Warning: ' + format.replace(/%s/g, function () {
-        return args[argIndex++];
-      });
-      if (typeof console !== 'undefined') {
-        console.error(message);
-      }
-      try {
-        // --- Welcome to debugging React ---
-        // This error was thrown as a convenience so that you can use this stack
-        // to find the callsite that caused this warning to fire.
-        throw new Error(message);
-      } catch (x) {}
-    };
-
-    warning = function warning(condition, format) {
-      if (format === undefined) {
-        throw new Error('`warning(condition, format, ...args)` requires a warning ' + 'message argument');
-      }
-
-      if (format.indexOf('Failed Composite propType: ') === 0) {
-        return; // Ignore CompositeComponent proptype check.
-      }
-
-      if (!condition) {
-        for (var _len2 = arguments.length, args = Array(_len2 > 2 ? _len2 - 2 : 0), _key2 = 2; _key2 < _len2; _key2++) {
-          args[_key2 - 2] = arguments[_key2];
-        }
-
-        printWarning.apply(undefined, [format].concat(args));
-      }
-    };
-  })();
+      printWarning.apply(undefined, [format].concat(args));
+    }
+  };
 }
 
 module.exports = warning;
@@ -1906,7 +1903,7 @@ var MultiSectionedForm = exports.MultiSectionedForm = _MultiSectionedForm2.defau
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-
+/* WEBPACK VAR INJECTION */(function(React) {
 
 Object.defineProperty(exports, "__esModule", {
   value: true
@@ -1918,11 +1915,7 @@ var _createClass = function () { function defineProperties(target, props) { for 
 
 var _react = __webpack_require__(0);
 
-var _react2 = _interopRequireDefault(_react);
-
 var _cleanProps = __webpack_require__(1);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -1930,8 +1923,8 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-var CheckBox = function (_React$Component) {
-  _inherits(CheckBox, _React$Component);
+var CheckBox = function (_Component) {
+  _inherits(CheckBox, _Component);
 
   function CheckBox(props) {
     _classCallCheck(this, CheckBox);
@@ -1946,13 +1939,13 @@ var CheckBox = function (_React$Component) {
       var label = props.label;
       var labelClass = props.labelClass;
 
-      return _react2.default.createElement(
+      return React.createElement(
         'div',
         null,
-        _react2.default.createElement(
+        React.createElement(
           'label',
           { className: labelClass, ref: 'label' },
-          _react2.default.createElement('input', _extends({}, (0, _cleanProps.cleanProps)(props), { type: 'checkbox', ref: 'box' })),
+          React.createElement('input', _extends({}, (0, _cleanProps.cleanProps)(props), { type: 'checkbox', ref: 'box' })),
           label.props.children
         )
       );
@@ -1960,17 +1953,18 @@ var CheckBox = function (_React$Component) {
   }]);
 
   return CheckBox;
-}(_react2.default.Component);
+}(_react.Component);
 
 exports.default = CheckBox;
 ;
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
 /* 16 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-
+/* WEBPACK VAR INJECTION */(function(React) {
 
 Object.defineProperty(exports, "__esModule", {
   value: true
@@ -2043,13 +2037,14 @@ var CheckBoxGroup = function (_Component) {
 
 exports.default = CheckBoxGroup;
 ;
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
 /* 17 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-
+/* WEBPACK VAR INJECTION */(function(React) {
 
 Object.defineProperty(exports, "__esModule", {
   value: true
@@ -2059,11 +2054,7 @@ var _createClass = function () { function defineProperties(target, props) { for 
 
 var _react = __webpack_require__(0);
 
-var _react2 = _interopRequireDefault(_react);
-
 var _cleanProps = __webpack_require__(1);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -2071,8 +2062,8 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-var ChoiceGroup = function (_React$Component) {
-  _inherits(ChoiceGroup, _React$Component);
+var ChoiceGroup = function (_Component) {
+  _inherits(ChoiceGroup, _Component);
 
   function ChoiceGroup(props) {
     _classCallCheck(this, ChoiceGroup);
@@ -2092,19 +2083,19 @@ var ChoiceGroup = function (_React$Component) {
 
       for (var c = 0; c < colCount; c++) {
         var choiceset = choices.slice(c * bracket, (c + 1) * bracket).map(function (choice) {
-          return _react2.default.createElement(
+          return React.createElement(
             'div',
             { key: choice },
-            _react2.default.createElement(
+            React.createElement(
               'label',
               { className: props.labelClass },
-              _react2.default.createElement('input', { type: 'radio', name: props.name, value: choice, checked: props.value === choice, onChange: props.onChange }),
+              React.createElement('input', { type: 'radio', name: props.name, value: choice, checked: props.value === choice, onChange: props.onChange }),
               choice
             )
           );
         });
 
-        columns.push(_react2.default.createElement(
+        columns.push(React.createElement(
           'div',
           { key: field.name + 'col' + c, className: 'column' },
           choiceset
@@ -2113,7 +2104,7 @@ var ChoiceGroup = function (_React$Component) {
 
       var className = props.className || "choiceGroup";
 
-      return _react2.default.createElement(
+      return React.createElement(
         'div',
         { className: className, key: this.props.key },
         columns
@@ -2122,17 +2113,18 @@ var ChoiceGroup = function (_React$Component) {
   }]);
 
   return ChoiceGroup;
-}(_react2.default.Component);
+}(_react.Component);
 
 exports.default = ChoiceGroup;
 ;
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
 /* 18 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-
+/* WEBPACK VAR INJECTION */(function(React) {
 
 Object.defineProperty(exports, "__esModule", {
   value: true
@@ -2141,8 +2133,6 @@ Object.defineProperty(exports, "__esModule", {
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 var _react = __webpack_require__(0);
-
-var _react2 = _interopRequireDefault(_react);
 
 var _cleanProps = __webpack_require__(1);
 
@@ -2158,8 +2148,8 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-var Image = function (_React$Component) {
-  _inherits(Image, _React$Component);
+var Image = function (_Component) {
+  _inherits(Image, _Component);
 
   function Image(props) {
     _classCallCheck(this, Image);
@@ -2181,10 +2171,10 @@ var Image = function (_React$Component) {
       var field = props.field;
       var className = ((props.className || '') + ' image').trim();
 
-      return _react2.default.createElement(
+      return React.createElement(
         'div',
         { className: className },
-        _react2.default.createElement('input', { type: 'file', hidden: "hidden", ref: 'filePicker', onChange: function onChange(e) {
+        React.createElement('input', { type: 'file', hidden: "hidden", ref: 'filePicker', onChange: function onChange(e) {
             return _this2.handleFiles(e);
           } }),
         this.generatePicker(field.prompt, field.reprompt, field.helpText)
@@ -2197,20 +2187,20 @@ var Image = function (_React$Component) {
 
       if (!this.state.attachment) {
         prompt = prompt || "Click here to pick an image";
-        helpText = helpText ? _react2.default.createElement(
+        helpText = helpText ? React.createElement(
           'span',
           { key: 'text', className: 'help-text' },
           helpText
         ) : null;
 
-        return [_react2.default.createElement('input', { key: 'button', type: 'button', className: 'btn attach', onClick: function onClick(e) {
+        return [React.createElement('input', { key: 'button', type: 'button', className: 'btn attach', onClick: function onClick(e) {
             return _this3.selectFiles(e);
           }, value: prompt }), helpText];
       }
 
       reprompt = reprompt || "Click here to pick a different image";
 
-      return [_react2.default.createElement('img', { key: 'preview', src: "data:image/jpg;base64," + this.state.attachment.base64 }), _react2.default.createElement('input', { key: 'attach', type: 'button', className: 'btn reattach', onClick: function onClick(e) {
+      return [React.createElement('img', { key: 'preview', src: "data:image/jpg;base64," + this.state.attachment.base64 }), React.createElement('input', { key: 'attach', type: 'button', className: 'btn reattach', onClick: function onClick(e) {
           return _this3.selectFiles(e);
         }, value: reprompt })];
     }
@@ -2259,17 +2249,18 @@ var Image = function (_React$Component) {
   }]);
 
   return Image;
-}(_react2.default.Component);
+}(_react.Component);
 
 exports.default = Image;
 ;
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
 /* 19 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-
+/* WEBPACK VAR INJECTION */(function(React) {
 
 Object.defineProperty(exports, "__esModule", {
   value: true
@@ -2282,8 +2273,6 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 var _react = __webpack_require__(0);
-
-var _react2 = _interopRequireDefault(_react);
 
 var _cleanProps = __webpack_require__(1);
 
@@ -2299,8 +2288,8 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-var Text = function (_React$Component) {
-  _inherits(Text, _React$Component);
+var Text = function (_Component) {
+  _inherits(Text, _Component);
 
   function Text(props) {
     _classCallCheck(this, Text);
@@ -2316,25 +2305,26 @@ var Text = function (_React$Component) {
 
       if (props.multiplicity) {
         var values = (typeof value === 'undefined' ? 'undefined' : _typeof(value)) === "object" ? value : [value];
-        return _react2.default.createElement(_MultiplicityField2.default, _extends({}, props, { values: values }));
+        return React.createElement(_MultiplicityField2.default, _extends({}, props, { values: values }));
       }
 
-      return _react2.default.createElement('input', _extends({ type: 'text' }, (0, _cleanProps.cleanProps)(props)));
+      return React.createElement('input', _extends({ type: 'text' }, (0, _cleanProps.cleanProps)(props)));
     }
   }]);
 
   return Text;
-}(_react2.default.Component);
+}(_react.Component);
 
 exports.default = Text;
 ;
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
 /* 20 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-
+/* WEBPACK VAR INJECTION */(function(React) {
 
 Object.defineProperty(exports, "__esModule", {
   value: true
@@ -2344,11 +2334,7 @@ var _createClass = function () { function defineProperties(target, props) { for 
 
 var _react = __webpack_require__(0);
 
-var _react2 = _interopRequireDefault(_react);
-
 var _cleanProps = __webpack_require__(1);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -2356,8 +2342,8 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-var TextArea = function (_React$Component) {
-  _inherits(TextArea, _React$Component);
+var TextArea = function (_Component) {
+  _inherits(TextArea, _Component);
 
   function TextArea(props) {
     _classCallCheck(this, TextArea);
@@ -2368,15 +2354,16 @@ var TextArea = function (_React$Component) {
   _createClass(TextArea, [{
     key: 'render',
     value: function render() {
-      return _react2.default.createElement('textarea', (0, _cleanProps.cleanProps)(this.props));
+      return React.createElement('textarea', (0, _cleanProps.cleanProps)(this.props));
     }
   }]);
 
   return TextArea;
-}(_react2.default.Component);
+}(_react.Component);
 
 exports.default = TextArea;
 ;
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
 /* 21 */

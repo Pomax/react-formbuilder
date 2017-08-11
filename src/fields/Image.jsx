@@ -1,8 +1,8 @@
-import React from 'react';
+import { Component } from 'react';
 import { cleanProps } from './clean-props';
 import MultiplicityField from './MultiplicityField.jsx';
 
-export default class Image extends React.Component {
+export default class Image extends Component {
   constructor(props) {
     super(props);
     this.state = {

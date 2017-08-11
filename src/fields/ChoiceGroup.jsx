@@ -1,11 +1,11 @@
-import React from 'react';
+import { Component } from 'react';
 import { cleanProps } from './clean-props';
 
-export default class ChoiceGroup extends React.Component {
+export default class ChoiceGroup extends Component {
   constructor(props) {
     super(props);
   }
-  
+
   render() {
     let props = this.props;
     let field = props.field;
