@@ -163,7 +163,7 @@ class MultiSectionedForm extends React.Component {
 };
 
 MultiSectionedForm.propTypes = {
-  fields: PropTypes.arrayOf(React.PropTypes.object).isRequired,
+  fields: PropTypes.arrayOf(PropTypes.object).isRequired,
   onSubmit: PropTypes.func.isRequired,
   onProgress:PropTypes.func
 };
