@@ -1,41 +1,41 @@
-var React = require('react');
-var types = require('prop-types');
+import React from 'react';
+import PropTypes from 'prop-types';
 
-var validatorPropType = types.shape({
-  error: types.string,
-  validate: types.func
+var validatorPropType = PropTypes.shape({
+  error: PropTypes.string,
+  validate: PropTypes.func
 });
 
 var controllerPropType = {
-  name: types.string,
-  value: types.oneOfType([
-    types.bool,
-    types.number,
-    types.string,
-    types.array,
-    types.object
+  name: PropTypes.string,
+  value: PropTypes.oneOfType([
+    PropTypes.bool,
+    PropTypes.number,
+    PropTypes.string,
+    PropTypes.array,
+    PropTypes.object
   ]),
 };
 
-module.exports = types.shape({
-  type: types.oneOfType([
-    types.oneOf(['image','text','textarea','choiceGroup','checkbox','checkboxGroup']),
-    types.func
+module.exports = PropTypes.shape({
+  type: PropTypes.oneOfType([
+    PropTypes.oneOf(['image','text','textarea','choiceGroup','checkbox','checkboxGroup']),
+    PropTypes.func
   ]).isRequired,
-  label: types.oneOfType([
-    types.string,
-    types.element
+  label: PropTypes.oneOfType([
+    PropTypes.string,
+    PropTypes.element
   ]),
-  placeholder: types.string,
-  validator: types.oneOfType([
+  placeholder: PropTypes.string,
+  validator: PropTypes.oneOfType([
     validatorPropType,
-    types.arrayOf(validatorPropType)
+    PropTypes.arrayOf(validatorPropType)
   ]),
-  metered: types.boolean,
-  optional: types.boolean,
-  controller: types.shape(controllerPropType),
-  colCount: types.number,
-  multiplicity: types.number,  // used by text
-  prompt: types.string,        // used by image
-  reprompt: types.string       // used by image
+  metered: PropTypes.boolean,
+  optional: PropTypes.boolean,
+  controller: PropTypes.shape(controllerPropType),
+  colCount: PropTypes.number,
+  multiplicity: PropTypes.number,  // used by text
+  prompt: PropTypes.string,        // used by image
+  reprompt: PropTypes.string       // used by image
 });
