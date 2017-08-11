@@ -1,4 +1,4 @@
-import React from 'react';
+import { Component } from 'react';
 import ReactDOM from 'react-dom';
 import PropTypes from 'prop-types';
 import fieldType from './field-type.js';
@@ -6,7 +6,7 @@ import fieldType from './field-type.js';
 const defaultRemoveLabel = "(-)";
 const defaultAddLabel = "(+)";
 
-class MultiplicityField extends React.Component {
+class MultiplicityField extends Component {
   constructor(props) {
     super(props);
 

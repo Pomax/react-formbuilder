@@ -1,3 +1,5 @@
+var webpack = require(`webpack`)
+
 module.exports = [{
   context: `${__dirname}/src`,
   entry: {
@@ -9,6 +11,11 @@ module.exports = [{
     library: `ReactFormBuilder`,
     libraryTarget: `umd`
   },
+  plugins: [
+    new webpack.ProvidePlugin({
+      React: "react"
+    })
+  ],
   externals: [
     {
       react: {
