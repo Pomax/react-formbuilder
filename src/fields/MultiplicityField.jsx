@@ -65,7 +65,7 @@ class MultiplicityField extends React.Component {
     values[position] = newvalue;
     this.setStateAsChange({ values }, () => {
       if (this.props.onUpdate) {
-        this.props.onUpdate(e, name, field, values.filter(val => !!val.trim()));
+        this.props.onUpdate(e, name, field, values.filter(val => val.trim()));
       };
     });
   }
