@@ -11185,7 +11185,9 @@ var MultiplicityField = function (_Component) {
       values[position] = newvalue;
       this.setStateAsChange({ values: values }, function () {
         if (_this3.props.onUpdate) {
-          _this3.props.onUpdate(e, name, field, values);
+          _this3.props.onUpdate(e, name, field, values.filter(function (val) {
+            return val.trim();
+          }));
         };
       });
     }
