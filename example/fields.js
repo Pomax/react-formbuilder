@@ -1,3 +1,5 @@
+import {CustomInputField} from './app.js';
+
 module.exports = {
   'avatar': {
     type: "image",
@@ -88,5 +90,9 @@ module.exports = {
         error: "Your notes must be at least 45 words."
       }
     ]
+  },
+  CustomField: {
+    label: "Custom 51 char field",
+    type: CustomInputField
   }
 };

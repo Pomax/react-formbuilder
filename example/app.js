@@ -5,6 +5,45 @@ var ReactFormBuilder = require('../dist/react-formbuilder');
 
 var Form = ReactFormBuilder.Form;
 
+var Fields = ReactFormBuilder.Fields
+
+export class CustomInputField extends React.Component {
+
+  constructor(props) {
+    super(props)
+
+    this.state = {
+      chars: 0,
+      textColor: 'green'
+    }
+  }
+
+  onChange(e) {
+    this.state.chars = e.target.value.length
+    if(e.target.value.length < 51) {
+      this.setState({
+        textColor: 'green'
+      })
+    } else {
+      this.setState({
+        textColor: 'red'
+      })
+    }
+    this.props.onChange(e)
+  }
+
+  render() {
+    return (
+      <div>
+        <Fields.Text label={this.props.label} onChange={(e) => this.onChange(e)} />
+        <div style={{ color: this.state.textColor }}>
+          {this.state.chars}/51
+        </div>
+      </div>
+    )
+  }
+}
+
 class App extends React.Component {
   /**
    * Set up an initial state and then try to fetch this file as text
