@@ -7,7 +7,7 @@
 		exports["ReactFormBuilder"] = factory(require("react"), require("react-dom"));
 	else
 		root["ReactFormBuilder"] = factory(root["React"], root["ReactDOM"]);
-})(this, function(__WEBPACK_EXTERNAL_MODULE_0__, __WEBPACK_EXTERNAL_MODULE_13__) {
+})(this, function(__WEBPACK_EXTERNAL_MODULE_0__, __WEBPACK_EXTERNAL_MODULE_14__) {
 return /******/ (function(modules) { // webpackBootstrap
 /******/ 	// The module cache
 /******/ 	var installedModules = {};
@@ -73,7 +73,7 @@ return /******/ (function(modules) { // webpackBootstrap
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 15);
+/******/ 	return __webpack_require__(__webpack_require__.s = 16);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -319,11 +319,11 @@ if (process.env.NODE_ENV !== 'production') {
   // By explicitly using `prop-types` you are opting into new development behavior.
   // http://fb.me/prop-types-in-prod
   var throwOnDirectAccess = true;
-  module.exports = __webpack_require__(24)(isValidElement, throwOnDirectAccess);
+  module.exports = __webpack_require__(25)(isValidElement, throwOnDirectAccess);
 } else {
   // By explicitly using `prop-types` you are opting into new production behavior.
   // http://fb.me/prop-types-in-prod
-  module.exports = __webpack_require__(23)();
+  module.exports = __webpack_require__(24)();
 }
 
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(2)))
@@ -345,7 +345,7 @@ var _react = __webpack_require__(0);
 
 var _react2 = _interopRequireDefault(_react);
 
-var _reactDom = __webpack_require__(13);
+var _reactDom = __webpack_require__(14);
 
 var _reactDom2 = _interopRequireDefault(_reactDom);
 
@@ -353,7 +353,7 @@ var _propTypes = __webpack_require__(3);
 
 var _propTypes2 = _interopRequireDefault(_propTypes);
 
-var _fields = __webpack_require__(9);
+var _fields = __webpack_require__(10);
 
 var _fields2 = _interopRequireDefault(_fields);
 
@@ -509,6 +509,12 @@ var Form = function (_React$Component) {
           return _this5.checkValidation();
         }
       };
+
+      if ((field.type == 'text' || field.type == 'textarea') && !field.multiplicity) {
+        common.charLimit = field.charLimit;
+        common.wordLimit = field.wordLimit;
+        common.cutAtLimit = field.cutAtLimit;
+      }
 
       var shouldHide = false,
           choices = false,
@@ -948,6 +954,130 @@ module.exports = Form;
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
+/* WEBPACK VAR INJECTION */(function(React) {
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+exports.default = addCounter;
+
+var _react = __webpack_require__(0);
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+function addCounter(TextInput) {
+
+  return function (_Component) {
+    _inherits(Wrapper, _Component);
+
+    function Wrapper(props) {
+      _classCallCheck(this, Wrapper);
+
+      var _this = _possibleConstructorReturn(this, (Wrapper.__proto__ || Object.getPrototypeOf(Wrapper)).call(this, props));
+
+      _this.state = {
+        charCount: 0,
+        wordCount: 1,
+        value: ''
+      };
+
+      _this.textInputProps = Object.assign({}, _this.props);
+      ['charLimit', 'wordLimit', 'cutAtLimit', 'onChange'].forEach(function (item) {
+        return delete _this.textInputProps[item];
+      });
+      return _this;
+    }
+
+    _createClass(Wrapper, [{
+      key: 'onChange',
+      value: function onChange(e) {
+        var value = e.target.value;
+        var charLimit = this.props.charLimit;
+        var wordLimit = this.props.wordLimit;
+
+        if (charLimit) {
+
+          if (this.props.cutAtLimit && value.length > charLimit) {
+            this.setState({
+              charCount: charLimit,
+              value: value.substring(0, charLimit)
+            });
+          } else {
+            this.setState({
+              charCount: value.length,
+              value: value
+            });
+          }
+        } else if (wordLimit) {
+
+          var words = value.split(' ');
+          if (this.props.cutAtLimit && words.length > wordLimit) {
+            this.setState({
+              wordCount: wordLimit,
+              value: words.slice(0, wordLimit).join(' ')
+            });
+          } else {
+            this.setState({
+              wordCount: words.length,
+              value: value
+            });
+          }
+        }
+
+        this.props.onChange(e, this.state.value);
+      }
+    }, {
+      key: 'render',
+      value: function render() {
+        var _this2 = this;
+
+        var remaining = null;
+
+        // if we have wordlimit or character limit render with a counter
+        if (this.props.charLimit || this.props.wordLimit) {
+          if (this.props.charLimit) {
+            remaining = this.props.charLimit - this.state.charCount;
+          } else if (this.props.wordLimit) {
+            remaining = this.props.wordLimit - this.state.wordCount;
+          }
+          return React.createElement(
+            'div',
+            null,
+            React.createElement(TextInput, _extends({}, this.textInputProps, { onChange: function onChange(e) {
+                return _this2.onChange(e);
+              }, value: this.state.value })),
+            React.createElement(
+              'div',
+              { style: { color: remaining < 0 && 'red' } },
+              remaining
+            )
+          );
+        }
+
+        // else render plain old TextInput
+        return React.createElement(TextInput, _extends({}, this.textInputProps, { onChange: this.props.onChange }));
+      }
+    }]);
+
+    return Wrapper;
+  }(_react.Component);
+}
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
+
+/***/ }),
+/* 6 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
 
 
 /**
@@ -988,7 +1118,7 @@ emptyFunction.thatReturnsArgument = function (arg) {
 module.exports = emptyFunction;
 
 /***/ }),
-/* 6 */
+/* 7 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1050,7 +1180,7 @@ module.exports = invariant;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(2)))
 
 /***/ }),
-/* 7 */
+/* 8 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1071,7 +1201,7 @@ module.exports = ReactPropTypesSecret;
 
 
 /***/ }),
-/* 8 */
+/* 9 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1297,50 +1427,55 @@ MultiSectionedForm.propTypes = {
 exports.default = MultiSectionedForm;
 
 /***/ }),
-/* 9 */
+/* 10 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var _CheckBox = __webpack_require__(16);
+var _CheckBox = __webpack_require__(17);
 
 var _CheckBox2 = _interopRequireDefault(_CheckBox);
 
-var _CheckBoxGroup = __webpack_require__(17);
+var _CheckBoxGroup = __webpack_require__(18);
 
 var _CheckBoxGroup2 = _interopRequireDefault(_CheckBoxGroup);
 
-var _ChoiceGroup = __webpack_require__(18);
+var _ChoiceGroup = __webpack_require__(19);
 
 var _ChoiceGroup2 = _interopRequireDefault(_ChoiceGroup);
 
-var _Image = __webpack_require__(19);
+var _Image = __webpack_require__(20);
 
 var _Image2 = _interopRequireDefault(_Image);
 
-var _Text = __webpack_require__(20);
+var _Text = __webpack_require__(21);
 
 var _Text2 = _interopRequireDefault(_Text);
 
-var _TextArea = __webpack_require__(21);
+var _TextArea = __webpack_require__(22);
 
 var _TextArea2 = _interopRequireDefault(_TextArea);
+
+var _addCounter = __webpack_require__(5);
+
+var _addCounter2 = _interopRequireDefault(_addCounter);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 module.exports = {
-  fieldType: __webpack_require__(11),
+  fieldType: __webpack_require__(12),
   CheckBox: _CheckBox2.default,
   CheckBoxGroup: _CheckBoxGroup2.default,
   ChoiceGroup: _ChoiceGroup2.default,
   Image: _Image2.default,
   Text: _Text2.default,
-  TextArea: _TextArea2.default
+  TextArea: _TextArea2.default,
+  addCounter: _addCounter2.default
 };
 
 /***/ }),
-/* 10 */
+/* 11 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1358,7 +1493,7 @@ var _createClass = function () { function defineProperties(target, props) { for 
 
 var _react = __webpack_require__(0);
 
-var _reactDom = __webpack_require__(13);
+var _reactDom = __webpack_require__(14);
 
 var _reactDom2 = _interopRequireDefault(_reactDom);
 
@@ -1366,7 +1501,7 @@ var _propTypes = __webpack_require__(3);
 
 var _propTypes2 = _interopRequireDefault(_propTypes);
 
-var _fieldType = __webpack_require__(11);
+var _fieldType = __webpack_require__(12);
 
 var _fieldType2 = _interopRequireDefault(_fieldType);
 
@@ -1550,7 +1685,7 @@ exports.default = MultiplicityField;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 11 */
+/* 12 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1591,7 +1726,7 @@ module.exports = _propTypes2.default.shape({
 });
 
 /***/ }),
-/* 12 */
+/* 13 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1607,7 +1742,7 @@ module.exports = _propTypes2.default.shape({
 
 
 
-var emptyFunction = __webpack_require__(5);
+var emptyFunction = __webpack_require__(6);
 
 /**
  * Similar to invariant but only logs a warning if the condition is not met.
@@ -1662,13 +1797,13 @@ module.exports = warning;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(2)))
 
 /***/ }),
-/* 13 */
+/* 14 */
 /***/ (function(module, exports) {
 
-module.exports = __WEBPACK_EXTERNAL_MODULE_13__;
+module.exports = __WEBPACK_EXTERNAL_MODULE_14__;
 
 /***/ }),
-/* 14 */
+/* 15 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1692,7 +1827,7 @@ var _Form = __webpack_require__(4);
 
 var _Form2 = _interopRequireDefault(_Form);
 
-var _MultiSectionedForm = __webpack_require__(8);
+var _MultiSectionedForm = __webpack_require__(9);
 
 var _MultiSectionedForm2 = _interopRequireDefault(_MultiSectionedForm);
 
@@ -1921,7 +2056,7 @@ MultiPageForm.propTypes = {
 exports.default = MultiPageForm;
 
 /***/ }),
-/* 15 */
+/* 16 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1936,15 +2071,15 @@ var _Form = __webpack_require__(4);
 
 var _Form2 = _interopRequireDefault(_Form);
 
-var _MultiPageForm = __webpack_require__(14);
+var _MultiPageForm = __webpack_require__(15);
 
 var _MultiPageForm2 = _interopRequireDefault(_MultiPageForm);
 
-var _MultiSectionedForm = __webpack_require__(8);
+var _MultiSectionedForm = __webpack_require__(9);
 
 var _MultiSectionedForm2 = _interopRequireDefault(_MultiSectionedForm);
 
-var _fields = __webpack_require__(9);
+var _fields = __webpack_require__(10);
 
 var _fields2 = _interopRequireDefault(_fields);
 
@@ -1956,7 +2091,7 @@ var MultiSectionedForm = exports.MultiSectionedForm = _MultiSectionedForm2.defau
 var Fields = exports.Fields = _fields2.default;
 
 /***/ }),
-/* 16 */
+/* 17 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2017,7 +2152,7 @@ exports.default = CheckBox;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 17 */
+/* 18 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2097,7 +2232,7 @@ exports.default = CheckBoxGroup;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 18 */
+/* 19 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2177,7 +2312,7 @@ exports.default = ChoiceGroup;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 19 */
+/* 20 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2193,7 +2328,7 @@ var _react = __webpack_require__(0);
 
 var _cleanProps = __webpack_require__(1);
 
-var _MultiplicityField = __webpack_require__(10);
+var _MultiplicityField = __webpack_require__(11);
 
 var _MultiplicityField2 = _interopRequireDefault(_MultiplicityField);
 
@@ -2313,7 +2448,7 @@ exports.default = Image;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 20 */
+/* 21 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2333,9 +2468,13 @@ var _react = __webpack_require__(0);
 
 var _cleanProps = __webpack_require__(1);
 
-var _MultiplicityField = __webpack_require__(10);
+var _MultiplicityField = __webpack_require__(11);
 
 var _MultiplicityField2 = _interopRequireDefault(_MultiplicityField);
+
+var _addCounter = __webpack_require__(5);
+
+var _addCounter2 = _interopRequireDefault(_addCounter);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -2372,12 +2511,13 @@ var Text = function (_Component) {
   return Text;
 }(_react.Component);
 
-exports.default = Text;
 ;
+
+exports.default = (0, _addCounter2.default)(Text);
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 21 */
+/* 22 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2392,6 +2532,12 @@ var _createClass = function () { function defineProperties(target, props) { for 
 var _react = __webpack_require__(0);
 
 var _cleanProps = __webpack_require__(1);
+
+var _addCounter = __webpack_require__(5);
+
+var _addCounter2 = _interopRequireDefault(_addCounter);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -2418,12 +2564,13 @@ var TextArea = function (_Component) {
   return TextArea;
 }(_react.Component);
 
-exports.default = TextArea;
 ;
+
+exports.default = (0, _addCounter2.default)(TextArea);
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 22 */
+/* 23 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2439,9 +2586,9 @@ exports.default = TextArea;
 
 
 if (process.env.NODE_ENV !== 'production') {
-  var invariant = __webpack_require__(6);
-  var warning = __webpack_require__(12);
-  var ReactPropTypesSecret = __webpack_require__(7);
+  var invariant = __webpack_require__(7);
+  var warning = __webpack_require__(13);
+  var ReactPropTypesSecret = __webpack_require__(8);
   var loggedTypeFailures = {};
 }
 
@@ -2492,7 +2639,7 @@ module.exports = checkPropTypes;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(2)))
 
 /***/ }),
-/* 23 */
+/* 24 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2507,9 +2654,9 @@ module.exports = checkPropTypes;
 
 
 
-var emptyFunction = __webpack_require__(5);
-var invariant = __webpack_require__(6);
-var ReactPropTypesSecret = __webpack_require__(7);
+var emptyFunction = __webpack_require__(6);
+var invariant = __webpack_require__(7);
+var ReactPropTypesSecret = __webpack_require__(8);
 
 module.exports = function() {
   function shim(props, propName, componentName, location, propFullName, secret) {
@@ -2558,7 +2705,7 @@ module.exports = function() {
 
 
 /***/ }),
-/* 24 */
+/* 25 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2573,12 +2720,12 @@ module.exports = function() {
 
 
 
-var emptyFunction = __webpack_require__(5);
-var invariant = __webpack_require__(6);
-var warning = __webpack_require__(12);
+var emptyFunction = __webpack_require__(6);
+var invariant = __webpack_require__(7);
+var warning = __webpack_require__(13);
 
-var ReactPropTypesSecret = __webpack_require__(7);
-var checkPropTypes = __webpack_require__(22);
+var ReactPropTypesSecret = __webpack_require__(8);
+var checkPropTypes = __webpack_require__(23);
 
 module.exports = function(isValidElement, throwOnDirectAccess) {
   /* global Symbol */

@@ -1,8 +1,10 @@
 import { Component } from 'react';
 import { cleanProps } from './clean-props';
 import MultiplicityField from './MultiplicityField.jsx';
+import addCounter from './addCounter.jsx'
 
-export default class Text extends Component {
+
+class Text extends Component {
   constructor(props) {
     super(props);
   }
@@ -19,3 +21,5 @@ export default class Text extends Component {
     return <input type="text" {...cleanProps(props)}/>;
   }
 };
+
+export default addCounter(Text);

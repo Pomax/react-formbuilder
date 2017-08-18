@@ -4,6 +4,7 @@ import ChoiceGroup from './ChoiceGroup.jsx';
 import Image from './Image.jsx';
 import Text from './Text.jsx';
 import TextArea from './TextArea.jsx';
+import addCounter from './addCounter.jsx'
 
 module.exports = {
   fieldType: require('./field-type.js'),
@@ -12,5 +13,6 @@ module.exports = {
   ChoiceGroup: ChoiceGroup,
   Image: Image,
   Text: Text,
-  TextArea: TextArea
+  TextArea: TextArea,
+  addCounter: addCounter
 };

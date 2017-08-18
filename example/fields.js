@@ -26,7 +26,8 @@ module.exports = {
     placeholder: "Student or professional at ...",
     validator: {
       error: "Please let us know what your occupation is."
-    }
+    },
+    wordLimit: 30
   },
   'email opt-in': {
     type: "choiceGroup",

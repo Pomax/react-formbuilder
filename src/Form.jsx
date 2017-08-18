@@ -103,6 +103,12 @@ class Form extends React.Component {
       checkValidation: () => this.checkValidation()
     };
 
+    if((field.type == 'text' || field.type == 'textarea') && !field.multiplicity) {
+      common.charLimit = field.charLimit
+      common.wordLimit = field.wordLimit
+      common.cutAtLimit = field.cutAtLimit
+    }
+
     var shouldHide = false, choices = false, shouldFocus = false;
 
     // Is this a controlled field? If so, we need some extra code for
@@ -149,6 +155,7 @@ class Form extends React.Component {
     inputClass = inputClass.trim();
     common.className = inputClass;
     common.labelClass = labelClass;
+
 
     return { common, label, labelClass };
   }

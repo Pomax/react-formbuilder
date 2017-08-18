@@ -1,7 +1,8 @@
 import { Component } from 'react';
 import { cleanProps } from './clean-props';
+import addCounter from './addCounter.jsx';
 
-export default class TextArea extends Component {
+class TextArea extends Component {
   constructor(props) {
     super(props);
   }
@@ -9,3 +10,5 @@ export default class TextArea extends Component {
     return <textarea {...cleanProps(this.props)}/>;
   }
 };
+
+export default addCounter(TextArea);
