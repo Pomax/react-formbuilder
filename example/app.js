@@ -52,9 +52,11 @@ class App extends React.Component {
   constructor(props) {
     super(props);
 
+    let fields = require('./fields');
+
     this.state = {
-      fields: require('./fields'),
-      values: {},
+      fields: fields,
+      values: this.getInitialFormValues(fields),
       submitting: false,
       ratio: 0,
       inlineErrors: true
@@ -65,6 +67,16 @@ class App extends React.Component {
         this.setState({ sourceCode });
       });
     })
+  }
+
+  getInitialFormValues(fields) {
+    let values = {};
+
+    Object.keys(fields).forEach(name => {
+      values[name] = fields[name].value;
+    });
+
+    return values;
   }
 
   toggleInline() {

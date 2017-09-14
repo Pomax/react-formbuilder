@@ -20,10 +20,7 @@ class Form extends React.Component {
 
     this.progressFields = [];
     Object.keys(fields).forEach(name => {
-      initial[name] = null;
-      if (fields[name].type === "checkboxGroup") {
-        initial[name] = [];
-      }
+      initial[name] = fields[name].value || null;
       if (fields[name].metered) {
         this.progressFields.push(name);
       }
@@ -207,7 +204,7 @@ class Form extends React.Component {
       formfield = <Fields.CheckBoxGroup {...common} />;
     }
     else if (Type === "image") {
-      formfield = <Fields.Image {...common} />;
+      formfield = <Fields.Image {...common} defaultImagePath={field.defaultImagePath} />;
     }
     if (ftype === "function") {
       formfield = <Type {...field} {...common} />;

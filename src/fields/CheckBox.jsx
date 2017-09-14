@@ -14,7 +14,7 @@ export default class CheckBox extends Component {
     return (
       <div>
         <label className={labelClass} ref="label">
-          <input {...cleanProps(props)} type="checkbox" ref="box"/>
+          <input {...cleanProps(props)} type="checkbox" ref="box" checked={props.value === true}/>
           { label.props.children }
         </label>
       </div>

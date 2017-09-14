@@ -7,7 +7,8 @@ module.exports = {
     fieldClassname: "avatar",
     prompt: "Pick image",
     reprompt: "Pick different image",
-    helpText: "Looks best at 300px × 300px"
+    helpText: "Looks best at 300px × 300px",
+    defaultImagePath: "https://cdn.pixabay.com/photo/2017/03/17/11/59/food-2151361_1280.jpg"
   },
   'full_name': {
     type: "text",
@@ -16,9 +17,10 @@ module.exports = {
     validator: {
       error: "You must provide a full name."
     },
-    multiplicity: 2,
+    multiplicity: 3,
     addLabel: "add another participant",
-    removeLabel: "remove participant"
+    removeLabel: "remove participant",
+    value: [ "Philip", "Gary" ]
   },
   occupation: {
     type: "text",
@@ -26,7 +28,8 @@ module.exports = {
     placeholder: "Student or professional at ...",
     validator: {
       error: "Please let us know what your occupation is."
-    }
+    },
+    value: "barista"
   },
   'email opt-in': {
     type: "choiceGroup",
@@ -54,7 +57,8 @@ module.exports = {
     type: "checkbox",
     label: "I would like to pick the emails you send me",
     metered: false,
-    optional: true
+    optional: true,
+    value: true
   },
   'email cats': {
     type: "checkboxGroup",
@@ -66,7 +70,9 @@ module.exports = {
       value: true
     },
     metered: false,
-    optional: true
+    optional: true,
+    value: [ "All the spam we can think of" ],
+    colCount: 1
   },
   notes: {
     type: "textarea",

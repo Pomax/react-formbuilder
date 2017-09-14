@@ -42,6 +42,8 @@ Where a field definition object takes the following form:
   fieldClassname: String data (optional) representing a custom CSS class for this field's form element,
   labelClassname: String data (optional) representing a custom CSS class for this field's label element,
   placeholder: String data (optional)
+  value: default data for this field (optional) String when "type" is checkbox, text, or textarea. Array of strings when "type" is checkboxGroup, choiceGroup, or multiplicity field.,
+  defaultImagePath: file path which will be used to show preview of the default image, if "type" is image (optional),
   metered: boolean (optional),
   optional: boolean (optional),
   options: array of strings for each option when "type" is choiceGroup, checkboxGroup, or a React component that takes "options" (like a ReactSelect component),
