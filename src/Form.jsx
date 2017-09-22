@@ -129,7 +129,7 @@ class Form extends React.Component {
       if (this.props.fields[controller].type === "checkboxGroup") {
         shouldHide = this.state[controller].indexOf(controlValue) === -1;
       } else {
-        shouldHide = this.state[controller] !== !!controlValue;
+        shouldHide = this.state[controller] !== controlValue;
       }
 
       // should we be focussing on this field?
@@ -252,7 +252,7 @@ class Form extends React.Component {
 
     // checkboxGroups need to build an array of checkmark positions
     else if (field.type === "checkboxGroup") {
-      var curval = this.state[name];
+      var curval = Array.isArray(this.state[name]) ? this.state[name] : [];
       var pos = curval.indexOf(value);
 
       if (pos === -1) {
@@ -267,9 +267,22 @@ class Form extends React.Component {
     // record the updated value
     state[name] = value;
 
+    // check to see if there's anything in the form that's controlled by this field
+    Object.keys(this.props.fields).forEach(fieldName => {
+      let formField = this.props.fields[fieldName];
+      let controller = formField.controller;
+
+      if (controller && controller.name === name) {
+        if (value !== controller.value) {
+          // reset controlled field's value
+          state[fieldName] = undefined;
+        }
+      }
+    });
+
     // do we need to propagate the update?
     if (this.props.onUpdate) {
-      this.props.onUpdate(e, name, field, value);
+      this.props.onUpdate(e, name, field, value, state);
     }
 
     // finally, perform state change binding

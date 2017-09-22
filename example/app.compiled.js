@@ -6727,8 +6727,8 @@ var App = function (_React$Component2) {
         inlineErrors: this.state.inlineErrors,
         fields: this.state.fields,
         submitting: this.state.submitting,
-        onUpdate: function onUpdate(e, n, f, v) {
-          return _this4.onUpdate(e, n, f, v);
+        onUpdate: function onUpdate(e, n, f, v, newState) {
+          return _this4.onUpdate(e, n, f, v, newState);
         },
         onProgress: function onProgress(r) {
           return _this4.onProgress(r);
@@ -6804,10 +6804,8 @@ var App = function (_React$Component2) {
 
   }, {
     key: 'onUpdate',
-    value: function onUpdate(evt, name, field, value) {
-      var values = this.state.values;
-      values[name] = value;
-      this.setState({ values: values });
+    value: function onUpdate(evt, name, field, value, updatedValues) {
+      this.setState({ values: Object.assign(this.state.values, updatedValues) });
     }
 
     /**
@@ -6829,8 +6827,6 @@ var App = function (_React$Component2) {
     key: 'submitForm',
     value: function submitForm() {
       var _this5 = this;
-
-      console.log('this.state.values', this.state.values);
 
       this.refs.form.validates(function (valid) {
         if (!valid) {
@@ -10584,7 +10580,7 @@ var Form = function (_React$Component) {
         if (this.props.fields[controller].type === "checkboxGroup") {
           shouldHide = this.state[controller].indexOf(controlValue) === -1;
         } else {
-          shouldHide = this.state[controller] !== !!controlValue;
+          shouldHide = this.state[controller] !== controlValue;
         }
 
         // should we be focussing on this field?
@@ -10720,6 +10716,8 @@ var Form = function (_React$Component) {
   }, {
     key: 'update',
     value: function update(name, field, e, value) {
+      var _this6 = this;
+
       var state = {};
       value = value ? value : e.target ? e.target.value : undefined;
 
@@ -10730,7 +10728,7 @@ var Form = function (_React$Component) {
 
       // checkboxGroups need to build an array of checkmark positions
       else if (field.type === "checkboxGroup") {
-          var curval = this.state[name];
+          var curval = Array.isArray(this.state[name]) ? this.state[name] : [];
           var pos = curval.indexOf(value);
 
           if (pos === -1) {
@@ -10745,9 +10743,22 @@ var Form = function (_React$Component) {
       // record the updated value
       state[name] = value;
 
+      // check to see if there's anything in the form that's controlled by this field
+      Object.keys(this.props.fields).forEach(function (fieldName) {
+        var formField = _this6.props.fields[fieldName];
+        var controller = formField.controller;
+
+        if (controller && controller.name === name) {
+          if (value !== controller.value) {
+            // reset controlled field's value
+            state[fieldName] = undefined;
+          }
+        }
+      });
+
       // do we need to propagate the update?
       if (this.props.onUpdate) {
-        this.props.onUpdate(e, name, field, value);
+        this.props.onUpdate(e, name, field, value, state);
       }
 
       // finally, perform state change binding
@@ -10766,18 +10777,18 @@ var Form = function (_React$Component) {
   }, {
     key: 'setStateAsChange',
     value: function setStateAsChange(fieldname, newState) {
-      var _this6 = this;
+      var _this7 = this;
 
       this.setState(newState, function () {
         // only revalidate on changes if we already validated before.
-        if (_this6.state.hasValidated) {
-          _this6.checkValidation();
+        if (_this7.state.hasValidated) {
+          _this7.checkValidation();
         }
-        if (_this6.props.onChange) {
-          _this6.props.onChange(newState);
+        if (_this7.props.onChange) {
+          _this7.props.onChange(newState);
         }
-        if (_this6.props.onProgress) {
-          _this6.props.onProgress(_this6.getProgress());
+        if (_this7.props.onProgress) {
+          _this7.props.onProgress(_this7.getProgress());
         }
       });
     }
@@ -10792,11 +10803,11 @@ var Form = function (_React$Component) {
   }, {
     key: 'checkValidation',
     value: function checkValidation() {
-      var _this7 = this;
+      var _this8 = this;
 
       return this.validates(function (valid) {
-        if (_this7.props.validates) {
-          _this7.props.validates(valid);
+        if (_this8.props.validates) {
+          _this8.props.validates(valid);
         }
       });
     }
@@ -10812,7 +10823,7 @@ var Form = function (_React$Component) {
   }, {
     key: 'validates',
     value: function validates(postValidate) {
-      var _this8 = this;
+      var _this9 = this;
 
       var state = this.state;
       var errors = [];
@@ -10820,7 +10831,7 @@ var Form = function (_React$Component) {
       var fields = this.props.fields || {};
 
       Object.keys(fields).forEach(function (name) {
-        _this8.validateField(name, errors, errorElements);
+        _this9.validateField(name, errors, errorElements);
       });
 
       this.setState({
@@ -10829,7 +10840,7 @@ var Form = function (_React$Component) {
         errors: errors,
         errorElements: errorElements
       }, function () {
-        postValidate(_this8.state.valid);
+        postValidate(_this9.state.valid);
       });
 
       return !errors.length;
@@ -10848,7 +10859,7 @@ var Form = function (_React$Component) {
   }, {
     key: 'validateField',
     value: function validateField(name, errors, errorElements) {
-      var _this9 = this;
+      var _this10 = this;
 
       var value = this.state[name];
       var validators = this.props.fields[name].validator;
@@ -10867,9 +10878,9 @@ var Form = function (_React$Component) {
         if (validator.validate) {
           err = validator.validate(value);
         } else {
-          err = !_this9.hasFieldValue(name, _this9.state[name]);
+          err = !_this10.hasFieldValue(name, _this10.state[name]);
         }
-        if (err && _this9.passesControl(name)) {
+        if (err && _this10.passesControl(name)) {
           errors.push(validator.error);
           if (errorElements.indexOf(name) === -1) {
             errorElements.push(name);

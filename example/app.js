@@ -97,7 +97,7 @@ class App extends React.Component {
       inlineErrors: this.state.inlineErrors,
       fields: this.state.fields,
       submitting: this.state.submitting,
-      onUpdate: (e,n,f,v) => this.onUpdate(e,n,f,v),
+      onUpdate: (e,n,f,v,newState) => this.onUpdate(e,n,f,v,newState),
       onProgress: r => this.onProgress(r)
     };
 
@@ -130,10 +130,8 @@ class App extends React.Component {
   /**
    * Handle function for form data, triggered whenever the user modifies form values.
    */
-  onUpdate(evt, name, field, value) {
-    let values = this.state.values;
-    values[name] = value;
-    this.setState({ values });
+  onUpdate(evt, name, field, value, updatedValues) {
+    this.setState({ values: Object.assign(this.state.values, updatedValues)});
   }
 
   /**
@@ -148,8 +146,6 @@ class App extends React.Component {
    * does "something" with the data. We'll leave the "something" implied.
    */
   submitForm() {
-    console.log(`this.state.values`, this.state.values);
-
     this.refs.form.validates(valid => {
       if (!valid) {
         return console.error("boo, form does not pass validation! Current data:", this.state.values);
