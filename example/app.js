@@ -81,7 +81,6 @@ class App extends React.Component {
       }
     });
 
-    console.log(`values`, values);
     return values;
   }
 

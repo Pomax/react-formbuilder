@@ -6705,7 +6705,6 @@ var App = function (_React$Component2) {
         }
       });
 
-      console.log('values', values);
       return values;
     }
   }, {
