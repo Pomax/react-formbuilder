@@ -20,11 +20,29 @@ class Form extends React.Component {
 
     this.progressFields = [];
     Object.keys(fields).forEach(name => {
-      initial[name] = fields[name].value || null;
+      let value = fields[name].defaultValue;
+
+      if (typeof value === 'undefined') {
+        value = null;
+      }
+
+      // this is a controlled field. let's ignore defaultValue
+      if (typeof fields[name].controller !== 'undefined') {
+        value = null;
+      }
+
+      // checkboxGroup's value should be an array
+      if (value === null && fields[name].type === "checkboxGroup") {
+        value = [];
+      }
+
+      initial[name] = value;
+
       if (fields[name].metered) {
         this.progressFields.push(name);
       }
     });
+
     initial.valid = false;
     initial.errors = [];
     initial.errorElements = [];
@@ -111,7 +129,7 @@ class Form extends React.Component {
       if (this.props.fields[controller].type === "checkboxGroup") {
         shouldHide = this.state[controller].indexOf(controlValue) === -1;
       } else {
-        shouldHide = this.state[controller] !== controlValue;
+        shouldHide = this.state[controller] !== !!controlValue;
       }
 
       // should we be focussing on this field?
@@ -204,7 +222,7 @@ class Form extends React.Component {
       formfield = <Fields.CheckBoxGroup {...common} />;
     }
     else if (Type === "image") {
-      formfield = <Fields.Image {...common} defaultImagePath={field.defaultImagePath} />;
+      formfield = <Fields.Image {...common} defaultValue={field.defaultValue} />;
     }
     if (ftype === "function") {
       formfield = <Type {...field} {...common} />;

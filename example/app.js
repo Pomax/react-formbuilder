@@ -73,9 +73,15 @@ class App extends React.Component {
     let values = {};
 
     Object.keys(fields).forEach(name => {
-      values[name] = fields[name].value;
+      values[name] = undefined;
+
+      let value = fields[name].defaultValue;
+      if (typeof value !== 'undefined' && typeof fields[name].controller === 'undefined') {
+        values[name] = value;
+      }
     });
 
+    console.log(`values`, values);
     return values;
   }
 
@@ -143,6 +149,8 @@ class App extends React.Component {
    * does "something" with the data. We'll leave the "something" implied.
    */
   submitForm() {
+    console.log(`this.state.values`, this.state.values);
+
     this.refs.form.validates(valid => {
       if (!valid) {
         return console.error("boo, form does not pass validation! Current data:", this.state.values);

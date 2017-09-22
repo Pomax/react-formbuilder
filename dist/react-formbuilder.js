@@ -396,11 +396,29 @@ var Form = function (_React$Component) {
 
       this.progressFields = [];
       Object.keys(fields).forEach(function (name) {
-        initial[name] = fields[name].value || null;
+        var value = fields[name].defaultValue;
+
+        if (typeof value === 'undefined') {
+          value = null;
+        }
+
+        // this is a controlled field. let's ignore defaultValue
+        if (typeof fields[name].controller !== 'undefined') {
+          value = null;
+        }
+
+        // checkboxGroup's value should be an array
+        if (value === null && fields[name].type === "checkboxGroup") {
+          value = [];
+        }
+
+        initial[name] = value;
+
         if (fields[name].metered) {
           _this2.progressFields.push(name);
         }
       });
+
       initial.valid = false;
       initial.errors = [];
       initial.errorElements = [];
@@ -520,7 +538,7 @@ var Form = function (_React$Component) {
         if (this.props.fields[controller].type === "checkboxGroup") {
           shouldHide = this.state[controller].indexOf(controlValue) === -1;
         } else {
-          shouldHide = this.state[controller] !== controlValue;
+          shouldHide = this.state[controller] !== !!controlValue;
         }
 
         // should we be focussing on this field?
@@ -627,7 +645,7 @@ var Form = function (_React$Component) {
       } else if (Type === "checkboxGroup") {
         formfield = _react2.default.createElement(_fields2.default.CheckBoxGroup, common);
       } else if (Type === "image") {
-        formfield = _react2.default.createElement(_fields2.default.Image, _extends({}, common, { defaultImagePath: field.defaultImagePath }));
+        formfield = _react2.default.createElement(_fields2.default.Image, _extends({}, common, { defaultValue: field.defaultValue }));
       }
       if (ftype === "function") {
         formfield = _react2.default.createElement(Type, _extends({}, field, common));
@@ -2001,7 +2019,7 @@ var CheckBox = function (_Component) {
         React.createElement(
           'label',
           { className: labelClass, ref: 'label' },
-          React.createElement('input', _extends({}, (0, _cleanProps.cleanProps)(props), { type: 'checkbox', ref: 'box', checked: props.value === true })),
+          React.createElement('input', _extends({}, (0, _cleanProps.cleanProps)(props), { type: 'checkbox', ref: 'box', checked: !!props.value })),
           label.props.children
         )
       );
@@ -2241,7 +2259,7 @@ var Image = function (_Component) {
     value: function generatePicker(prompt, reprompt, helpText) {
       var _this3 = this;
 
-      if (!this.state.attachment && !this.props.defaultImagePath) {
+      if (!this.state.attachment && !this.props.defaultValue) {
         prompt = prompt || "Click here to pick an image";
         helpText = helpText ? React.createElement(
           'span',
@@ -2254,7 +2272,7 @@ var Image = function (_Component) {
           }, value: prompt }), helpText];
       }
 
-      var image = React.createElement('img', { key: 'preview', src: this.props.defaultImagePath });
+      var image = React.createElement('img', { key: 'preview', src: this.props.defaultValue });
       reprompt = reprompt || "Click here to pick a different image";
 
       if (this.state.attachment) {

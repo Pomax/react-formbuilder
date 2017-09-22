@@ -24,7 +24,7 @@ export default class Image extends Component {
   }
 
   generatePicker(prompt, reprompt, helpText) {
-    if (!this.state.attachment && !this.props.defaultImagePath) {
+    if (!this.state.attachment && !this.props.defaultValue) {
       prompt = prompt || "Click here to pick an image";
       helpText = helpText ? <span key="text" className="help-text">{helpText}</span> : null;
 
@@ -34,7 +34,7 @@ export default class Image extends Component {
       ];
     }
 
-    let image = <img key='preview' src={this.props.defaultImagePath} />;
+    let image = <img key='preview' src={this.props.defaultValue} />;
     reprompt = reprompt || "Click here to pick a different image";
 
     if (this.state.attachment) {

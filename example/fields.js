@@ -8,7 +8,7 @@ module.exports = {
     prompt: "Pick image",
     reprompt: "Pick different image",
     helpText: "Looks best at 300px × 300px",
-    defaultImagePath: "https://cdn.pixabay.com/photo/2017/03/17/11/59/food-2151361_1280.jpg"
+    defaultValue: "https://cdn.pixabay.com/photo/2017/03/17/11/59/food-2151361_1280.jpg"
   },
   'full_name': {
     type: "text",
@@ -20,7 +20,7 @@ module.exports = {
     multiplicity: 3,
     addLabel: "add another participant",
     removeLabel: "remove participant",
-    value: [ "Philip", "Gary" ]
+    defaultValue: [ "Philip", "Gary" ]
   },
   occupation: {
     type: "text",
@@ -29,7 +29,7 @@ module.exports = {
     validator: {
       error: "Please let us know what your occupation is."
     },
-    value: "barista"
+    defaultValue: "barista"
   },
   'email opt-in': {
     type: "choiceGroup",
@@ -57,8 +57,7 @@ module.exports = {
     type: "checkbox",
     label: "I would like to pick the emails you send me",
     metered: false,
-    optional: true,
-    value: true
+    optional: true
   },
   'email cats': {
     type: "checkboxGroup",
@@ -71,7 +70,7 @@ module.exports = {
     },
     metered: false,
     optional: true,
-    value: [ "All the spam we can think of" ],
+    defaultValue: [ "All the spam we can think of" ],
     colCount: 1
   },
   notes: {
