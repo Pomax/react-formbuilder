@@ -56,7 +56,7 @@ class App extends React.Component {
 
     this.state = {
       fields: fields,
-      values: this.getInitialFormValues(fields),
+      values: {},
       submitting: false,
       ratio: 0,
       inlineErrors: true
@@ -69,19 +69,8 @@ class App extends React.Component {
     })
   }
 
-  getInitialFormValues(fields) {
-    let values = {};
-
-    Object.keys(fields).forEach(name => {
-      values[name] = undefined;
-
-      let value = fields[name].defaultValue;
-      if (typeof value !== 'undefined' && typeof fields[name].controller === 'undefined') {
-        values[name] = value;
-      }
-    });
-
-    return values;
+  setInitialValues(initialValues) {
+    this.setState({ values: initialValues });
   }
 
   toggleInline() {
@@ -97,7 +86,8 @@ class App extends React.Component {
       inlineErrors: this.state.inlineErrors,
       fields: this.state.fields,
       submitting: this.state.submitting,
-      onUpdate: (e,n,f,v,newState) => this.onUpdate(e,n,f,v,newState),
+      onMount: (initialValues) => this.setInitialValues(initialValues),
+      onUpdate: (e,n,f,v,updatedValues) => this.onUpdate(e,n,f,v,updatedValues),
       onProgress: r => this.onProgress(r)
     };
 

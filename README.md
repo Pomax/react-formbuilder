@@ -183,8 +183,9 @@ class App extends React.Component {
 
 #### Event handling
 
+- `onMount`: required. `function(initialValues:object)` function that gets called immediately after form is mounted. `initialValues` is an object contains all form fields and their corresponding default value.
 - `onProgress`: optional `function(ratio:number)` function that gets called every time the form is updated, reporting to its owner the fraction of metered components that pass validation as ratio of the total number of metered components. To convert this to percentages, simply compute `ratio * 100`.
-- `onUpdate`: optional `function onUpdate(event, name, field, value)` where event is the change event for a form field element, `field` is the field object from the form definition, and `value` is the updated value for that field.
+- `onUpdate`: optional `function onUpdate(event, name, field, value, updatedValues)` where event is the change event for a form field element, `field` is the field object from the form definition, `value` is the updated value for that field, and `updatedValues` is an object contains fieldname-value pairs that were changed as a result of this update.
 
 ### `MultiPageForm`
 

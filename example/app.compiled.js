@@ -6677,7 +6677,7 @@ var App = function (_React$Component2) {
 
     _this3.state = {
       fields: fields,
-      values: _this3.getInitialFormValues(fields),
+      values: {},
       submitting: false,
       ratio: 0,
       inlineErrors: true
@@ -6692,20 +6692,9 @@ var App = function (_React$Component2) {
   }
 
   _createClass(App, [{
-    key: 'getInitialFormValues',
-    value: function getInitialFormValues(fields) {
-      var values = {};
-
-      Object.keys(fields).forEach(function (name) {
-        values[name] = undefined;
-
-        var value = fields[name].defaultValue;
-        if (typeof value !== 'undefined' && typeof fields[name].controller === 'undefined') {
-          values[name] = value;
-        }
-      });
-
-      return values;
+    key: 'setInitialValues',
+    value: function setInitialValues(initialValues) {
+      this.setState({ values: initialValues });
     }
   }, {
     key: 'toggleInline',
@@ -6727,8 +6716,11 @@ var App = function (_React$Component2) {
         inlineErrors: this.state.inlineErrors,
         fields: this.state.fields,
         submitting: this.state.submitting,
-        onUpdate: function onUpdate(e, n, f, v, newState) {
-          return _this4.onUpdate(e, n, f, v, newState);
+        onMount: function onMount(initialValues) {
+          return _this4.setInitialValues(initialValues);
+        },
+        onUpdate: function onUpdate(e, n, f, v, updatedValues) {
+          return _this4.onUpdate(e, n, f, v, updatedValues);
         },
         onProgress: function onProgress(r) {
           return _this4.onProgress(r);
@@ -10468,6 +10460,11 @@ var Form = function (_React$Component) {
 
       return initial;
     }
+  }, {
+    key: 'componentDidMount',
+    value: function componentDidMount() {
+      this.props.onMount(this.state);
+    }
 
     // boilerplate
 
@@ -10751,7 +10748,7 @@ var Form = function (_React$Component) {
         if (controller && controller.name === name) {
           if (value !== controller.value) {
             // reset controlled field's value
-            state[fieldName] = undefined;
+            state[fieldName] = null;
           }
         }
       });

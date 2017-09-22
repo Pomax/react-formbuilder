@@ -426,6 +426,11 @@ var Form = function (_React$Component) {
 
       return initial;
     }
+  }, {
+    key: 'componentDidMount',
+    value: function componentDidMount() {
+      this.props.onMount(this.state);
+    }
 
     // boilerplate
 
@@ -709,7 +714,7 @@ var Form = function (_React$Component) {
         if (controller && controller.name === name) {
           if (value !== controller.value) {
             // reset controlled field's value
-            state[fieldName] = undefined;
+            state[fieldName] = null;
           }
         }
       });

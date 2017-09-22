@@ -51,6 +51,10 @@ class Form extends React.Component {
     return initial;
   }
 
+  componentDidMount() {
+    this.props.onMount(this.state);
+  }
+
   // boilerplate
   render() {
     let cn = this.props.className;
@@ -275,7 +279,7 @@ class Form extends React.Component {
       if (controller && controller.name === name) {
         if (value !== controller.value) {
           // reset controlled field's value
-          state[fieldName] = undefined;
+          state[fieldName] = null;
         }
       }
     });
