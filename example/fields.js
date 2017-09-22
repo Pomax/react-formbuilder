@@ -91,8 +91,9 @@ module.exports = {
       }
     ]
   },
-  CustomField: {
+  'custom field': {
+    type: "text",
     label: "Custom 51 char field",
-    type: CustomInputField
+    charLimit: 51
   }
 };
