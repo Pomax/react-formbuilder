@@ -70,7 +70,6 @@ module.exports = {
     },
     metered: false,
     optional: true,
-    defaultValue: [ "All the spam we can think of" ],
     colCount: 1
   },
   notes: {

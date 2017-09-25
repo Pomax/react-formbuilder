@@ -26,11 +26,6 @@ class Form extends React.Component {
         value = null;
       }
 
-      // this is a controlled field. let's ignore defaultValue
-      if (typeof fields[name].controller !== 'undefined') {
-        value = null;
-      }
-
       // checkboxGroup's value should be an array
       if (value === null && fields[name].type === "checkboxGroup") {
         value = [];
@@ -57,7 +52,7 @@ class Form extends React.Component {
     // make sure default field values are propagated to Form's parent
     Object.keys(fields).forEach(name => {
       if (typeof fields[name].defaultValue !== "undefined") {
-        this.update(name, fields[name], null, this.state[name]);
+        this.props.onUpdate(null, name, fields[name], this.state[name]);
       }
     });
   }

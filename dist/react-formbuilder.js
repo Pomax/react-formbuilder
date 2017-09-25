@@ -402,11 +402,6 @@ var Form = function (_React$Component) {
           value = null;
         }
 
-        // this is a controlled field. let's ignore defaultValue
-        if (typeof fields[name].controller !== 'undefined') {
-          value = null;
-        }
-
         // checkboxGroup's value should be an array
         if (value === null && fields[name].type === "checkboxGroup") {
           value = [];
@@ -436,7 +431,7 @@ var Form = function (_React$Component) {
       // make sure default field values are propagated to Form's parent
       Object.keys(fields).forEach(function (name) {
         if (typeof fields[name].defaultValue !== "undefined") {
-          _this3.update(name, fields[name], null, _this3.state[name]);
+          _this3.props.onUpdate(null, name, fields[name], _this3.state[name]);
         }
       });
     }
