@@ -798,6 +798,8 @@ var Form = function (_React$Component) {
         validators = [validators];
       }
 
+      console.log(validators);
+
       validators.forEach(function (validator) {
         var err = false;
 

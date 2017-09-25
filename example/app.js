@@ -54,12 +54,14 @@ class App extends React.Component {
     this.fields = require('./fields');
 
     this.state = {
-      fields: JSON.parse(JSON.stringify(this.fields)),
+      fields: this.fields,
       values: {},
       submitting: false,
       ratio: 0,
       inlineErrors: true
     };
+
+    this.fields = JSON.parse(JSON.stringify(this.fields));
 
     fetch('./app.js').then(response => {
       response.text().then(sourceCode => {

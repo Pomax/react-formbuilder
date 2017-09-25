@@ -10561,6 +10561,8 @@ var Form = function (_React$Component) {
         validators = [validators];
       }
 
+      console.log(validators);
+
       validators.forEach(function (validator) {
         var err = false;
 
@@ -13089,12 +13091,14 @@ var App = function (_React$Component2) {
     _this3.fields = __webpack_require__(85);
 
     _this3.state = {
-      fields: JSON.parse(JSON.stringify(_this3.fields)),
+      fields: _this3.fields,
       values: {},
       submitting: false,
       ratio: 0,
       inlineErrors: true
     };
+
+    _this3.fields = JSON.parse(JSON.stringify(_this3.fields));
 
     fetch('./app.js').then(function (response) {
       response.text().then(function (sourceCode) {
@@ -13336,18 +13340,23 @@ module.exports = {
           return undefined;
         }
 
-        var err = value.trim().split(' ').length < 45;
-        if (err) return new Error("value does not split into 45 words or more!");
+        var vlen = value.trim().split(/\s+/).filter(function (v) {
+          return v;
+        }).length;
+        var err = vlen > 100;
+        if (err) {
+          return new Error(vlen + ' words found where only 100 are accepted.');
+        }
 
         return undefined;
       },
-      error: "Your notes must be at least 45 words."
+      error: "Your notes must be 100 words at most."
     }],
     wordLimit: 100
   },
   'custom field': {
     type: "text",
-    label: "Custom 51 char field",
+    label: "A text field for 51 characters max, but secretly accepting more",
     charLimit: 51
   }
 };
