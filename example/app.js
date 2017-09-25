@@ -69,10 +69,6 @@ class App extends React.Component {
     })
   }
 
-  setInitialValues(initialValues) {
-    this.setState({ values: initialValues });
-  }
-
   toggleInline() {
     this.setState({ inlineErrors: !this.state.inlineErrors });
   }
@@ -86,7 +82,6 @@ class App extends React.Component {
       inlineErrors: this.state.inlineErrors,
       fields: this.state.fields,
       submitting: this.state.submitting,
-      onMount: (initialValues) => this.setInitialValues(initialValues),
       onUpdate: (e,n,f,v) => this.onUpdate(e,n,f,v),
       onProgress: r => this.onProgress(r)
     };

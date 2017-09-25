@@ -52,7 +52,14 @@ class Form extends React.Component {
   }
 
   componentDidMount() {
-    this.props.onMount(this.state);
+    let fields = this.props.fields;
+
+    // make sure default field values are propagated to Form's parent
+    Object.keys(fields).forEach(name => {
+      if (typeof fields[name].defaultValue !== "undefined") {
+        this.update(name, fields[name], null, this.state[name]);
+      }
+    });
   }
 
   // boilerplate

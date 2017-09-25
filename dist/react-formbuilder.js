@@ -429,7 +429,16 @@ var Form = function (_React$Component) {
   }, {
     key: 'componentDidMount',
     value: function componentDidMount() {
-      this.props.onMount(this.state);
+      var _this3 = this;
+
+      var fields = this.props.fields;
+
+      // make sure default field values are propagated to Form's parent
+      Object.keys(fields).forEach(function (name) {
+        if (typeof fields[name].defaultValue !== "undefined") {
+          _this3.update(name, fields[name], null, _this3.state[name]);
+        }
+      });
     }
 
     // boilerplate
@@ -437,7 +446,7 @@ var Form = function (_React$Component) {
   }, {
     key: 'render',
     value: function render() {
-      var _this3 = this;
+      var _this4 = this;
 
       var cn = this.props.className;
       var sm = this.props.submitting;
@@ -447,7 +456,7 @@ var Form = function (_React$Component) {
         'form',
         { className: className, hidden: this.props.hidden, disabled: this.props.submitting },
         Object.keys(this.props.fields).map(function (name) {
-          return _this3.buildFormField(name, _this3.props.fields[name]);
+          return _this4.buildFormField(name, _this4.props.fields[name]);
         }),
         this.renderValidationErrors()
       );
@@ -484,14 +493,14 @@ var Form = function (_React$Component) {
   }, {
     key: 'getProgress',
     value: function getProgress() {
-      var _this4 = this;
+      var _this5 = this;
 
       // get the number of required fields that have a value filled in.
       var keys = Object.keys(this.props.fields).filter(function (key) {
-        return _this4.props.fields[key].metered !== false;
+        return _this5.props.fields[key].metered !== false;
       });
       var reduced = keys.reduce(function (a, b) {
-        return a + (_this4.hasFieldValue(b, _this4.state[b]) ? 1 : 0);
+        return a + (_this5.hasFieldValue(b, _this5.state[b]) ? 1 : 0);
       }, 0);
       var total = keys.length;
 
@@ -503,7 +512,7 @@ var Form = function (_React$Component) {
   }, {
     key: 'formCommonObject',
     value: function formCommonObject(name, field) {
-      var _this5 = this;
+      var _this6 = this;
 
       field.name = name;
 
@@ -519,14 +528,14 @@ var Form = function (_React$Component) {
         multiplicity: field.multiplicity,
         value: this.state[name] || '',
         onChange: function onChange(e, v) {
-          return _this5.update(name, field, e, v);
+          return _this6.update(name, field, e, v);
         },
         placeholder: field.placeholder,
         onUpdate: function onUpdate(e, n, f, v) {
-          return _this5.update(n, f, e, v);
+          return _this6.update(n, f, e, v);
         },
         checkValidation: function checkValidation() {
-          return _this5.checkValidation();
+          return _this6.checkValidation();
         }
       };
 
@@ -725,18 +734,18 @@ var Form = function (_React$Component) {
   }, {
     key: 'setStateAsChange',
     value: function setStateAsChange(fieldname, newState) {
-      var _this6 = this;
+      var _this7 = this;
 
       this.setState(newState, function () {
         // only revalidate on changes if we already validated before.
-        if (_this6.state.hasValidated) {
-          _this6.checkValidation();
+        if (_this7.state.hasValidated) {
+          _this7.checkValidation();
         }
-        if (_this6.props.onChange) {
-          _this6.props.onChange(newState);
+        if (_this7.props.onChange) {
+          _this7.props.onChange(newState);
         }
-        if (_this6.props.onProgress) {
-          _this6.props.onProgress(_this6.getProgress());
+        if (_this7.props.onProgress) {
+          _this7.props.onProgress(_this7.getProgress());
         }
       });
     }
@@ -751,11 +760,11 @@ var Form = function (_React$Component) {
   }, {
     key: 'checkValidation',
     value: function checkValidation() {
-      var _this7 = this;
+      var _this8 = this;
 
       return this.validates(function (valid) {
-        if (_this7.props.validates) {
-          _this7.props.validates(valid);
+        if (_this8.props.validates) {
+          _this8.props.validates(valid);
         }
       });
     }
@@ -771,7 +780,7 @@ var Form = function (_React$Component) {
   }, {
     key: 'validates',
     value: function validates(postValidate) {
-      var _this8 = this;
+      var _this9 = this;
 
       var state = this.state;
       var errors = [];
@@ -779,7 +788,7 @@ var Form = function (_React$Component) {
       var fields = this.props.fields || {};
 
       Object.keys(fields).forEach(function (name) {
-        _this8.validateField(name, errors, errorElements);
+        _this9.validateField(name, errors, errorElements);
       });
 
       this.setState({
@@ -788,7 +797,7 @@ var Form = function (_React$Component) {
         errors: errors,
         errorElements: errorElements
       }, function () {
-        postValidate(_this8.state.valid);
+        postValidate(_this9.state.valid);
       });
 
       return !errors.length;
@@ -807,7 +816,7 @@ var Form = function (_React$Component) {
   }, {
     key: 'validateField',
     value: function validateField(name, errors, errorElements) {
-      var _this9 = this;
+      var _this10 = this;
 
       var value = this.state[name];
       var validators = this.props.fields[name].validator;
@@ -826,9 +835,9 @@ var Form = function (_React$Component) {
         if (validator.validate) {
           err = validator.validate(value);
         } else {
-          err = !_this9.hasFieldValue(name, _this9.state[name]);
+          err = !_this10.hasFieldValue(name, _this10.state[name]);
         }
-        if (err && _this9.passesControl(name)) {
+        if (err && _this10.passesControl(name)) {
           errors.push(validator.error);
           if (errorElements.indexOf(name) === -1) {
             errorElements.push(name);
