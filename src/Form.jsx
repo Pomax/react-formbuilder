@@ -271,22 +271,9 @@ class Form extends React.Component {
     // record the updated value
     state[name] = value;
 
-    // check to see if there's anything in the form that's controlled by this field
-    Object.keys(this.props.fields).forEach(fieldName => {
-      let formField = this.props.fields[fieldName];
-      let controller = formField.controller;
-
-      if (controller && controller.name === name) {
-        if (value !== controller.value) {
-          // reset controlled field's value
-          state[fieldName] = null;
-        }
-      }
-    });
-
     // do we need to propagate the update?
     if (this.props.onUpdate) {
-      this.props.onUpdate(e, name, field, value, state);
+      this.props.onUpdate(e, name, field, value);
     }
 
     // finally, perform state change binding

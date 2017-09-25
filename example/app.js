@@ -87,7 +87,7 @@ class App extends React.Component {
       fields: this.state.fields,
       submitting: this.state.submitting,
       onMount: (initialValues) => this.setInitialValues(initialValues),
-      onUpdate: (e,n,f,v,updatedValues) => this.onUpdate(e,n,f,v,updatedValues),
+      onUpdate: (e,n,f,v) => this.onUpdate(e,n,f,v),
       onProgress: r => this.onProgress(r)
     };
 
@@ -120,8 +120,10 @@ class App extends React.Component {
   /**
    * Handle function for form data, triggered whenever the user modifies form values.
    */
-  onUpdate(evt, name, field, value, updatedValues) {
-    this.setState({ values: Object.assign(this.state.values, updatedValues)});
+  onUpdate(evt, name, field, value) {
+    let values = this.state.values;
+    values[name] = value;
+    this.setState({ values });
   }
 
   /**
