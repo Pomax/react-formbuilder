@@ -23,3 +23,11 @@ fieldset label .optional {
 	color: rgba(0,0,0,0.3);
 	margin-left: 1em;
 }
+
+.over-char-limit {
+	color: red;
+}
+
+.over-word-limit {
+	color: red;
+}

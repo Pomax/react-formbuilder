@@ -89,7 +89,8 @@ module.exports = {
         },
         error: "Your notes must be at least 45 words."
       }
-    ]
+    ],
+    wordLimit: 100
   },
   'custom field': {
     type: "text",

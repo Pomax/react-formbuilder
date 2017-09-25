@@ -51,9 +51,10 @@ class App extends React.Component {
    */
   constructor(props) {
     super(props);
+    this.fields = require('./fields');
 
     this.state = {
-      fields: require('./fields'),
+      fields: JSON.parse(JSON.stringify(this.fields)),
       values: {},
       submitting: false,
       ratio: 0,
@@ -100,7 +101,7 @@ class App extends React.Component {
         <hr/>
 
         <h2>Form built off of the following definition:</h2>
-        <pre>{ JSON.stringify(this.state.fields, false, 2) }</pre>
+        <pre>{ JSON.stringify(this.fields, false, 2) }</pre>
 
         <hr/>
 

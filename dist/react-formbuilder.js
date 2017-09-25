@@ -7,45 +7,45 @@
 		exports["ReactFormBuilder"] = factory(require("react"), require("react-dom"));
 	else
 		root["ReactFormBuilder"] = factory(root["React"], root["ReactDOM"]);
-})(this, function(__WEBPACK_EXTERNAL_MODULE_0__, __WEBPACK_EXTERNAL_MODULE_13__) {
+})(this, function(__WEBPACK_EXTERNAL_MODULE_0__, __WEBPACK_EXTERNAL_MODULE_14__) {
 return /******/ (function(modules) { // webpackBootstrap
 /******/ 	// The module cache
 /******/ 	var installedModules = {};
-/******/
+
 /******/ 	// The require function
 /******/ 	function __webpack_require__(moduleId) {
-/******/
+
 /******/ 		// Check if module is in cache
-/******/ 		if(installedModules[moduleId]) {
+/******/ 		if(installedModules[moduleId])
 /******/ 			return installedModules[moduleId].exports;
-/******/ 		}
+
 /******/ 		// Create a new module (and put it into the cache)
 /******/ 		var module = installedModules[moduleId] = {
 /******/ 			i: moduleId,
 /******/ 			l: false,
 /******/ 			exports: {}
 /******/ 		};
-/******/
+
 /******/ 		// Execute the module function
 /******/ 		modules[moduleId].call(module.exports, module, module.exports, __webpack_require__);
-/******/
+
 /******/ 		// Flag the module as loaded
 /******/ 		module.l = true;
-/******/
+
 /******/ 		// Return the exports of the module
 /******/ 		return module.exports;
 /******/ 	}
-/******/
-/******/
+
+
 /******/ 	// expose the modules object (__webpack_modules__)
 /******/ 	__webpack_require__.m = modules;
-/******/
+
 /******/ 	// expose the module cache
 /******/ 	__webpack_require__.c = installedModules;
-/******/
+
 /******/ 	// identity function for calling harmony imports with the correct context
 /******/ 	__webpack_require__.i = function(value) { return value; };
-/******/
+
 /******/ 	// define getter function for harmony exports
 /******/ 	__webpack_require__.d = function(exports, name, getter) {
 /******/ 		if(!__webpack_require__.o(exports, name)) {
@@ -56,7 +56,7 @@ return /******/ (function(modules) { // webpackBootstrap
 /******/ 			});
 /******/ 		}
 /******/ 	};
-/******/
+
 /******/ 	// getDefaultExport function for compatibility with non-harmony modules
 /******/ 	__webpack_require__.n = function(module) {
 /******/ 		var getter = module && module.__esModule ?
@@ -65,15 +65,15 @@ return /******/ (function(modules) { // webpackBootstrap
 /******/ 		__webpack_require__.d(getter, 'a', getter);
 /******/ 		return getter;
 /******/ 	};
-/******/
+
 /******/ 	// Object.prototype.hasOwnProperty.call
 /******/ 	__webpack_require__.o = function(object, property) { return Object.prototype.hasOwnProperty.call(object, property); };
-/******/
+
 /******/ 	// __webpack_public_path__
 /******/ 	__webpack_require__.p = "";
-/******/
+
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 15);
+/******/ 	return __webpack_require__(__webpack_require__.s = 25);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -275,10 +275,6 @@ process.off = noop;
 process.removeListener = noop;
 process.removeAllListeners = noop;
 process.emit = noop;
-process.prependListener = noop;
-process.prependOnceListener = noop;
-
-process.listeners = function (name) { return [] }
 
 process.binding = function (name) {
     throw new Error('process.binding is not supported');
@@ -345,7 +341,7 @@ var _react = __webpack_require__(0);
 
 var _react2 = _interopRequireDefault(_react);
 
-var _reactDom = __webpack_require__(13);
+var _reactDom = __webpack_require__(14);
 
 var _reactDom2 = _interopRequireDefault(_reactDom);
 
@@ -441,21 +437,23 @@ var Form = function (_React$Component) {
       var afelement = this.refs.autofocus;
 
       if (afelement) {
+        (function () {
 
-        // We need to use the following code to get around
-        // the bizar way in which react-select steals focus,
-        // even when the browser has issued a .focus() on
-        // a completely different HMTL element...
-        var _forceFocus = function _forceFocus() {
-          if (afelement !== document.activeElement) {
-            afelement.focus();
-            setTimeout(_forceFocus, 10);
-          }
-        };
+          // We need to use the following code to get around
+          // the bizar way in which react-select steals focus,
+          // even when the browser has issued a .focus() on
+          // a completely different HMTL element...
+          var forceFocus = function forceFocus() {
+            if (afelement !== document.activeElement) {
+              afelement.focus();
+              setTimeout(forceFocus, 10);
+            }
+          };
 
-        afelement = _reactDom2.default.findDOMNode(afelement);
-        afelement.focus();
-        setTimeout(_forceFocus, 100);
+          afelement = _reactDom2.default.findDOMNode(afelement);
+          afelement.focus();
+          setTimeout(forceFocus, 100);
+        })();
       }
     }
 
@@ -1330,7 +1328,7 @@ var _TextArea2 = _interopRequireDefault(_TextArea);
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 module.exports = {
-  fieldType: __webpack_require__(11),
+  fieldType: __webpack_require__(12),
   CheckBox: _CheckBox2.default,
   CheckBoxGroup: _CheckBoxGroup2.default,
   ChoiceGroup: _ChoiceGroup2.default,
@@ -1350,6 +1348,131 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _react = __webpack_require__(0);
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+// Naive word counting.
+function countWords(text) {
+  return text.split(/\s+/).filter(function (v) {
+    return v;
+  }).length;
+}
+
+/**
+ * A custom component class that can enforce character and word
+ * limits on the value that the user puts in.
+ * This class acts as base class to the Text and TextArea fields.
+ */
+
+var CountLimitComponent = function (_Component) {
+  _inherits(CountLimitComponent, _Component);
+
+  function CountLimitComponent(props) {
+    _classCallCheck(this, CountLimitComponent);
+
+    var _this = _possibleConstructorReturn(this, (CountLimitComponent.__proto__ || Object.getPrototypeOf(CountLimitComponent)).call(this, props));
+
+    _this.state = {};
+    _this.countLimits = {};
+    return _this;
+  }
+
+  _createClass(CountLimitComponent, [{
+    key: 'componentWillUpdate',
+    value: function componentWillUpdate(nextProps, nextState) {
+      var countLimits = {};
+
+      // processing all character limit information
+      var charLimit = this.props.field.charLimit;
+      if (charLimit) {
+        var value = nextProps.value;
+        var charCount = value.length;
+        var overCharLimit = charCount > charLimit;
+        if (overCharLimit !== this.state.overCharLimit) {
+          this.setState({ overCharLimit: overCharLimit });
+        }
+        countLimits['data-char-limit'] = charLimit;
+        countLimits['data-char-count'] = charCount;
+      }
+
+      // processing all word limit information
+      var wordLimit = this.props.field.wordLimit;
+      if (wordLimit) {
+        var _value = nextProps.value;
+        var wordCount = countWords(_value);
+        var overWordLimit = wordCount > wordLimit;
+        if (overWordLimit !== this.state.overWordLimit) {
+          this.setState({ overWordLimit: overWordLimit });
+        }
+        countLimits['data-word-limit'] = wordLimit;
+        countLimits['data-word-count'] = wordCount;
+      }
+
+      // this field gets used in the renderInput
+      // function to generate appropriate data.
+      this.countLimits = countLimits;
+    }
+  }, {
+    key: 'renderInput',
+    value: function renderInput(htmlElement) {
+      var countLimits = this.countLimits,
+          charLimit = countLimits['data-char-limit'],
+          charCount = countLimits['data-char-count'],
+          overCharLimit = this.state.overCharLimit ? 'over-char-limit' : '',
+          wordLimit = countLimits['data-word-limit'],
+          wordCount = countLimits['data-word-count'],
+          overWordLimit = this.state.overWordLimit ? 'over-word-limit' : '',
+          className = [overCharLimit, overWordLimit].join(' ').trim();
+
+      // This is a span-wrap to ensure that sane CSS can be
+      // written to deal with data and error presentation.
+      return React.createElement(
+        'span',
+        { className: className },
+        htmlElement,
+        !charLimit ? null : React.createElement(
+          'span',
+          { className: 'char-limit' },
+          charCount,
+          '/',
+          charLimit
+        ),
+        !wordLimit ? null : React.createElement(
+          'span',
+          { className: 'word-limit' },
+          wordCount,
+          '/',
+          wordLimit
+        )
+      );
+    }
+  }]);
+
+  return CountLimitComponent;
+}(_react.Component);
+
+exports.default = CountLimitComponent;
+;
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
+
+/***/ }),
+/* 11 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+/* WEBPACK VAR INJECTION */(function(React) {
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
@@ -1358,7 +1481,7 @@ var _createClass = function () { function defineProperties(target, props) { for 
 
 var _react = __webpack_require__(0);
 
-var _reactDom = __webpack_require__(13);
+var _reactDom = __webpack_require__(14);
 
 var _reactDom2 = _interopRequireDefault(_reactDom);
 
@@ -1366,7 +1489,7 @@ var _propTypes = __webpack_require__(3);
 
 var _propTypes2 = _interopRequireDefault(_propTypes);
 
-var _fieldType = __webpack_require__(11);
+var _fieldType = __webpack_require__(12);
 
 var _fieldType2 = _interopRequireDefault(_fieldType);
 
@@ -1550,7 +1673,7 @@ exports.default = MultiplicityField;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 11 */
+/* 12 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1591,7 +1714,7 @@ module.exports = _propTypes2.default.shape({
 });
 
 /***/ }),
-/* 12 */
+/* 13 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1664,13 +1787,13 @@ module.exports = warning;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(2)))
 
 /***/ }),
-/* 13 */
+/* 14 */
 /***/ (function(module, exports) {
 
-module.exports = __WEBPACK_EXTERNAL_MODULE_13__;
+module.exports = __WEBPACK_EXTERNAL_MODULE_14__;
 
 /***/ }),
-/* 14 */
+/* 15 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1923,41 +2046,6 @@ MultiPageForm.propTypes = {
 exports.default = MultiPageForm;
 
 /***/ }),
-/* 15 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.Fields = exports.MultiSectionedForm = exports.MultiPageForm = exports.Form = undefined;
-
-var _Form = __webpack_require__(4);
-
-var _Form2 = _interopRequireDefault(_Form);
-
-var _MultiPageForm = __webpack_require__(14);
-
-var _MultiPageForm2 = _interopRequireDefault(_MultiPageForm);
-
-var _MultiSectionedForm = __webpack_require__(8);
-
-var _MultiSectionedForm2 = _interopRequireDefault(_MultiSectionedForm);
-
-var _fields = __webpack_require__(9);
-
-var _fields2 = _interopRequireDefault(_fields);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-var Form = exports.Form = _Form2.default;
-var MultiPageForm = exports.MultiPageForm = _MultiPageForm2.default;
-var MultiSectionedForm = exports.MultiSectionedForm = _MultiSectionedForm2.default;
-var Fields = exports.Fields = _fields2.default;
-
-/***/ }),
 /* 16 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -2195,7 +2283,7 @@ var _react = __webpack_require__(0);
 
 var _cleanProps = __webpack_require__(1);
 
-var _MultiplicityField = __webpack_require__(10);
+var _MultiplicityField = __webpack_require__(11);
 
 var _MultiplicityField2 = _interopRequireDefault(_MultiplicityField);
 
@@ -2331,11 +2419,15 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _react = __webpack_require__(0);
+var _get = function get(object, property, receiver) { if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { return get(parent, property, receiver); } } else if ("value" in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } };
+
+var _CountLimitComponent2 = __webpack_require__(10);
+
+var _CountLimitComponent3 = _interopRequireDefault(_CountLimitComponent2);
 
 var _cleanProps = __webpack_require__(1);
 
-var _MultiplicityField = __webpack_require__(10);
+var _MultiplicityField = __webpack_require__(11);
 
 var _MultiplicityField2 = _interopRequireDefault(_MultiplicityField);
 
@@ -2347,8 +2439,8 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-var Text = function (_Component) {
-  _inherits(Text, _Component);
+var Text = function (_CountLimitComponent) {
+  _inherits(Text, _CountLimitComponent);
 
   function Text(props) {
     _classCallCheck(this, Text);
@@ -2360,29 +2452,6 @@ var Text = function (_Component) {
   }
 
   _createClass(Text, [{
-    key: 'componentWillUpdate',
-    value: function componentWillUpdate(nextProps, nextState) {
-      var charLimit = this.props.field.charLimit;
-      if (charLimit) {
-        var value = nextProps.value;
-        var charCount = value.length;
-        var overCharLimit = charCount > charLimit;
-        if (overCharLimit !== this.state.overCharLimit) {
-          this.setState({ overCharLimit: overCharLimit });
-        }
-      }
-
-      var wordLimit = this.props.field.wordLimit;
-      if (wordLimit) {
-        var _value = nextProps.value;
-        var wordCount = _value.split(/\W+/).length;
-        var overWordLimit = wordCount > wordLimit;
-        if (overWordLimit !== this.state.overWordLimit) {
-          this.setState({ overWordLimit: overWordLimit });
-        }
-      }
-    }
-  }, {
     key: 'render',
     value: function render() {
       var props = Object.assign({}, this.props);
@@ -2393,16 +2462,12 @@ var Text = function (_Component) {
         return React.createElement(_MultiplicityField2.default, _extends({}, props, { values: values }));
       }
 
-      // TODO: clean up
-      props.className += this.state.overCharLimit ? ' over-char-limit' : '';
-      props.className = props.className.trim();
-
-      return React.createElement('input', _extends({ 'data-char-limit': props.field.charLimit, 'data-char-count': value.length, type: 'text' }, (0, _cleanProps.cleanProps)(props)));
+      return _get(Text.prototype.__proto__ || Object.getPrototypeOf(Text.prototype), 'renderInput', this).call(this, React.createElement('input', _extends({ type: 'text' }, (0, _cleanProps.cleanProps)(props))));
     }
   }]);
 
   return Text;
-}(_react.Component);
+}(_CountLimitComponent3.default);
 
 exports.default = Text;
 ;
@@ -2421,9 +2486,15 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _react = __webpack_require__(0);
+var _get = function get(object, property, receiver) { if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { return get(parent, property, receiver); } } else if ("value" in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } };
+
+var _CountLimitComponent2 = __webpack_require__(10);
+
+var _CountLimitComponent3 = _interopRequireDefault(_CountLimitComponent2);
 
 var _cleanProps = __webpack_require__(1);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -2431,8 +2502,8 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-var TextArea = function (_Component) {
-  _inherits(TextArea, _Component);
+var TextArea = function (_CountLimitComponent) {
+  _inherits(TextArea, _CountLimitComponent);
 
   function TextArea(props) {
     _classCallCheck(this, TextArea);
@@ -2443,12 +2514,12 @@ var TextArea = function (_Component) {
   _createClass(TextArea, [{
     key: 'render',
     value: function render() {
-      return React.createElement('textarea', (0, _cleanProps.cleanProps)(this.props));
+      return _get(TextArea.prototype.__proto__ || Object.getPrototypeOf(TextArea.prototype), 'renderInput', this).call(this, React.createElement('textarea', (0, _cleanProps.cleanProps)(this.props)));
     }
   }]);
 
   return TextArea;
-}(_react.Component);
+}(_CountLimitComponent3.default);
 
 exports.default = TextArea;
 ;
@@ -2472,7 +2543,7 @@ exports.default = TextArea;
 
 if (process.env.NODE_ENV !== 'production') {
   var invariant = __webpack_require__(6);
-  var warning = __webpack_require__(12);
+  var warning = __webpack_require__(13);
   var ReactPropTypesSecret = __webpack_require__(7);
   var loggedTypeFailures = {};
 }
@@ -2607,7 +2678,7 @@ module.exports = function() {
 
 var emptyFunction = __webpack_require__(5);
 var invariant = __webpack_require__(6);
-var warning = __webpack_require__(12);
+var warning = __webpack_require__(13);
 
 var ReactPropTypesSecret = __webpack_require__(7);
 var checkPropTypes = __webpack_require__(22);
@@ -3108,6 +3179,41 @@ module.exports = function(isValidElement, throwOnDirectAccess) {
 };
 
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(2)))
+
+/***/ }),
+/* 25 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.Fields = exports.MultiSectionedForm = exports.MultiPageForm = exports.Form = undefined;
+
+var _Form = __webpack_require__(4);
+
+var _Form2 = _interopRequireDefault(_Form);
+
+var _MultiPageForm = __webpack_require__(15);
+
+var _MultiPageForm2 = _interopRequireDefault(_MultiPageForm);
+
+var _MultiSectionedForm = __webpack_require__(8);
+
+var _MultiSectionedForm2 = _interopRequireDefault(_MultiSectionedForm);
+
+var _fields = __webpack_require__(9);
+
+var _fields2 = _interopRequireDefault(_fields);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var Form = exports.Form = _Form2.default;
+var MultiPageForm = exports.MultiPageForm = _MultiPageForm2.default;
+var MultiSectionedForm = exports.MultiSectionedForm = _MultiSectionedForm2.default;
+var Fields = exports.Fields = _fields2.default;
 
 /***/ })
 /******/ ]);
