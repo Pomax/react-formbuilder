@@ -56,6 +56,9 @@ Where a field definition object takes the following form:
   prompt: string (optional) for the "pick a file from your computer" image button
   reprompt: string (optional) for the "pick a different file from your computer" image button, after initial image selection
   helpText: string (optional) help text to show before the initial image selection
+
+  charLimit: number (optional), used by for text/textarea components
+  wordLimit: number (optional), used by for text/textarea components
 }
 ```
 
@@ -108,7 +111,7 @@ class CustomThing extends React.Component {
     // do a thing here first
     // then pass it on!
     this.props.onChange(evt);
-    
+
     // Or pass it on with an explicitly know value,
     // if you abstracted that during onChange handling.
     this.props.onChange(evt, this.explicitValue);
