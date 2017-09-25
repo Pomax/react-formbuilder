@@ -129,6 +129,27 @@ const fields = {
 }
 ```
 
+## Using character/words limits
+
+Fields of the "text" and "textarea" type can be given a numerical `charLimit` and `wordLimit` value, which adds additional markup around the fields to show the number of characters/words written as well as permitted, with CSS classes tacked on when the input exceeds the indicated limits.
+
+The markup when using limits is as follows:
+
+```
+<fieldset>
+  <label>...</label>
+  <span class="over-char-limit over-word-limit">
+    <textarea/input type="text">
+    <span class="char-limit">.../...</span>
+    <span class="word-limit">.../...</span>
+  </span>
+</fieldset>
+```
+
+The `over-char-limit` and `over-word-limit` classes kick in when the input exceeds the specified limits, and the spans for character and word typed vs. limits will only be shown if the relevant field value is specified (i.e. if only a `charLimit` is specified, no word limit markup is generated, and vice versa).
+
+Note that text and textarea fields that do not specify any limits will not contain the special wrapper `<span>` code for indicating current value and limit information.
+
 ## Components
 
 ### `Form`

@@ -52,6 +52,14 @@ export default class CountLimitComponent extends Component {
   }
 
   renderInput(htmlElement) {
+    let field = this.props.field;
+
+    // First, a short cut, because we don't need
+    // to wrap elements with char/word limits.
+    if (!field.charLimit && !field.wordLimit) {
+      return htmlElement;
+    }
+
     let countLimits = this.countLimits,
         charLimit = countLimits['data-char-limit'],
         charCount = countLimits['data-char-count'],
