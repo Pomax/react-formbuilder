@@ -52,8 +52,10 @@ class App extends React.Component {
   constructor(props) {
     super(props);
 
+    let fields = require('./fields');
+
     this.state = {
-      fields: require('./fields'),
+      fields: fields,
       values: {},
       submitting: false,
       ratio: 0,
