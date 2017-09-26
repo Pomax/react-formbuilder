@@ -11,41 +11,41 @@
 return /******/ (function(modules) { // webpackBootstrap
 /******/ 	// The module cache
 /******/ 	var installedModules = {};
-/******/
+
 /******/ 	// The require function
 /******/ 	function __webpack_require__(moduleId) {
-/******/
+
 /******/ 		// Check if module is in cache
-/******/ 		if(installedModules[moduleId]) {
+/******/ 		if(installedModules[moduleId])
 /******/ 			return installedModules[moduleId].exports;
-/******/ 		}
+
 /******/ 		// Create a new module (and put it into the cache)
 /******/ 		var module = installedModules[moduleId] = {
 /******/ 			i: moduleId,
 /******/ 			l: false,
 /******/ 			exports: {}
 /******/ 		};
-/******/
+
 /******/ 		// Execute the module function
 /******/ 		modules[moduleId].call(module.exports, module, module.exports, __webpack_require__);
-/******/
+
 /******/ 		// Flag the module as loaded
 /******/ 		module.l = true;
-/******/
+
 /******/ 		// Return the exports of the module
 /******/ 		return module.exports;
 /******/ 	}
-/******/
-/******/
+
+
 /******/ 	// expose the modules object (__webpack_modules__)
 /******/ 	__webpack_require__.m = modules;
-/******/
+
 /******/ 	// expose the module cache
 /******/ 	__webpack_require__.c = installedModules;
-/******/
+
 /******/ 	// identity function for calling harmony imports with the correct context
 /******/ 	__webpack_require__.i = function(value) { return value; };
-/******/
+
 /******/ 	// define getter function for harmony exports
 /******/ 	__webpack_require__.d = function(exports, name, getter) {
 /******/ 		if(!__webpack_require__.o(exports, name)) {
@@ -56,7 +56,7 @@ return /******/ (function(modules) { // webpackBootstrap
 /******/ 			});
 /******/ 		}
 /******/ 	};
-/******/
+
 /******/ 	// getDefaultExport function for compatibility with non-harmony modules
 /******/ 	__webpack_require__.n = function(module) {
 /******/ 		var getter = module && module.__esModule ?
@@ -65,15 +65,15 @@ return /******/ (function(modules) { // webpackBootstrap
 /******/ 		__webpack_require__.d(getter, 'a', getter);
 /******/ 		return getter;
 /******/ 	};
-/******/
+
 /******/ 	// Object.prototype.hasOwnProperty.call
 /******/ 	__webpack_require__.o = function(object, property) { return Object.prototype.hasOwnProperty.call(object, property); };
-/******/
+
 /******/ 	// __webpack_public_path__
 /******/ 	__webpack_require__.p = "";
-/******/
+
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 15);
+/******/ 	return __webpack_require__(__webpack_require__.s = 25);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -275,10 +275,6 @@ process.off = noop;
 process.removeListener = noop;
 process.removeAllListeners = noop;
 process.emit = noop;
-process.prependListener = noop;
-process.prependOnceListener = noop;
-
-process.listeners = function (name) { return [] }
 
 process.binding = function (name) {
     throw new Error('process.binding is not supported');
@@ -465,21 +461,23 @@ var Form = function (_React$Component) {
       var afelement = this.refs.autofocus;
 
       if (afelement) {
+        (function () {
 
-        // We need to use the following code to get around
-        // the bizar way in which react-select steals focus,
-        // even when the browser has issued a .focus() on
-        // a completely different HMTL element...
-        var _forceFocus = function _forceFocus() {
-          if (afelement !== document.activeElement) {
-            afelement.focus();
-            setTimeout(_forceFocus, 10);
-          }
-        };
+          // We need to use the following code to get around
+          // the bizar way in which react-select steals focus,
+          // even when the browser has issued a .focus() on
+          // a completely different HMTL element...
+          var forceFocus = function forceFocus() {
+            if (afelement !== document.activeElement) {
+              afelement.focus();
+              setTimeout(forceFocus, 10);
+            }
+          };
 
-        afelement = _reactDom2.default.findDOMNode(afelement);
-        afelement.focus();
-        setTimeout(_forceFocus, 100);
+          afelement = _reactDom2.default.findDOMNode(afelement);
+          afelement.focus();
+          setTimeout(forceFocus, 100);
+        })();
       }
     }
 
@@ -823,8 +821,6 @@ var Form = function (_React$Component) {
       if (!validators.forEach) {
         validators = [validators];
       }
-
-      console.log(validators);
 
       validators.forEach(function (validator) {
         var err = false;
@@ -2080,41 +2076,6 @@ MultiPageForm.propTypes = {
 };
 
 exports.default = MultiPageForm;
-
-/***/ }),
-/* 16 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.Fields = exports.MultiSectionedForm = exports.MultiPageForm = exports.Form = undefined;
-
-var _Form = __webpack_require__(4);
-
-var _Form2 = _interopRequireDefault(_Form);
-
-var _MultiPageForm = __webpack_require__(14);
-
-var _MultiPageForm2 = _interopRequireDefault(_MultiPageForm);
-
-var _MultiSectionedForm = __webpack_require__(8);
-
-var _MultiSectionedForm2 = _interopRequireDefault(_MultiSectionedForm);
-
-var _fields = __webpack_require__(9);
-
-var _fields2 = _interopRequireDefault(_fields);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-var Form = exports.Form = _Form2.default;
-var MultiPageForm = exports.MultiPageForm = _MultiPageForm2.default;
-var MultiSectionedForm = exports.MultiSectionedForm = _MultiSectionedForm2.default;
-var Fields = exports.Fields = _fields2.default;
 
 /***/ }),
 /* 16 */
