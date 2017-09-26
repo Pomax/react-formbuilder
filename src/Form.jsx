@@ -20,20 +20,41 @@ class Form extends React.Component {
 
     this.progressFields = [];
     Object.keys(fields).forEach(name => {
-      initial[name] = null;
-      if (fields[name].type === "checkboxGroup") {
-        initial[name] = [];
+      let value = fields[name].defaultValue;
+
+      if (typeof value === 'undefined') {
+        value = null;
       }
+
+      // checkboxGroup's value should be an array
+      if (value === null && fields[name].type === "checkboxGroup") {
+        value = [];
+      }
+
+      initial[name] = value;
+
       if (fields[name].metered) {
         this.progressFields.push(name);
       }
     });
+
     initial.valid = false;
     initial.errors = [];
     initial.errorElements = [];
     initial.hasValidated = false;
 
     return initial;
+  }
+
+  componentDidMount() {
+    let fields = this.props.fields;
+
+    // make sure default field values are propagated to Form's parent
+    Object.keys(fields).forEach(name => {
+      if (typeof fields[name].defaultValue !== "undefined") {
+        this.props.onUpdate(null, name, fields[name], this.state[name]);
+      }
+    });
   }
 
   // boilerplate
@@ -207,7 +228,7 @@ class Form extends React.Component {
       formfield = <Fields.CheckBoxGroup {...common} />;
     }
     else if (Type === "image") {
-      formfield = <Fields.Image {...common} />;
+      formfield = <Fields.Image {...common} defaultValue={field.defaultValue} />;
     }
     if (ftype === "function") {
       formfield = <Type {...field} {...common} />;
@@ -237,7 +258,7 @@ class Form extends React.Component {
 
     // checkboxGroups need to build an array of checkmark positions
     else if (field.type === "checkboxGroup") {
-      var curval = this.state[name];
+      var curval = Array.isArray(this.state[name]) ? this.state[name] : [];
       var pos = curval.indexOf(value);
 
       if (pos === -1) {

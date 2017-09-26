@@ -11,41 +11,41 @@
 return /******/ (function(modules) { // webpackBootstrap
 /******/ 	// The module cache
 /******/ 	var installedModules = {};
-
+/******/
 /******/ 	// The require function
 /******/ 	function __webpack_require__(moduleId) {
-
+/******/
 /******/ 		// Check if module is in cache
-/******/ 		if(installedModules[moduleId])
+/******/ 		if(installedModules[moduleId]) {
 /******/ 			return installedModules[moduleId].exports;
-
+/******/ 		}
 /******/ 		// Create a new module (and put it into the cache)
 /******/ 		var module = installedModules[moduleId] = {
 /******/ 			i: moduleId,
 /******/ 			l: false,
 /******/ 			exports: {}
 /******/ 		};
-
+/******/
 /******/ 		// Execute the module function
 /******/ 		modules[moduleId].call(module.exports, module, module.exports, __webpack_require__);
-
+/******/
 /******/ 		// Flag the module as loaded
 /******/ 		module.l = true;
-
+/******/
 /******/ 		// Return the exports of the module
 /******/ 		return module.exports;
 /******/ 	}
-
-
+/******/
+/******/
 /******/ 	// expose the modules object (__webpack_modules__)
 /******/ 	__webpack_require__.m = modules;
-
+/******/
 /******/ 	// expose the module cache
 /******/ 	__webpack_require__.c = installedModules;
-
+/******/
 /******/ 	// identity function for calling harmony imports with the correct context
 /******/ 	__webpack_require__.i = function(value) { return value; };
-
+/******/
 /******/ 	// define getter function for harmony exports
 /******/ 	__webpack_require__.d = function(exports, name, getter) {
 /******/ 		if(!__webpack_require__.o(exports, name)) {
@@ -56,7 +56,7 @@ return /******/ (function(modules) { // webpackBootstrap
 /******/ 			});
 /******/ 		}
 /******/ 	};
-
+/******/
 /******/ 	// getDefaultExport function for compatibility with non-harmony modules
 /******/ 	__webpack_require__.n = function(module) {
 /******/ 		var getter = module && module.__esModule ?
@@ -65,15 +65,15 @@ return /******/ (function(modules) { // webpackBootstrap
 /******/ 		__webpack_require__.d(getter, 'a', getter);
 /******/ 		return getter;
 /******/ 	};
-
+/******/
 /******/ 	// Object.prototype.hasOwnProperty.call
 /******/ 	__webpack_require__.o = function(object, property) { return Object.prototype.hasOwnProperty.call(object, property); };
-
+/******/
 /******/ 	// __webpack_public_path__
 /******/ 	__webpack_require__.p = "";
-
+/******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 25);
+/******/ 	return __webpack_require__(__webpack_require__.s = 15);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -275,6 +275,10 @@ process.off = noop;
 process.removeListener = noop;
 process.removeAllListeners = noop;
 process.emit = noop;
+process.prependListener = noop;
+process.prependOnceListener = noop;
+
+process.listeners = function (name) { return [] }
 
 process.binding = function (name) {
     throw new Error('process.binding is not supported');
@@ -392,14 +396,24 @@ var Form = function (_React$Component) {
 
       this.progressFields = [];
       Object.keys(fields).forEach(function (name) {
-        initial[name] = null;
-        if (fields[name].type === "checkboxGroup") {
-          initial[name] = [];
+        var value = fields[name].defaultValue;
+
+        if (typeof value === 'undefined') {
+          value = null;
         }
+
+        // checkboxGroup's value should be an array
+        if (value === null && fields[name].type === "checkboxGroup") {
+          value = [];
+        }
+
+        initial[name] = value;
+
         if (fields[name].metered) {
           _this2.progressFields.push(name);
         }
       });
+
       initial.valid = false;
       initial.errors = [];
       initial.errorElements = [];
@@ -407,13 +421,27 @@ var Form = function (_React$Component) {
 
       return initial;
     }
+  }, {
+    key: 'componentDidMount',
+    value: function componentDidMount() {
+      var _this3 = this;
+
+      var fields = this.props.fields;
+
+      // make sure default field values are propagated to Form's parent
+      Object.keys(fields).forEach(function (name) {
+        if (typeof fields[name].defaultValue !== "undefined") {
+          _this3.props.onUpdate(null, name, fields[name], _this3.state[name]);
+        }
+      });
+    }
 
     // boilerplate
 
   }, {
     key: 'render',
     value: function render() {
-      var _this3 = this;
+      var _this4 = this;
 
       var cn = this.props.className;
       var sm = this.props.submitting;
@@ -423,7 +451,7 @@ var Form = function (_React$Component) {
         'form',
         { className: className, hidden: this.props.hidden, disabled: this.props.submitting },
         Object.keys(this.props.fields).map(function (name) {
-          return _this3.buildFormField(name, _this3.props.fields[name]);
+          return _this4.buildFormField(name, _this4.props.fields[name]);
         }),
         this.renderValidationErrors()
       );
@@ -437,23 +465,21 @@ var Form = function (_React$Component) {
       var afelement = this.refs.autofocus;
 
       if (afelement) {
-        (function () {
 
-          // We need to use the following code to get around
-          // the bizar way in which react-select steals focus,
-          // even when the browser has issued a .focus() on
-          // a completely different HMTL element...
-          var forceFocus = function forceFocus() {
-            if (afelement !== document.activeElement) {
-              afelement.focus();
-              setTimeout(forceFocus, 10);
-            }
-          };
+        // We need to use the following code to get around
+        // the bizar way in which react-select steals focus,
+        // even when the browser has issued a .focus() on
+        // a completely different HMTL element...
+        var _forceFocus = function _forceFocus() {
+          if (afelement !== document.activeElement) {
+            afelement.focus();
+            setTimeout(_forceFocus, 10);
+          }
+        };
 
-          afelement = _reactDom2.default.findDOMNode(afelement);
-          afelement.focus();
-          setTimeout(forceFocus, 100);
-        })();
+        afelement = _reactDom2.default.findDOMNode(afelement);
+        afelement.focus();
+        setTimeout(_forceFocus, 100);
       }
     }
 
@@ -462,14 +488,14 @@ var Form = function (_React$Component) {
   }, {
     key: 'getProgress',
     value: function getProgress() {
-      var _this4 = this;
+      var _this5 = this;
 
       // get the number of required fields that have a value filled in.
       var keys = Object.keys(this.props.fields).filter(function (key) {
-        return _this4.props.fields[key].metered !== false;
+        return _this5.props.fields[key].metered !== false;
       });
       var reduced = keys.reduce(function (a, b) {
-        return a + (_this4.hasFieldValue(b, _this4.state[b]) ? 1 : 0);
+        return a + (_this5.hasFieldValue(b, _this5.state[b]) ? 1 : 0);
       }, 0);
       var total = keys.length;
 
@@ -481,7 +507,7 @@ var Form = function (_React$Component) {
   }, {
     key: 'formCommonObject',
     value: function formCommonObject(name, field) {
-      var _this5 = this;
+      var _this6 = this;
 
       field.name = name;
 
@@ -497,14 +523,14 @@ var Form = function (_React$Component) {
         multiplicity: field.multiplicity,
         value: this.state[name] || '',
         onChange: function onChange(e, v) {
-          return _this5.update(name, field, e, v);
+          return _this6.update(name, field, e, v);
         },
         placeholder: field.placeholder,
         onUpdate: function onUpdate(e, n, f, v) {
-          return _this5.update(n, f, e, v);
+          return _this6.update(n, f, e, v);
         },
         checkValidation: function checkValidation() {
-          return _this5.checkValidation();
+          return _this6.checkValidation();
         }
       };
 
@@ -628,7 +654,7 @@ var Form = function (_React$Component) {
       } else if (Type === "checkboxGroup") {
         formfield = _react2.default.createElement(_fields2.default.CheckBoxGroup, common);
       } else if (Type === "image") {
-        formfield = _react2.default.createElement(_fields2.default.Image, common);
+        formfield = _react2.default.createElement(_fields2.default.Image, _extends({}, common, { defaultValue: field.defaultValue }));
       }
       if (ftype === "function") {
         formfield = _react2.default.createElement(Type, _extends({}, field, common));
@@ -667,7 +693,7 @@ var Form = function (_React$Component) {
 
       // checkboxGroups need to build an array of checkmark positions
       else if (field.type === "checkboxGroup") {
-          var curval = this.state[name];
+          var curval = Array.isArray(this.state[name]) ? this.state[name] : [];
           var pos = curval.indexOf(value);
 
           if (pos === -1) {
@@ -703,18 +729,18 @@ var Form = function (_React$Component) {
   }, {
     key: 'setStateAsChange',
     value: function setStateAsChange(fieldname, newState) {
-      var _this6 = this;
+      var _this7 = this;
 
       this.setState(newState, function () {
         // only revalidate on changes if we already validated before.
-        if (_this6.state.hasValidated) {
-          _this6.checkValidation();
+        if (_this7.state.hasValidated) {
+          _this7.checkValidation();
         }
-        if (_this6.props.onChange) {
-          _this6.props.onChange(newState);
+        if (_this7.props.onChange) {
+          _this7.props.onChange(newState);
         }
-        if (_this6.props.onProgress) {
-          _this6.props.onProgress(_this6.getProgress());
+        if (_this7.props.onProgress) {
+          _this7.props.onProgress(_this7.getProgress());
         }
       });
     }
@@ -729,11 +755,11 @@ var Form = function (_React$Component) {
   }, {
     key: 'checkValidation',
     value: function checkValidation() {
-      var _this7 = this;
+      var _this8 = this;
 
       return this.validates(function (valid) {
-        if (_this7.props.validates) {
-          _this7.props.validates(valid);
+        if (_this8.props.validates) {
+          _this8.props.validates(valid);
         }
       });
     }
@@ -749,7 +775,7 @@ var Form = function (_React$Component) {
   }, {
     key: 'validates',
     value: function validates(postValidate) {
-      var _this8 = this;
+      var _this9 = this;
 
       var state = this.state;
       var errors = [];
@@ -757,7 +783,7 @@ var Form = function (_React$Component) {
       var fields = this.props.fields || {};
 
       Object.keys(fields).forEach(function (name) {
-        _this8.validateField(name, errors, errorElements);
+        _this9.validateField(name, errors, errorElements);
       });
 
       this.setState({
@@ -766,7 +792,7 @@ var Form = function (_React$Component) {
         errors: errors,
         errorElements: errorElements
       }, function () {
-        postValidate(_this8.state.valid);
+        postValidate(_this9.state.valid);
       });
 
       return !errors.length;
@@ -785,7 +811,7 @@ var Form = function (_React$Component) {
   }, {
     key: 'validateField',
     value: function validateField(name, errors, errorElements) {
-      var _this9 = this;
+      var _this10 = this;
 
       var value = this.state[name];
       var validators = this.props.fields[name].validator;
@@ -806,9 +832,9 @@ var Form = function (_React$Component) {
         if (validator.validate) {
           err = validator.validate(value);
         } else {
-          err = !_this9.hasFieldValue(name, _this9.state[name]);
+          err = !_this10.hasFieldValue(name, _this10.state[name]);
         }
-        if (err && _this9.passesControl(name)) {
+        if (err && _this10.passesControl(name)) {
           errors.push(validator.error);
           if (errorElements.indexOf(name) === -1) {
             errorElements.push(name);
@@ -2060,6 +2086,41 @@ exports.default = MultiPageForm;
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.Fields = exports.MultiSectionedForm = exports.MultiPageForm = exports.Form = undefined;
+
+var _Form = __webpack_require__(4);
+
+var _Form2 = _interopRequireDefault(_Form);
+
+var _MultiPageForm = __webpack_require__(14);
+
+var _MultiPageForm2 = _interopRequireDefault(_MultiPageForm);
+
+var _MultiSectionedForm = __webpack_require__(8);
+
+var _MultiSectionedForm2 = _interopRequireDefault(_MultiSectionedForm);
+
+var _fields = __webpack_require__(9);
+
+var _fields2 = _interopRequireDefault(_fields);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var Form = exports.Form = _Form2.default;
+var MultiPageForm = exports.MultiPageForm = _MultiPageForm2.default;
+var MultiSectionedForm = exports.MultiSectionedForm = _MultiSectionedForm2.default;
+var Fields = exports.Fields = _fields2.default;
+
+/***/ }),
+/* 16 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
 /* WEBPACK VAR INJECTION */(function(React) {
 
 Object.defineProperty(exports, "__esModule", {
@@ -2102,7 +2163,7 @@ var CheckBox = function (_Component) {
         React.createElement(
           'label',
           { className: labelClass, ref: 'label' },
-          React.createElement('input', _extends({}, (0, _cleanProps.cleanProps)(props), { type: 'checkbox', ref: 'box' })),
+          React.createElement('input', _extends({}, (0, _cleanProps.cleanProps)(props), { type: 'checkbox', ref: 'box', checked: !!props.value })),
           label.props.children
         )
       );
@@ -2342,7 +2403,7 @@ var Image = function (_Component) {
     value: function generatePicker(prompt, reprompt, helpText) {
       var _this3 = this;
 
-      if (!this.state.attachment) {
+      if (!this.state.attachment && !this.props.defaultValue) {
         prompt = prompt || "Click here to pick an image";
         helpText = helpText ? React.createElement(
           'span',
@@ -2355,9 +2416,14 @@ var Image = function (_Component) {
           }, value: prompt }), helpText];
       }
 
+      var image = React.createElement('img', { key: 'preview', src: this.props.defaultValue });
       reprompt = reprompt || "Click here to pick a different image";
 
-      return [React.createElement('img', { key: 'preview', src: "data:image/jpg;base64," + this.state.attachment.base64 }), React.createElement('input', { key: 'attach', type: 'button', className: 'btn reattach', onClick: function onClick(e) {
+      if (this.state.attachment) {
+        image = React.createElement('img', { key: 'preview', src: "data:image/jpg;base64," + this.state.attachment.base64 });
+      }
+
+      return [image, React.createElement('input', { key: 'attach', type: 'button', className: 'btn reattach', onClick: function onClick(e) {
           return _this3.selectFiles(e);
         }, value: reprompt })];
     }
