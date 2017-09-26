@@ -86,17 +86,22 @@ module.exports = {
             return undefined;
           }
 
-          let err = value.trim().split(' ').length < 45;
-          if (err) return new Error("value does not split into 45 words or more!");
+          let vlen = value.trim().split(/\s+/).filter(v => v).length;
+          let err = vlen > 100;
+          if (err) {
+            return new Error(`${vlen} words found where only 100 are accepted.`);
+          }
 
           return undefined;
         },
-        error: "Your notes must be at least 45 words."
+        error: "Your notes must be 100 words at most."
       }
-    ]
+    ],
+    wordLimit: 100
   },
-  CustomField: {
-    label: "Custom 51 char field",
-    type: CustomInputField
+  'custom field': {
+    type: "text",
+    label: "A text field for 51 characters max, but secretly accepting more",
+    charLimit: 51
   }
 };

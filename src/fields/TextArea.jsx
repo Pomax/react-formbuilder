@@ -1,11 +1,12 @@
-import { Component } from 'react';
+import CountLimitComponent from './CountLimitComponent.jsx';
 import { cleanProps } from './clean-props';
 
-export default class TextArea extends Component {
+export default class TextArea extends CountLimitComponent {
   constructor(props) {
     super(props);
   }
-	render() {
-    return <textarea {...cleanProps(this.props)}/>;
+
+  render() {
+    return super.renderInput(<textarea {...cleanProps(this.props)}/>);
   }
 };

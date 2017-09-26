@@ -24,6 +24,8 @@ fieldset label .optional {
 	margin-left: 1em;
 }
 
+.over-char-limit,
+.over-word-limit,
 .error.inline {
 	color: red;
 }
