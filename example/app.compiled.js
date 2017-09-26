@@ -13157,7 +13157,7 @@ module.exports = {
     prompt: "Pick image",
     reprompt: "Pick different image",
     helpText: "Looks best at 300px × 300px",
-    defaultValue: "https://cdn.pixabay.com/photo/2017/03/17/11/59/food-2151361_1280.jpg"
+    defaultValue: "./photo_2017-09-25_17-02-26.jpg"
   },
   'full_name': {
     type: "text",
