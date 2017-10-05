@@ -7,7 +7,8 @@ module.exports = {
     fieldClassname: "avatar",
     prompt: "Pick image",
     reprompt: "Pick different image",
-    helpText: "Looks best at 300px × 300px"
+    helpText: "Looks best at 300px × 300px",
+    defaultValue: "./photo_2017-09-25_17-02-26.jpg"
   },
   'full_name': {
     type: "text",
@@ -16,9 +17,10 @@ module.exports = {
     validator: {
       error: "You must provide a full name."
     },
-    multiplicity: 2,
+    multiplicity: 3,
     addLabel: "add another participant",
-    removeLabel: "remove participant"
+    removeLabel: "remove participant",
+    defaultValue: [ "Philip", "Gary" ]
   },
   occupation: {
     type: "text",
@@ -26,7 +28,8 @@ module.exports = {
     placeholder: "Student or professional at ...",
     validator: {
       error: "Please let us know what your occupation is."
-    }
+    },
+    defaultValue: "barista"
   },
   'email opt-in': {
     type: "choiceGroup",
@@ -67,7 +70,8 @@ module.exports = {
       value: true
     },
     metered: false,
-    optional: true
+    optional: true,
+    colCount: 1
   },
   notes: {
     type: "textarea",
@@ -83,17 +87,22 @@ module.exports = {
             return undefined;
           }
 
-          let err = value.trim().split(' ').length < 45;
-          if (err) return new Error("value does not split into 45 words or more!");
+          let vlen = value.trim().split(/\s+/).filter(v => v).length;
+          let err = vlen > 100;
+          if (err) {
+            return new Error(`${vlen} words found where only 100 are accepted.`);
+          }
 
           return undefined;
         },
-        error: "Your notes must be at least 45 words."
+        error: "Your notes must be 100 words at most."
       }
-    ]
+    ],
+    wordLimit: 100
   },
-  CustomField: {
-    label: "Custom 51 char field",
-    type: CustomInputField
+  'custom field': {
+    type: "text",
+    label: "A text field for 51 characters max, but secretly accepting more",
+    charLimit: 51
   }
 };

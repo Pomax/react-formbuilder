@@ -1,14 +1,15 @@
-import { Component } from 'react';
+import CountLimitComponent from './CountLimitComponent.jsx';
 import { cleanProps } from './clean-props';
 import MultiplicityField from './MultiplicityField.jsx';
 
-export default class Text extends Component {
+export default class Text extends CountLimitComponent {
   constructor(props) {
     super(props);
+    this.state = {};
   }
 
   render() {
-    let props = this.props;
+    let props = Object.assign({}, this.props);
     let value = props.value;
 
     if (props.multiplicity) {
@@ -16,6 +17,6 @@ export default class Text extends Component {
       return <MultiplicityField {...props} values={values} />;
     }
 
-    return <input type="text" {...cleanProps(props)}/>;
+    return super.renderInput(<input type="text" {...cleanProps(props)}/>);
   }
 };

@@ -7,7 +7,7 @@
 		exports["ReactFormBuilder"] = factory(require("react"), require("react-dom"));
 	else
 		root["ReactFormBuilder"] = factory(root["React"], root["ReactDOM"]);
-})(this, function(__WEBPACK_EXTERNAL_MODULE_0__, __WEBPACK_EXTERNAL_MODULE_13__) {
+})(this, function(__WEBPACK_EXTERNAL_MODULE_0__, __WEBPACK_EXTERNAL_MODULE_14__) {
 return /******/ (function(modules) { // webpackBootstrap
 /******/ 	// The module cache
 /******/ 	var installedModules = {};
@@ -345,7 +345,7 @@ var _react = __webpack_require__(0);
 
 var _react2 = _interopRequireDefault(_react);
 
-var _reactDom = __webpack_require__(13);
+var _reactDom = __webpack_require__(14);
 
 var _reactDom2 = _interopRequireDefault(_reactDom);
 
@@ -396,14 +396,24 @@ var Form = function (_React$Component) {
 
       this.progressFields = [];
       Object.keys(fields).forEach(function (name) {
-        initial[name] = null;
-        if (fields[name].type === "checkboxGroup") {
-          initial[name] = [];
+        var value = fields[name].defaultValue;
+
+        if (typeof value === 'undefined') {
+          value = null;
         }
+
+        // checkboxGroup's value should be an array
+        if (value === null && fields[name].type === "checkboxGroup") {
+          value = [];
+        }
+
+        initial[name] = value;
+
         if (fields[name].metered) {
           _this2.progressFields.push(name);
         }
       });
+
       initial.valid = false;
       initial.errors = [];
       initial.errorElements = [];
@@ -411,13 +421,27 @@ var Form = function (_React$Component) {
 
       return initial;
     }
+  }, {
+    key: 'componentDidMount',
+    value: function componentDidMount() {
+      var _this3 = this;
+
+      var fields = this.props.fields;
+
+      // make sure default field values are propagated to Form's parent
+      Object.keys(fields).forEach(function (name) {
+        if (typeof fields[name].defaultValue !== "undefined") {
+          _this3.props.onUpdate(null, name, fields[name], _this3.state[name]);
+        }
+      });
+    }
 
     // boilerplate
 
   }, {
     key: 'render',
     value: function render() {
-      var _this3 = this;
+      var _this4 = this;
 
       var cn = this.props.className;
       var sm = this.props.submitting;
@@ -427,7 +451,7 @@ var Form = function (_React$Component) {
         'form',
         { className: className, hidden: this.props.hidden, disabled: this.props.submitting },
         Object.keys(this.props.fields).map(function (name) {
-          return _this3.buildFormField(name, _this3.props.fields[name]);
+          return _this4.buildFormField(name, _this4.props.fields[name]);
         }),
         this.renderValidationErrors()
       );
@@ -464,14 +488,14 @@ var Form = function (_React$Component) {
   }, {
     key: 'getProgress',
     value: function getProgress() {
-      var _this4 = this;
+      var _this5 = this;
 
       // get the number of required fields that have a value filled in.
       var keys = Object.keys(this.props.fields).filter(function (key) {
-        return _this4.props.fields[key].metered !== false;
+        return _this5.props.fields[key].metered !== false;
       });
       var reduced = keys.reduce(function (a, b) {
-        return a + (_this4.hasFieldValue(b, _this4.state[b]) ? 1 : 0);
+        return a + (_this5.hasFieldValue(b, _this5.state[b]) ? 1 : 0);
       }, 0);
       var total = keys.length;
 
@@ -483,7 +507,7 @@ var Form = function (_React$Component) {
   }, {
     key: 'formCommonObject',
     value: function formCommonObject(name, field) {
-      var _this5 = this;
+      var _this6 = this;
 
       field.name = name;
 
@@ -499,14 +523,14 @@ var Form = function (_React$Component) {
         multiplicity: field.multiplicity,
         value: this.state[name] || '',
         onChange: function onChange(e, v) {
-          return _this5.update(name, field, e, v);
+          return _this6.update(name, field, e, v);
         },
         placeholder: field.placeholder,
         onUpdate: function onUpdate(e, n, f, v) {
-          return _this5.update(n, f, e, v);
+          return _this6.update(n, f, e, v);
         },
         checkValidation: function checkValidation() {
-          return _this5.checkValidation();
+          return _this6.checkValidation();
         }
       };
 
@@ -631,7 +655,7 @@ var Form = function (_React$Component) {
       } else if (Type === "checkboxGroup") {
         formfield = _react2.default.createElement(_fields2.default.CheckBoxGroup, common);
       } else if (Type === "image") {
-        formfield = _react2.default.createElement(_fields2.default.Image, common);
+        formfield = _react2.default.createElement(_fields2.default.Image, _extends({}, common, { defaultValue: field.defaultValue }));
       }
       if (ftype === "function") {
         formfield = _react2.default.createElement(Type, _extends({}, field, common));
@@ -675,7 +699,7 @@ var Form = function (_React$Component) {
 
       // checkboxGroups need to build an array of checkmark positions
       else if (field.type === "checkboxGroup") {
-          var curval = this.state[name];
+          var curval = Array.isArray(this.state[name]) ? this.state[name] : [];
           var pos = curval.indexOf(value);
 
           if (pos === -1) {
@@ -711,18 +735,18 @@ var Form = function (_React$Component) {
   }, {
     key: 'setStateAsChange',
     value: function setStateAsChange(fieldname, newState) {
-      var _this6 = this;
+      var _this7 = this;
 
       this.setState(newState, function () {
         // only revalidate on changes if we already validated before.
-        if (_this6.state.hasValidated) {
-          _this6.checkValidation();
+        if (_this7.state.hasValidated) {
+          _this7.checkValidation();
         }
-        if (_this6.props.onChange) {
-          _this6.props.onChange(newState);
+        if (_this7.props.onChange) {
+          _this7.props.onChange(newState);
         }
-        if (_this6.props.onProgress) {
-          _this6.props.onProgress(_this6.getProgress());
+        if (_this7.props.onProgress) {
+          _this7.props.onProgress(_this7.getProgress());
         }
       });
     }
@@ -737,11 +761,11 @@ var Form = function (_React$Component) {
   }, {
     key: 'checkValidation',
     value: function checkValidation() {
-      var _this7 = this;
+      var _this8 = this;
 
       return this.validates(function (valid) {
-        if (_this7.props.validates) {
-          _this7.props.validates(valid);
+        if (_this8.props.validates) {
+          _this8.props.validates(valid);
         }
       });
     }
@@ -757,7 +781,7 @@ var Form = function (_React$Component) {
   }, {
     key: 'validates',
     value: function validates(postValidate) {
-      var _this8 = this;
+      var _this9 = this;
 
       var state = this.state;
       var errors = [];
@@ -765,7 +789,7 @@ var Form = function (_React$Component) {
       var fields = this.props.fields || {};
 
       Object.keys(fields).forEach(function (name) {
-        _this8.validateField(name, errors, errorElements);
+        _this9.validateField(name, errors, errorElements);
       });
 
       this.setState({
@@ -774,7 +798,7 @@ var Form = function (_React$Component) {
         errors: errors,
         errorElements: errorElements
       }, function () {
-        postValidate(_this8.state.valid);
+        postValidate(_this9.state.valid);
       });
 
       return !errors.length;
@@ -793,7 +817,7 @@ var Form = function (_React$Component) {
   }, {
     key: 'validateField',
     value: function validateField(name, errors, errorElements) {
-      var _this9 = this;
+      var _this10 = this;
 
       var value = this.state[name];
       var validators = this.props.fields[name].validator;
@@ -812,9 +836,9 @@ var Form = function (_React$Component) {
         if (validator.validate) {
           err = validator.validate(value);
         } else {
-          err = !_this9.hasFieldValue(name, _this9.state[name]);
+          err = !_this10.hasFieldValue(name, _this10.state[name]);
         }
-        if (err && _this9.passesControl(name)) {
+        if (err && _this10.passesControl(name)) {
           errors.push(validator.error);
           if (errorElements.indexOf(name) === -1) {
             errorElements.push(name);
@@ -1336,7 +1360,7 @@ var _TextArea2 = _interopRequireDefault(_TextArea);
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 module.exports = {
-  fieldType: __webpack_require__(11),
+  fieldType: __webpack_require__(12),
   CheckBox: _CheckBox2.default,
   CheckBoxGroup: _CheckBoxGroup2.default,
   ChoiceGroup: _ChoiceGroup2.default,
@@ -1356,6 +1380,139 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _react = __webpack_require__(0);
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+// Naive word counting.
+function countWords(text) {
+  return text.split(/\s+/).filter(function (v) {
+    return v;
+  }).length;
+}
+
+/**
+ * A custom component class that can enforce character and word
+ * limits on the value that the user puts in.
+ * This class acts as base class to the Text and TextArea fields.
+ */
+
+var CountLimitComponent = function (_Component) {
+  _inherits(CountLimitComponent, _Component);
+
+  function CountLimitComponent(props) {
+    _classCallCheck(this, CountLimitComponent);
+
+    var _this = _possibleConstructorReturn(this, (CountLimitComponent.__proto__ || Object.getPrototypeOf(CountLimitComponent)).call(this, props));
+
+    _this.state = {};
+    _this.countLimits = {};
+    return _this;
+  }
+
+  _createClass(CountLimitComponent, [{
+    key: 'componentWillUpdate',
+    value: function componentWillUpdate(nextProps, nextState) {
+      var countLimits = {};
+
+      // processing all character limit information
+      var charLimit = this.props.field.charLimit;
+      if (charLimit) {
+        var value = nextProps.value;
+        var charCount = value.length;
+        var overCharLimit = charCount > charLimit;
+        if (overCharLimit !== this.state.overCharLimit) {
+          this.setState({ overCharLimit: overCharLimit });
+        }
+        countLimits['data-char-limit'] = charLimit;
+        countLimits['data-char-count'] = charCount;
+      }
+
+      // processing all word limit information
+      var wordLimit = this.props.field.wordLimit;
+      if (wordLimit) {
+        var _value = nextProps.value;
+        var wordCount = countWords(_value);
+        var overWordLimit = wordCount > wordLimit;
+        if (overWordLimit !== this.state.overWordLimit) {
+          this.setState({ overWordLimit: overWordLimit });
+        }
+        countLimits['data-word-limit'] = wordLimit;
+        countLimits['data-word-count'] = wordCount;
+      }
+
+      // this field gets used in the renderInput
+      // function to generate appropriate data.
+      this.countLimits = countLimits;
+    }
+  }, {
+    key: 'renderInput',
+    value: function renderInput(htmlElement) {
+      var field = this.props.field;
+
+      // First, a short cut, because we don't need
+      // to wrap elements with char/word limits.
+      if (!field.charLimit && !field.wordLimit) {
+        return htmlElement;
+      }
+
+      var countLimits = this.countLimits,
+          charLimit = countLimits['data-char-limit'],
+          charCount = countLimits['data-char-count'],
+          overCharLimit = this.state.overCharLimit ? 'over-char-limit' : '',
+          wordLimit = countLimits['data-word-limit'],
+          wordCount = countLimits['data-word-count'],
+          overWordLimit = this.state.overWordLimit ? 'over-word-limit' : '',
+          className = [overCharLimit, overWordLimit].join(' ').trim();
+
+      // This is a span-wrap to ensure that sane CSS can be
+      // written to deal with data and error presentation.
+      return React.createElement(
+        'span',
+        { className: className },
+        htmlElement,
+        !charLimit ? null : React.createElement(
+          'span',
+          { className: 'char-limit' },
+          charCount,
+          '/',
+          charLimit
+        ),
+        !wordLimit ? null : React.createElement(
+          'span',
+          { className: 'word-limit' },
+          wordCount,
+          '/',
+          wordLimit
+        )
+      );
+    }
+  }]);
+
+  return CountLimitComponent;
+}(_react.Component);
+
+exports.default = CountLimitComponent;
+;
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
+
+/***/ }),
+/* 11 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+/* WEBPACK VAR INJECTION */(function(React) {
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
@@ -1364,7 +1521,7 @@ var _createClass = function () { function defineProperties(target, props) { for 
 
 var _react = __webpack_require__(0);
 
-var _reactDom = __webpack_require__(13);
+var _reactDom = __webpack_require__(14);
 
 var _reactDom2 = _interopRequireDefault(_reactDom);
 
@@ -1372,7 +1529,7 @@ var _propTypes = __webpack_require__(3);
 
 var _propTypes2 = _interopRequireDefault(_propTypes);
 
-var _fieldType = __webpack_require__(11);
+var _fieldType = __webpack_require__(12);
 
 var _fieldType2 = _interopRequireDefault(_fieldType);
 
@@ -1556,7 +1713,7 @@ exports.default = MultiplicityField;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 11 */
+/* 12 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1597,7 +1754,7 @@ module.exports = _propTypes2.default.shape({
 });
 
 /***/ }),
-/* 12 */
+/* 13 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1670,13 +1827,13 @@ module.exports = warning;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(2)))
 
 /***/ }),
-/* 13 */
+/* 14 */
 /***/ (function(module, exports) {
 
-module.exports = __WEBPACK_EXTERNAL_MODULE_13__;
+module.exports = __WEBPACK_EXTERNAL_MODULE_14__;
 
 /***/ }),
-/* 14 */
+/* 15 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1929,7 +2086,7 @@ MultiPageForm.propTypes = {
 exports.default = MultiPageForm;
 
 /***/ }),
-/* 15 */
+/* 16 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2010,7 +2167,7 @@ var CheckBox = function (_Component) {
         React.createElement(
           'label',
           { className: labelClass, ref: 'label' },
-          React.createElement('input', _extends({}, (0, _cleanProps.cleanProps)(props), { type: 'checkbox', ref: 'box' })),
+          React.createElement('input', _extends({}, (0, _cleanProps.cleanProps)(props), { type: 'checkbox', ref: 'box', checked: !!props.value })),
           label.props.children
         )
       );
@@ -2201,7 +2358,7 @@ var _react = __webpack_require__(0);
 
 var _cleanProps = __webpack_require__(1);
 
-var _MultiplicityField = __webpack_require__(10);
+var _MultiplicityField = __webpack_require__(11);
 
 var _MultiplicityField2 = _interopRequireDefault(_MultiplicityField);
 
@@ -2250,7 +2407,7 @@ var Image = function (_Component) {
     value: function generatePicker(prompt, reprompt, helpText) {
       var _this3 = this;
 
-      if (!this.state.attachment) {
+      if (!this.state.attachment && !this.props.defaultValue) {
         prompt = prompt || "Click here to pick an image";
         helpText = helpText ? React.createElement(
           'span',
@@ -2263,9 +2420,14 @@ var Image = function (_Component) {
           }, value: prompt }), helpText];
       }
 
+      var image = React.createElement('img', { key: 'preview', src: this.props.defaultValue });
       reprompt = reprompt || "Click here to pick a different image";
 
-      return [React.createElement('img', { key: 'preview', src: "data:image/jpg;base64," + this.state.attachment.base64 }), React.createElement('input', { key: 'attach', type: 'button', className: 'btn reattach', onClick: function onClick(e) {
+      if (this.state.attachment) {
+        image = React.createElement('img', { key: 'preview', src: "data:image/jpg;base64," + this.state.attachment.base64 });
+      }
+
+      return [image, React.createElement('input', { key: 'attach', type: 'button', className: 'btn reattach', onClick: function onClick(e) {
           return _this3.selectFiles(e);
         }, value: reprompt })];
     }
@@ -2337,11 +2499,15 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _react = __webpack_require__(0);
+var _get = function get(object, property, receiver) { if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { return get(parent, property, receiver); } } else if ("value" in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } };
+
+var _CountLimitComponent2 = __webpack_require__(10);
+
+var _CountLimitComponent3 = _interopRequireDefault(_CountLimitComponent2);
 
 var _cleanProps = __webpack_require__(1);
 
-var _MultiplicityField = __webpack_require__(10);
+var _MultiplicityField = __webpack_require__(11);
 
 var _MultiplicityField2 = _interopRequireDefault(_MultiplicityField);
 
@@ -2353,19 +2519,22 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-var Text = function (_Component) {
-  _inherits(Text, _Component);
+var Text = function (_CountLimitComponent) {
+  _inherits(Text, _CountLimitComponent);
 
   function Text(props) {
     _classCallCheck(this, Text);
 
-    return _possibleConstructorReturn(this, (Text.__proto__ || Object.getPrototypeOf(Text)).call(this, props));
+    var _this = _possibleConstructorReturn(this, (Text.__proto__ || Object.getPrototypeOf(Text)).call(this, props));
+
+    _this.state = {};
+    return _this;
   }
 
   _createClass(Text, [{
     key: 'render',
     value: function render() {
-      var props = this.props;
+      var props = Object.assign({}, this.props);
       var value = props.value;
 
       if (props.multiplicity) {
@@ -2373,12 +2542,12 @@ var Text = function (_Component) {
         return React.createElement(_MultiplicityField2.default, _extends({}, props, { values: values }));
       }
 
-      return React.createElement('input', _extends({ type: 'text' }, (0, _cleanProps.cleanProps)(props)));
+      return _get(Text.prototype.__proto__ || Object.getPrototypeOf(Text.prototype), 'renderInput', this).call(this, React.createElement('input', _extends({ type: 'text' }, (0, _cleanProps.cleanProps)(props))));
     }
   }]);
 
   return Text;
-}(_react.Component);
+}(_CountLimitComponent3.default);
 
 exports.default = Text;
 ;
@@ -2397,9 +2566,15 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _react = __webpack_require__(0);
+var _get = function get(object, property, receiver) { if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { return get(parent, property, receiver); } } else if ("value" in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } };
+
+var _CountLimitComponent2 = __webpack_require__(10);
+
+var _CountLimitComponent3 = _interopRequireDefault(_CountLimitComponent2);
 
 var _cleanProps = __webpack_require__(1);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -2407,8 +2582,8 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-var TextArea = function (_Component) {
-  _inherits(TextArea, _Component);
+var TextArea = function (_CountLimitComponent) {
+  _inherits(TextArea, _CountLimitComponent);
 
   function TextArea(props) {
     _classCallCheck(this, TextArea);
@@ -2419,12 +2594,12 @@ var TextArea = function (_Component) {
   _createClass(TextArea, [{
     key: 'render',
     value: function render() {
-      return React.createElement('textarea', (0, _cleanProps.cleanProps)(this.props));
+      return _get(TextArea.prototype.__proto__ || Object.getPrototypeOf(TextArea.prototype), 'renderInput', this).call(this, React.createElement('textarea', (0, _cleanProps.cleanProps)(this.props)));
     }
   }]);
 
   return TextArea;
-}(_react.Component);
+}(_CountLimitComponent3.default);
 
 exports.default = TextArea;
 ;
@@ -2448,7 +2623,7 @@ exports.default = TextArea;
 
 if (process.env.NODE_ENV !== 'production') {
   var invariant = __webpack_require__(6);
-  var warning = __webpack_require__(12);
+  var warning = __webpack_require__(13);
   var ReactPropTypesSecret = __webpack_require__(7);
   var loggedTypeFailures = {};
 }
@@ -2583,7 +2758,7 @@ module.exports = function() {
 
 var emptyFunction = __webpack_require__(5);
 var invariant = __webpack_require__(6);
-var warning = __webpack_require__(12);
+var warning = __webpack_require__(13);
 
 var ReactPropTypesSecret = __webpack_require__(7);
 var checkPropTypes = __webpack_require__(22);

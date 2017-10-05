@@ -44,6 +44,7 @@ Where a field definition object takes the following form:
   fieldClassname: String data (optional) representing a custom CSS class for this field's form element,
   labelClassname: String data (optional) representing a custom CSS class for this field's label element,
   placeholder: String data (optional)
+  defaultValue: default data for this field (optional) String when "type" is checkbox, text, or textarea. Array of strings when "type" is checkboxGroup, choiceGroup, or multiplicity field. When "type" is image, defaultValue should be the file path which will be used to show preview of the default image. Note defaultValue will be ignored for controlled fields (fields with "controller" set),
   metered: boolean (optional),
   optional: boolean (optional),
   options: array of strings for each option when "type" is choiceGroup, checkboxGroup, or a React component that takes "options" (like a ReactSelect component),
@@ -58,6 +59,9 @@ Where a field definition object takes the following form:
   prompt: string (optional) for the "pick a file from your computer" image button
   reprompt: string (optional) for the "pick a different file from your computer" image button, after initial image selection
   helpText: string (optional) help text to show before the initial image selection
+
+  charLimit: number (optional), used by for text/textarea components
+  wordLimit: number (optional), used by for text/textarea components
 }
 ```
 
@@ -110,7 +114,7 @@ class CustomThing extends React.Component {
     // do a thing here first
     // then pass it on!
     this.props.onChange(evt);
-    
+
     // Or pass it on with an explicitly know value,
     // if you abstracted that during onChange handling.
     this.props.onChange(evt, this.explicitValue);
@@ -127,6 +131,27 @@ const fields = {
   }
 }
 ```
+
+## Using character/words limits
+
+Fields of the "text" and "textarea" type can be given a numerical `charLimit` and `wordLimit` value, which adds additional markup around the fields to show the number of characters/words written as well as permitted, with CSS classes tacked on when the input exceeds the indicated limits.
+
+The markup when using limits is as follows:
+
+```
+<fieldset>
+  <label>...</label>
+  <span class="over-char-limit over-word-limit">
+    <textarea/input type="text">
+    <span class="char-limit">.../...</span>
+    <span class="word-limit">.../...</span>
+  </span>
+</fieldset>
+```
+
+The `over-char-limit` and `over-word-limit` classes kick in when the input exceeds the specified limits, and the spans for character and word typed vs. limits will only be shown if the relevant field value is specified (i.e. if only a `charLimit` is specified, no word limit markup is generated, and vice versa).
+
+Note that text and textarea fields that do not specify any limits will not contain the special wrapper `<span>` code for indicating current value and limit information.
 
 ## Components
 
