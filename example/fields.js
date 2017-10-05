@@ -56,6 +56,7 @@ module.exports = {
   'email choices': {
     type: "checkbox",
     label: "I would like to pick the emails you send me",
+    guideText: "Check this box to sign up for our fake newsletter:",
     metered: false,
     optional: true
   },
