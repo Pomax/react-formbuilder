@@ -11,41 +11,41 @@
 return /******/ (function(modules) { // webpackBootstrap
 /******/ 	// The module cache
 /******/ 	var installedModules = {};
-
+/******/
 /******/ 	// The require function
 /******/ 	function __webpack_require__(moduleId) {
-
+/******/
 /******/ 		// Check if module is in cache
-/******/ 		if(installedModules[moduleId])
+/******/ 		if(installedModules[moduleId]) {
 /******/ 			return installedModules[moduleId].exports;
-
+/******/ 		}
 /******/ 		// Create a new module (and put it into the cache)
 /******/ 		var module = installedModules[moduleId] = {
 /******/ 			i: moduleId,
 /******/ 			l: false,
 /******/ 			exports: {}
 /******/ 		};
-
+/******/
 /******/ 		// Execute the module function
 /******/ 		modules[moduleId].call(module.exports, module, module.exports, __webpack_require__);
-
+/******/
 /******/ 		// Flag the module as loaded
 /******/ 		module.l = true;
-
+/******/
 /******/ 		// Return the exports of the module
 /******/ 		return module.exports;
 /******/ 	}
-
-
+/******/
+/******/
 /******/ 	// expose the modules object (__webpack_modules__)
 /******/ 	__webpack_require__.m = modules;
-
+/******/
 /******/ 	// expose the module cache
 /******/ 	__webpack_require__.c = installedModules;
-
+/******/
 /******/ 	// identity function for calling harmony imports with the correct context
 /******/ 	__webpack_require__.i = function(value) { return value; };
-
+/******/
 /******/ 	// define getter function for harmony exports
 /******/ 	__webpack_require__.d = function(exports, name, getter) {
 /******/ 		if(!__webpack_require__.o(exports, name)) {
@@ -56,7 +56,7 @@ return /******/ (function(modules) { // webpackBootstrap
 /******/ 			});
 /******/ 		}
 /******/ 	};
-
+/******/
 /******/ 	// getDefaultExport function for compatibility with non-harmony modules
 /******/ 	__webpack_require__.n = function(module) {
 /******/ 		var getter = module && module.__esModule ?
@@ -65,15 +65,15 @@ return /******/ (function(modules) { // webpackBootstrap
 /******/ 		__webpack_require__.d(getter, 'a', getter);
 /******/ 		return getter;
 /******/ 	};
-
+/******/
 /******/ 	// Object.prototype.hasOwnProperty.call
 /******/ 	__webpack_require__.o = function(object, property) { return Object.prototype.hasOwnProperty.call(object, property); };
-
+/******/
 /******/ 	// __webpack_public_path__
 /******/ 	__webpack_require__.p = "";
-
+/******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 24);
+/******/ 	return __webpack_require__(__webpack_require__.s = 15);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -275,6 +275,10 @@ process.off = noop;
 process.removeListener = noop;
 process.removeAllListeners = noop;
 process.emit = noop;
+process.prependListener = noop;
+process.prependOnceListener = noop;
+
+process.listeners = function (name) { return [] }
 
 process.binding = function (name) {
     throw new Error('process.binding is not supported');
@@ -315,11 +319,11 @@ if (process.env.NODE_ENV !== 'production') {
   // By explicitly using `prop-types` you are opting into new development behavior.
   // http://fb.me/prop-types-in-prod
   var throwOnDirectAccess = true;
-  module.exports = __webpack_require__(23)(isValidElement, throwOnDirectAccess);
+  module.exports = __webpack_require__(24)(isValidElement, throwOnDirectAccess);
 } else {
   // By explicitly using `prop-types` you are opting into new production behavior.
   // http://fb.me/prop-types-in-prod
-  module.exports = __webpack_require__(22)();
+  module.exports = __webpack_require__(23)();
 }
 
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(2)))
@@ -437,23 +441,21 @@ var Form = function (_React$Component) {
       var afelement = this.refs.autofocus;
 
       if (afelement) {
-        (function () {
 
-          // We need to use the following code to get around
-          // the bizar way in which react-select steals focus,
-          // even when the browser has issued a .focus() on
-          // a completely different HMTL element...
-          var forceFocus = function forceFocus() {
-            if (afelement !== document.activeElement) {
-              afelement.focus();
-              setTimeout(forceFocus, 10);
-            }
-          };
+        // We need to use the following code to get around
+        // the bizar way in which react-select steals focus,
+        // even when the browser has issued a .focus() on
+        // a completely different HMTL element...
+        var _forceFocus = function _forceFocus() {
+          if (afelement !== document.activeElement) {
+            afelement.focus();
+            setTimeout(_forceFocus, 10);
+          }
+        };
 
-          afelement = _reactDom2.default.findDOMNode(afelement);
-          afelement.focus();
-          setTimeout(forceFocus, 100);
-        })();
+        afelement = _reactDom2.default.findDOMNode(afelement);
+        afelement.focus();
+        setTimeout(_forceFocus, 100);
       }
     }
 
@@ -1307,27 +1309,27 @@ exports.default = MultiSectionedForm;
 "use strict";
 
 
-var _CheckBox = __webpack_require__(15);
+var _CheckBox = __webpack_require__(16);
 
 var _CheckBox2 = _interopRequireDefault(_CheckBox);
 
-var _CheckBoxGroup = __webpack_require__(16);
+var _CheckBoxGroup = __webpack_require__(17);
 
 var _CheckBoxGroup2 = _interopRequireDefault(_CheckBoxGroup);
 
-var _ChoiceGroup = __webpack_require__(17);
+var _ChoiceGroup = __webpack_require__(18);
 
 var _ChoiceGroup2 = _interopRequireDefault(_ChoiceGroup);
 
-var _Image = __webpack_require__(18);
+var _Image = __webpack_require__(19);
 
 var _Image2 = _interopRequireDefault(_Image);
 
-var _Text = __webpack_require__(19);
+var _Text = __webpack_require__(20);
 
 var _Text2 = _interopRequireDefault(_Text);
 
-var _TextArea = __webpack_require__(20);
+var _TextArea = __webpack_require__(21);
 
 var _TextArea2 = _interopRequireDefault(_TextArea);
 
@@ -1931,6 +1933,41 @@ exports.default = MultiPageForm;
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.Fields = exports.MultiSectionedForm = exports.MultiPageForm = exports.Form = undefined;
+
+var _Form = __webpack_require__(4);
+
+var _Form2 = _interopRequireDefault(_Form);
+
+var _MultiPageForm = __webpack_require__(14);
+
+var _MultiPageForm2 = _interopRequireDefault(_MultiPageForm);
+
+var _MultiSectionedForm = __webpack_require__(8);
+
+var _MultiSectionedForm2 = _interopRequireDefault(_MultiSectionedForm);
+
+var _fields = __webpack_require__(9);
+
+var _fields2 = _interopRequireDefault(_fields);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var Form = exports.Form = _Form2.default;
+var MultiPageForm = exports.MultiPageForm = _MultiPageForm2.default;
+var MultiSectionedForm = exports.MultiSectionedForm = _MultiSectionedForm2.default;
+var Fields = exports.Fields = _fields2.default;
+
+/***/ }),
+/* 16 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
 /* WEBPACK VAR INJECTION */(function(React) {
 
 Object.defineProperty(exports, "__esModule", {
@@ -1988,7 +2025,7 @@ exports.default = CheckBox;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 16 */
+/* 17 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2068,7 +2105,7 @@ exports.default = CheckBoxGroup;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 17 */
+/* 18 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2148,7 +2185,7 @@ exports.default = ChoiceGroup;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 18 */
+/* 19 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2284,7 +2321,7 @@ exports.default = Image;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 19 */
+/* 20 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2348,7 +2385,7 @@ exports.default = Text;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 20 */
+/* 21 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2394,7 +2431,7 @@ exports.default = TextArea;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 21 */
+/* 22 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2463,7 +2500,7 @@ module.exports = checkPropTypes;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(2)))
 
 /***/ }),
-/* 22 */
+/* 23 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2529,7 +2566,7 @@ module.exports = function() {
 
 
 /***/ }),
-/* 23 */
+/* 24 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2549,7 +2586,7 @@ var invariant = __webpack_require__(6);
 var warning = __webpack_require__(12);
 
 var ReactPropTypesSecret = __webpack_require__(7);
-var checkPropTypes = __webpack_require__(21);
+var checkPropTypes = __webpack_require__(22);
 
 module.exports = function(isValidElement, throwOnDirectAccess) {
   /* global Symbol */
@@ -3047,41 +3084,6 @@ module.exports = function(isValidElement, throwOnDirectAccess) {
 };
 
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(2)))
-
-/***/ }),
-/* 24 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.Fields = exports.MultiSectionedForm = exports.MultiPageForm = exports.Form = undefined;
-
-var _Form = __webpack_require__(4);
-
-var _Form2 = _interopRequireDefault(_Form);
-
-var _MultiPageForm = __webpack_require__(14);
-
-var _MultiPageForm2 = _interopRequireDefault(_MultiPageForm);
-
-var _MultiSectionedForm = __webpack_require__(8);
-
-var _MultiSectionedForm2 = _interopRequireDefault(_MultiSectionedForm);
-
-var _fields = __webpack_require__(9);
-
-var _fields2 = _interopRequireDefault(_fields);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-var Form = exports.Form = _Form2.default;
-var MultiPageForm = exports.MultiPageForm = _MultiPageForm2.default;
-var MultiSectionedForm = exports.MultiSectionedForm = _MultiSectionedForm2.default;
-var Fields = exports.Fields = _fields2.default;
 
 /***/ })
 /******/ ]);
