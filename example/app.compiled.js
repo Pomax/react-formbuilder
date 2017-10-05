@@ -10375,6 +10375,7 @@ var Form = function (_React$Component) {
       if (!data) return null;
 
       var common = data.common,
+          guideText = field.guideText,
           label = data.label,
           labelClass = data.labelClass,
           formfield = false;
@@ -10403,6 +10404,11 @@ var Form = function (_React$Component) {
       return _react2.default.createElement(
         'fieldset',
         { key: name + 'set', className: name },
+        guideText ? _react2.default.createElement(
+          'p',
+          { className: 'guide-text' },
+          guideText
+        ) : null,
         label,
         formfield,
         inlineErrors
@@ -14064,6 +14070,40 @@ function factory(ReactComponent, isValidElement, ReactNoopUpdateQueue) {
         spec.displayName || 'A component'
       );
     }
+<<<<<<< HEAD
+=======
+  },
+  'email choices': {
+    type: "checkbox",
+    label: "I would like to pick the emails you send me",
+    guideText: "Check this box to sign up for our fake newsletter:",
+    metered: false,
+    optional: true
+  },
+  'email cats': {
+    type: "checkboxGroup",
+    fieldClassname: "cats",
+    label: "Which emails would you like to receive",
+    options: ["News", "Promotional", "All the spam we can think of"],
+    controller: {
+      name: "email choices",
+      value: true
+    },
+    metered: false,
+    optional: true
+  },
+  notes: {
+    type: "textarea",
+    label: "Specify additional notes",
+    placeholder: "Additional notes",
+    validator: [{
+      error: "You must specify additional notes. For demonstration purposes."
+    }, {
+      validate: function validate(value) {
+        if (!value) {
+          return undefined;
+        }
+>>>>>>> bc3bf01... guide text
 
     // Reduce time spent doing lookups by setting these on the prototype.
     for (var methodName in ReactClassInterface) {

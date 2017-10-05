@@ -612,6 +612,7 @@ var Form = function (_React$Component) {
       if (!data) return null;
 
       var common = data.common,
+          guideText = field.guideText,
           label = data.label,
           labelClass = data.labelClass,
           formfield = false;
@@ -640,6 +641,11 @@ var Form = function (_React$Component) {
       return _react2.default.createElement(
         'fieldset',
         { key: name + 'set', className: name },
+        guideText ? _react2.default.createElement(
+          'p',
+          { className: 'guide-text' },
+          guideText
+        ) : null,
         label,
         formfield,
         inlineErrors

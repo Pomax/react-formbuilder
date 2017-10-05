@@ -186,6 +186,7 @@ class Form extends React.Component {
     if (!data) return null;
 
     var common = data.common,
+        guideText = field.guideText,
         label = data.label,
         labelClass = data.labelClass,
         formfield = false;
@@ -216,7 +217,14 @@ class Form extends React.Component {
     // If there are any errors, do we need to show errors inline?
     var inlineErrors = this.getInlineErrors(name);
 
-    return <fieldset key={name + 'set'} className={name}>{ label }{ formfield }{ inlineErrors }</fieldset>;
+    return (
+      <fieldset key={name + 'set'} className={name}>
+      { guideText ? <p className='guide-text'>{ guideText }</p> : null }
+      { label }
+      { formfield }
+      { inlineErrors }
+      </fieldset>
+    );
   }
 
   /**
