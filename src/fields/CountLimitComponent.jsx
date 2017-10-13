@@ -51,6 +51,20 @@ export default class CountLimitComponent extends Component {
     this.countLimits = countLimits;
   }
 
+  getCharLimitText(charCount, charLimit) {
+    if (this.props.field.charLimitText) {
+      return this.props.field.charLimitText(charCount, charLimit);
+    }
+    return `${charCount}/${charLimit}`;
+  }
+
+  getWordLimitText(wordCount, wordLimit) {
+    if (this.props.field.wordLimitText) {
+      return this.props.field.wordLimitText(wordCount, wordLimit);
+    }
+    return `${wordCount}/${wordLimit}`;
+  }
+
   renderInput(htmlElement) {
     let field = this.props.field;
 
@@ -67,14 +81,16 @@ export default class CountLimitComponent extends Component {
         wordLimit = countLimits['data-word-limit'],
         wordCount = countLimits['data-word-count'],
         overWordLimit = (this.state.overWordLimit) ? 'over-word-limit' : '',
-        className = [overCharLimit, overWordLimit].join(' ').trim();
+        className = [overCharLimit, overWordLimit].join(' ').trim(),
+        charText = this.getCharLimitText(charCount, charLimit),
+        wordText = this.getWordLimitText(wordCount, wordLimit);
 
     // This is a span-wrap to ensure that sane CSS can be
     // written to deal with data and error presentation.
     return <span className={className}>
       {htmlElement}
-      {!charLimit ? null : <span className="char-limit">{charCount}/{charLimit}</span>}
-      {!wordLimit ? null : <span className="word-limit">{wordCount}/{wordLimit}</span>}
+      {!charLimit ? null : <span className="char-limit">{ charText }</span>}
+      {!wordLimit ? null : <span className="word-limit">{ wordText }</span>}
     </span>;
   }
 };

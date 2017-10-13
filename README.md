@@ -62,6 +62,9 @@ Where a field definition object takes the following form:
 
   charLimit: number (optional), used by for text/textarea components
   wordLimit: number (optional), used by for text/textarea components
+
+  charLimitText: function(charCount, charLimit) (optional), used to generate a custom character limit text
+  wordLimitText: function(wordCount, wordLimit) (optional), used to generate a custom word limit text
 }
 ```
 

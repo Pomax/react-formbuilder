@@ -104,5 +104,13 @@ module.exports = {
     type: "text",
     label: "A text field for 51 characters max, but secretly accepting more",
     charLimit: 51
+  },
+  'custom field 2': {
+    type: "text",
+    label: "Same type of field as above, but with a custom charlimit text function",
+    charLimit: 51,
+    charLimitText: function(charCount, charLimit) {
+      return charLimit - charCount;
+    }
   }
 };
