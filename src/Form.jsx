@@ -320,9 +320,9 @@ class Form extends React.Component {
    * @returns {boolean} true if no errors occurred, otherwise false.
    */
   checkValidation() {
-    return this.validates(valid => {
+    return this.validates( (valid, errors, errorElements) => {
       if (this.props.validates) {
-        this.props.validates(valid);
+        this.props.validates(valid, errors, errorElements);
       }
     });
   }
@@ -350,7 +350,7 @@ class Form extends React.Component {
       errors: errors,
       errorElements: errorElements
     }, () => {
-      postValidate(this.state.valid);
+      postValidate(this.state.valid, errors, errorElements);
     });
 
     return !errors.length;

@@ -135,7 +135,7 @@ class App extends React.Component {
    * does "something" with the data. We'll leave the "something" implied.
    */
   submitForm() {
-    this.refs.form.validates(valid => {
+    this.refs.form.validates( (valid, error, errorElements) => {
       if (!valid) {
         return console.error("boo, form does not pass validation! Current data:", this.state.values);
       }
