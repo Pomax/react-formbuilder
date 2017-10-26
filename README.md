@@ -195,7 +195,7 @@ class App extends React.Component {
   }
 
   submitForm() {
-    this.refs.form.validates(valid => {
+    this.refs.form.validates( (valid, errors, errorElements) => {
       if (!valid) {
         return console.error("boo, form does not pass validation!");
       }
@@ -204,6 +204,20 @@ class App extends React.Component {
   }
 }
 ```
+
+#### validation
+
+validation can be triggered, as per the example, by calling the `.validates()` function on the form component. This function takes a callback that is passed three arguments:
+
+```js
+validates( function(valid, errors, errorElements) {
+  // - valid <boolean>, indicates whether the form is valid in its entirety or not
+  // - errors <string[]>, error messages for each problem found
+  // - errorElements <string[]>, the field names for each problematic element
+});
+```
+
+In this callback, the `errors` and `errorElements` are aligned arrays, such that `error[n]` applies to field with name `errorElements[n]`.
 
 #### properties
 
